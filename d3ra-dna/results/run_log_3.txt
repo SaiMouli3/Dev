@@ -1,0 +1,5 @@
+[saved] redundancy: 8 rows
+[saved] replication_vs_parity: 10 rows
+[saved] placement_opt: 21 rows
+[saved] spreading_threshold: 32 rows
+[saved] scalability: 4 rows

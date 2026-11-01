@@ -1,0 +1,4 @@
+  s1_homogeneous: 307s
+[saved] baselines_part1: 11 rows
+  s2_heterogeneous: 333s
+[saved] baselines_part1: 22 rows

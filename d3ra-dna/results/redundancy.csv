@@ -1,0 +1,9 @@
+experiment,reads_per_fragment,method,parity_total,overhead,p_file_pred,parity_min,parity_max,p_file_mc
+redundancy,6.0,uniform,2080.0,1.625,0.9990517025397382,,,
+redundancy,6.0,risk-adaptive,1740.0,1.359375,0.9990156372617423,35.0,56.0,
+redundancy-mc,6.0,uniform,,,,,,0.98725
+redundancy-mc,6.0,risk-adaptive,,,,,,0.9841
+redundancy,10.0,uniform,1760.0,1.375,0.9992838280023324,,,
+redundancy,10.0,risk-adaptive,1200.0,0.9375,0.9990021125507675,24.0,45.0,
+redundancy-mc,10.0,uniform,,,,,,0.99105
+redundancy-mc,10.0,risk-adaptive,,,,,,0.98305

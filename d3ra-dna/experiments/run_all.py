@@ -67,7 +67,7 @@ def main(argv=None):
     if run("placement"):
         save(E.placement_optimizer_comparison(), "placement_opt")
     if run("threshold"):
-        save(E.spreading_threshold(trials=5000 if q else 20000), "spreading_threshold")
+        save(E.spreading_threshold(trials=2000 if q else 5000), "spreading_threshold")
     if run("scalability"):
         save(E.scalability(adaptive_trials=100 if q else 200), "scalability")
     meta["finished"] = time.ctime()

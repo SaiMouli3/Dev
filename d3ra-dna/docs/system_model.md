@@ -146,7 +146,7 @@ The MILP gives optimality gaps for the greedy, local search, simulated annealing
 
 At each epoch, every unfinished trial gives b reads to one container.
 
-**Belief.** A discrete posterior over a container efficiency multiplier θ_j ∈ {0} ∪ [0.2, 5]:
+**Belief.** A discrete posterior over a container efficiency multiplier θ_j ∈ {0} ∪ [0.01, 5]:
 - The prior is a failure atom f_j plus a log-normal with sd `prior_sd`, which encodes estimation uncertainty.
 - The likelihood is U_j ~ Bin(n_j, Q_j(θ R_j π̄_j)), where U_j is the number of recovered fragments and Q_j is the g-averaged decodability curve.
 

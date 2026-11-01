@@ -17,7 +17,7 @@ became decodable. Controllers:
 * ``clairvoyant``    : knows the realised recovery-time matrix (reference only).
 
 Container belief: a discrete posterior over an efficiency multiplier
-theta_j in {0 (failed)} U {0.2..5} combined with a binomial likelihood of the
+theta_j in {0 (failed)} U {0.01..5} combined with a binomial likelihood of the
 number of recovered fragments U_j after R_j reads. theta absorbs
 mis-estimated yield/abundance/error and container failure in one object.
 Stopping: as soon as every stripe has K verified fragments (``DecodedStop``),
@@ -34,7 +34,10 @@ from scipy.special import log_ndtr
 from ..channel.surrogate import GH_W, GH_X, ChannelParams, Layout, SuccessTable, file_time, sample_T
 from .stopping_rule import completion_probability
 
-THETA = np.concatenate([[0.0], np.exp(np.linspace(np.log(0.2), np.log(5.0), 17))])
+# Efficiency support must reach deep degradation: with a floor of 0.2, a heavily
+# degraded container that returns nothing in its probe is better explained by
+# "failed" than "degraded" and is abandoned for good (observed in s7, see report).
+THETA = np.concatenate([[0.0], np.exp(np.linspace(np.log(0.01), np.log(5.0), 25))])
 
 
 @dataclass

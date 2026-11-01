@@ -1,0 +1,8 @@
+  s1_homogeneous: 302s
+[saved] baselines_part1: 11 rows
+  s2_heterogeneous: 330s
+[saved] baselines_part1: 22 rows
+  s3_nonuniform_abundance: 978s
+[saved] baselines_part1: 33 rows
+  s4_correlated_failures: 444s
+[saved] baselines_part1: 44 rows

@@ -239,9 +239,13 @@ def ablations(name: str = "s10_mixed", trials: int = 2000, seed: int = 0) -> lis
     ind_layout = ind.layout if ind is not None else _layout("domain", sc.n_stripes, sc.k, sc.parity, sc.belief, sc.domain)
     c5, r5 = adaptive(ind_layout)
     rows.append({"ablation": "G: independent instead of joint optimisation", **_flat(adaptive_summary(c5, r5.success, TARGETS))})
-    cs_, rs_ = adaptive(res_static.layout)
-    rows.append({"ablation": "joint with static-budget proxy (v1) instead of adaptive-in-the-loop",
-                 "variant": res_static.history[-1]["variant"], **_flat(adaptive_summary(cs_, rs_.success, TARGETS))})
+    if res_static is not None:
+        cs_, rs_ = adaptive(res_static.layout)
+        rows.append({"ablation": "joint with static-budget proxy (v1) instead of adaptive-in-the-loop",
+                     "variant": res_static.history[-1]["variant"], **_flat(adaptive_summary(cs_, rs_.success, TARGETS))})
+    else:
+        rows.append({"ablation": "joint with static-budget proxy (v1) instead of adaptive-in-the-loop",
+                     "note": "static proxy found no variant with a finite predicted 0.99 budget"})
     c6, r6 = adaptive(full_layout, "uniform")
     rows.append({"ablation": "adaptive stopping only (uniform round-robin allocation)", **_flat(adaptive_summary(c6, r6.success, TARGETS))})
     c7, r7 = adaptive(full_layout, "coverage")

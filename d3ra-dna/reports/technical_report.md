@@ -40,7 +40,13 @@ The main findings below are all *in simulation, under stated assumptions*.
    - Mean absolute error in P(exact recovery): 0.0067 for the heterogeneous model, 0.073 for a homogeneous-average model, 0.36 for Poisson without overdispersion.
    - Caveat: the predicted 0.99 budget still undershoots by 23%. Near the tail the P(budget) curve is very flat, so small errors in probability become large errors in budget.
 
-5. **Robustness needs a posterior that can represent severe degradation (H5).** An early controller assumed efficiencies of at least 0.2. In the channel-change scenario s7 it declared degraded containers "failed" after one empty probe and abandoned them; 4% of retrievals did not finish. Extending the support to 0.01 removed most, but not all, of these failures (§6.5). Under channel change, adaptive controllers paired with naive placement remain the main **failure case** of this study.
+5. **Robustness needs wide, degradation-aware beliefs (H5, supported for post-placement channel change).**
+   - In s7, two containers degrade after placement. A controller that trusts its point estimate completes only 74% of retrievals.
+   - A Bayesian controller with prior sd 1.0 completes 97.6%, the same as an oracle that knows the new channel. It costs 12% more than the oracle and 3.1× less than the point-estimate controller.
+   - Under moderate estimate noise (s9, s10), all controllers are equivalent.
+   - **Thompson sampling is a negative result:** 78% completion in s7.
+   - **Failure case:** adaptive controllers combined with naive (uniform or reliability) placement still miss 0.99 under channel change.
+   - Under the compound-stress scenario s10, *no* design reaches 0.99 at parity 20.
 
 6. **Negative or qualified results.**
    - Risk-adaptive per-stripe parity saves 16–32% of storage at a predicted reliability of 0.999. Monte Carlo shows the predictor's sampled failure tail is too optimistic for M=24, so neither design truly reaches 0.999.
@@ -59,7 +65,7 @@ A file is split into S stripes. Each stripe carries K information fragments plus
 | H2 | Reliability-aware placement improves recovery under uneven coverage and container failures | Supported, with the spreading threshold (§6.2) |
 | H3 | Marginal-benefit adaptive allocation reduces reads at equal reliability | Supported. Most of the gain comes from adaptive stopping; allocation adds 0–35% depending on placement (§6.3) |
 | H4 | Joint optimisation beats independent optimisation | Supported only with the adaptive policy in the loop; negative with a static proxy (§6.4) |
-| H5 | Uncertainty-aware control generalises better to unseen channels | Partially supported; see §6.5 |
+| H5 | Uncertainty-aware control generalises better to unseen channels | Supported for post-placement channel change (prior sd 1.0 matches oracle completion; point estimate loses 23% of retrievals); no difference under moderate noise; Thompson sampling worse (§6.5) |
 
 ## 2. System
 
@@ -131,7 +137,7 @@ Table entries: expected spend to reach 0.99 reliability (cost units = reads × c
 | s6 tight budget (0.6×) | 20,755 [.965] | 9,893 [.997] | 7,195 [.986] | 5,526 [.998] | **4,330** [.996] | 4,330 [.996] |
 | s7 channel change | 36,433 [.990] | 36,443 [.990] | — [.898] | — [.756] | **25,102** [.996] | 25,102 [.996] |
 | s9 uncertain estimates | 20,755 [.990] | 12,454 [.998] | 9,023 [.986] | 5,363 [.998] | **4,753** [.996] | 4,771 [.996] |
-| s10 mixed | see `results/baselines.csv` | | | | | |
+| s10 mixed (parity 20) | — [.964] | — [.937] | — [.972] | — [.940] | — [.968] | — [.968] |
 
 Figure: `reports/figures/baselines.png`. Pairwise comparisons with CIs: `reports/figures/baseline_comparisons.png` and the `cmp:` rows of `results/baselines.csv`.
 
@@ -151,7 +157,11 @@ What the table shows:
   - The controller under-reacts when two containers degrade after placement. It keeps directing reads to stripes whose fragments sit in the degraded containers.
   - E's placement depended less on those containers.
   - Robust adaptive control under naive placement remains an open problem.
-- **Oracle (F).** Within ±0.4% of E everywhere. Knowing the true parameters bought nothing measurable, which suggests the Bayesian posterior learns containers quickly enough at this scale. The clairvoyant reference (knowing realised T), measured in pilots, was about 5% cheaper than the pivotal controller.
+- **Compound stress (s10) — failure case for every design.** Outages, domains, overdispersion, high error, loss and ±30% estimate noise act together. No design reaches 0.99 at parity 20; the best fraction recoverable at all is 0.974.
+  - Reliability-weighted designs (B, D) are cheapest when they succeed (about 10.0–10.4k) but the least reliable (0.94).
+  - E's search, misled by the noisy beliefs, picked plain domain-spreading (0.968).
+  - Meeting 0.99 under compound stress needs more parity, which the redundancy dimension of the joint search would add.
+- **Oracle (F).** Within ±0.4% of E in s1–s9. In s10 it cost 2.3% more, CI [+1.8%, +2.7%]. Knowing the true parameters bought nothing measurable, which suggests the Bayesian posterior learns containers quickly enough at this scale. The clairvoyant reference (knowing realised T), measured in pilots, was about 5% cheaper than the pivotal controller.
 
 ## 6. Hypothesis results
 
@@ -212,7 +222,26 @@ See §5 (E vs D) and §7 (ablation G and the static-proxy joint). The v1 negativ
 
 ### 6.5 H5 — robustness to channel misspecification
 
-Results in `results/h5_robustness.csv` and §7.
+`results/h5_robustness.csv`. Every controller uses the same tiered placement (slack 1), so the infeasible fraction caps reliability for all of them; we therefore compare *completion within the cap* (4× static 0.99 budget) and the conditional cost.
+
+| Scenario | Controller | P(complete) | Mean cost when complete |
+|---|---|---|---|
+| s7 channel change (ceiling 0.976) | point estimate (prior sd 0.02) | **0.742** | 39,002 |
+| | Bayes, prior sd 0.5 | 0.974 | 22,483 |
+| | Thompson, prior sd 0.5 | 0.780 | 16,625 |
+| | **Bayes, prior sd 1.0** | **0.976** | **12,428** |
+| | oracle parameters | 0.976 | 11,072 |
+| s9 estimate noise (ceiling 0.964) | all five controllers | 0.962–0.964 | 5,033–5,150 |
+| s10 mixed (ceiling 0.920) | all five controllers | 0.920 | 9,885–10,790 |
+
+What the table shows:
+
+- **H5 is supported when the channel shifts after placement (s7).**
+  - The controller that trusts its point estimate loses 23% of retrievals and costs 3.1× more when it does succeed.
+  - Widening the prior to sd 1.0 recovers the oracle's completion rate (0.976) at only 12% higher cost than the oracle.
+- **Moderate estimate noise (s9, s10).** All controllers are equivalent. The posterior corrects ±30–50% errors within the first probes.
+- **Negative result: Thompson sampling.** It is markedly *worse* than the posterior mean in s7 (0.780). Sampling θ from a posterior with a failure atom occasionally draws "failed" for a degraded but live container, and the resulting avoidance compounds.
+- **Static allocation optimised on the wrong belief: not applicable.** The believed channel already declared 0.99 unreachable for this placement, so no budget could be optimised. A static plan cannot recover from that.
 
 **Development finding.** With posterior support θ ≥ 0.2, the controller abandoned heavily degraded containers after one empty probe in s7: 4% of trials did not finish (archived in `results/archive_v2_narrow_theta/`). Support down to 0.01 cut this to 0.7% in a 300-trial check. In the 2,000-trial baseline run, C and D in s7 still finish within the cap in only 96.9–98.0% of trials, so the robustness problem is reduced, not solved.
 

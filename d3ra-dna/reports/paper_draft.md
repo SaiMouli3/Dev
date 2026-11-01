@@ -146,7 +146,8 @@ In the correlated-failure scenario s4, only E reaches 0.99. The static-proxy joi
 - **Channel change (s7).** Two containers degrade after placement. E still meets 0.99, at 31% below the oracle-tuned static budget. C and D finish within 4× the reference budget in only 96.9% and 98.0% of trials.
 - **Narrow posterior.** A posterior restricted to θ ≥ 0.2 abandoned degraded containers after empty probes.
 - **Compound stress (s10).** Under compound outages, overdispersion, high error and estimate noise, no design reached 0.99 at parity 20. The best recoverable fraction was 0.974.
-- **Oracle.** Knowing the true parameters never helped by more than 0.4%.
+- **Oracle.** Knowing the true parameters helped by at most 0.4% in s1–s9.
+- **Prior width (H5).** With all controllers sharing the same placement in s7, an over-confident point-estimate controller completed 74% of retrievals. A Bayesian controller with prior sd 1.0 completed 97.6% (the oracle's ceiling) at 1.12× the oracle's cost. Thompson sampling completed 78%, because draws of a container's failure state caused avoidance.
 
 H5 details and ablations: `results/h5_robustness.csv` and `results/ablations.csv`.
 

@@ -145,6 +145,18 @@ def h1_model_accuracy(name: str = "s3_nonuniform_abundance", trials: int = 20000
 
 # --------------------------------------------------------------------------- H5
 
+def _cap_for(sc, seed: int = 0, trials: int = 5000) -> float:
+    """Common budget cap: 4x the static-uniform 0.99 budget on the true channel
+    (0.99 quantile among recoverable trials if 0.99 is unreachable)."""
+    L = uniform_layout(sc)
+    s = static_budget_samples(L, sc.truth, uniform_weights(L), trials, np.random.default_rng(seed + 99))
+    s = s * float(sc.truth.cost @ uniform_weights(L))
+    b = budget_for_target(s, 0.99)
+    if not np.isfinite(b):
+        b = float(np.quantile(s[np.isfinite(s)], 0.99))
+    return 4 * b
+
+
 def h5_robustness(trials: int = 2000, seed: int = 0) -> list[dict]:
     """Uncertainty-aware controllers vs a controller that trusts a point estimate."""
     rows = []
@@ -153,7 +165,7 @@ def h5_robustness(trials: int = 2000, seed: int = 0) -> list[dict]:
         L = _layout("tiered1", sc.n_stripes, sc.k, sc.parity, sc.belief, sc.domain)
         rng = np.random.default_rng(seed + 1)
         T, failed = sample_T(L, sc.truth, trials, rng, return_state=True)
-        cap = 1e6
+        cap = _cap_for(sc, seed)
         for label, cfg, belief in [
             ("point-estimate (prior_sd=0.02)", AdaptiveConfig("pivotal", prior_sd=0.02, cap=cap), sc.belief),
             ("bayes (prior_sd=0.5)", AdaptiveConfig("pivotal", prior_sd=0.5, cap=cap), sc.belief),
@@ -164,8 +176,8 @@ def h5_robustness(trials: int = 2000, seed: int = 0) -> list[dict]:
             ctl = AdaptiveController(L, belief, cfg, truth=sc.truth)
             r = ctl.run(trials, np.random.default_rng(seed + 2), T=T, failed=failed)
             c = np.where(r.success, r.cost, np.inf)
-            rows.append({"experiment": "H5", "scenario": name, "controller": label,
-                         **_flat(adaptive_summary(c, r.success, TARGETS))})
+            rows.append({"experiment": "H5", "scenario": name, "controller": label, "cap": cap,
+                         **_flat(adaptive_summary(c, r.success, TARGETS, budget_ref=cap / 4))})
         # static allocation optimised on the (wrong) belief, evaluated on truth
         pred = Predictor(L, sc.belief)
         w = uniform_weights(L)
@@ -187,9 +199,10 @@ def ablations(name: str = "s10_mixed", trials: int = 2000, seed: int = 0) -> lis
     variant = res.variant
     res_static = joint_optimise(sc.n_stripes, sc.k, sc.belief, 0.99, sc.domain, parities=[sc.parity], iters=3, p0=sc.parity)
     rng_seed = seed + 11
+    cap = _cap_for(sc, seed)
 
     def adaptive(layout, controller="pivotal", belief=None):
-        ctl = AdaptiveController(layout, belief or sc.belief, AdaptiveConfig(controller, cap=1e6), truth=sc.truth)
+        ctl = AdaptiveController(layout, belief or sc.belief, AdaptiveConfig(controller, cap=cap), truth=sc.truth)
         r = ctl.run(trials, np.random.default_rng(rng_seed), T=None)
         return np.where(r.success, r.cost, np.inf), r
 

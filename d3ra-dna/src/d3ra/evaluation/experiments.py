@@ -236,7 +236,8 @@ def ablations(name: str = "s10_mixed", trials: int = 2000, seed: int = 0) -> lis
     c4, r4 = adaptive(full_layout, "oracle", sc.truth)
     rows.append({"ablation": "F: perfect channel information (oracle)", **_flat(adaptive_summary(c4, r4.success, TARGETS))})
     ind = independent_optimise(sc.n_stripes, sc.k, sc.belief, 0.99, sc.domain, parities=[sc.parity])
-    c5, r5 = adaptive(ind.layout)
+    ind_layout = ind.layout if ind is not None else _layout("domain", sc.n_stripes, sc.k, sc.parity, sc.belief, sc.domain)
+    c5, r5 = adaptive(ind_layout)
     rows.append({"ablation": "G: independent instead of joint optimisation", **_flat(adaptive_summary(c5, r5.success, TARGETS))})
     cs_, rs_ = adaptive(res_static.layout)
     rows.append({"ablation": "joint with static-budget proxy (v1) instead of adaptive-in-the-loop",

@@ -57,7 +57,7 @@ def main(argv=None):
         save(E.h5_robustness(trials=tr), "h5_robustness")
     if run("ablations"):
         rows = []
-        for sc in ["s10_mixed", "s4_correlated_failures"]:
+        for sc in ["s2_heterogeneous", "s4_correlated_failures"]:
             rows += E.ablations(sc, trials=tr)
         save(rows, "ablations")
     if run("redundancy"):

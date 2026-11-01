@@ -55,7 +55,7 @@ class Scenario:
     belief: ChannelParams
     n_stripes: int = 25
     k: int = 32
-    parity: int = 12
+    parity: int = 16
     domain: np.ndarray | None = None
     budget_scale: float = 1.0     # scenario 6 tightens the reference budget
     notes: dict = field(default_factory=dict)

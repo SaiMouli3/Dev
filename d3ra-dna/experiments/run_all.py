@@ -37,9 +37,10 @@ def main(argv=None):
     ap.add_argument("--quick", action="store_true", help="small trial counts (smoke run)")
     ap.add_argument("--only", default="", help="comma list: baselines,h1,h5,ablations,redundancy,replication,placement,scalability")
     ap.add_argument("--scenarios", default=",".join(SCENARIOS))
+    ap.add_argument("--tag", default="", help="suffix for output file names (parallel runs)")
     a = ap.parse_args(argv)
     q = a.quick
-    tr, st = (300, 3000) if q else (3000, 30000)
+    tr, st = (300, 3000) if q else (2000, 20000)
     only = set(filter(None, a.only.split(",")))
     run = lambda k: not only or k in only
     meta = {"started": time.ctime(), "quick": q, "adaptive_trials": tr, "static_trials": st}
@@ -49,7 +50,7 @@ def main(argv=None):
             t = time.time()
             rows += E.baseline_experiment(sc, trials=tr, static_trials=st)
             print(f"  {sc}: {time.time() - t:.0f}s", flush=True)
-            save(rows, "baselines")
+            save(rows, "baselines" + a.tag)
     if run("h1"):
         save(E.h1_model_accuracy(trials=st), "h1_model_accuracy")
     if run("h5"):
@@ -70,7 +71,7 @@ def main(argv=None):
     if run("scalability"):
         save(E.scalability(adaptive_trials=100 if q else 200), "scalability")
     meta["finished"] = time.ctime()
-    (RES / "run_meta.json").write_text(json.dumps(meta, indent=1))
+    (RES / f"run_meta{a.tag}.json").write_text(json.dumps(meta, indent=1))
 
 
 if __name__ == "__main__":

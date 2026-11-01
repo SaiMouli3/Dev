@@ -24,7 +24,7 @@ from ..storage.placement import cost_tiered, domain_aware, round_robin, unit_ret
 from . import scenarios as S
 from .baselines import Design, designs, uniform_layout
 from .metrics import adaptive_summary, static_summary
-from .statistical_tests import (bootstrap_ci, cliffs_delta, cohens_dz, holm, mcnemar, paired_bootstrap_diff,
+from .statistical_tests import (bootstrap_ci, cliffs_delta, cohens_dz, fisher_two_proportions, holm, mcnemar, paired_bootstrap_diff,
                                 unpaired_bootstrap_diff, wilcoxon_paired)
 
 TARGETS = (0.99, 0.999)
@@ -92,7 +92,8 @@ def baseline_experiment(name: str, trials: int = 2000, static_trials: int = 2000
         ca, cb = per_trial[a], per_trial[b]
         pa = np.isfinite(ca) & (ca <= B_ref)
         pb = np.isfinite(cb) & (cb <= B_ref)
-        p = mcnemar(pa, pb) if len(ca) == len(cb) else np.nan
+        paired = a == "F_oracle"          # F replays E's exact T matrices (same layout and seed)
+        p = mcnemar(pa, pb) if paired else fisher_two_proportions(pa, pb)
         pv.append(p)
     adj = holm([p if np.isfinite(p) else 1.0 for p in pv])
     for (a, b), p, pa in zip(comps, pv, adj):
@@ -103,7 +104,7 @@ def baseline_experiment(name: str, trials: int = 2000, static_trials: int = 2000
         diff = unpaired_bootstrap_diff(capa[:m], capb[:m]) if a[0] != "F" else paired_bootstrap_diff(capa[:m], capb[:m])
         rows.append({"scenario": name, "design": f"cmp:{a}-vs-{b}", "mean_cost_diff": diff[0], "mean_cost_diff_lo": diff[1],
                      "mean_cost_diff_hi": diff[2], "cliffs_delta": cliffs_delta(capa, capb),
-                     "p_exact_ref_mcnemar_p": p, "p_holm": pa})
+                     "p_exact_ref_test_p": p, "test": "mcnemar" if a == "F_oracle" else "fisher", "p_holm": pa})
     return rows
 
 

@@ -88,3 +88,9 @@ def wilson_ci(successes: int, n: int, alpha: float = 0.05):
     c = (p + z ** 2 / (2 * n)) / den
     h = z * np.sqrt(p * (1 - p) / n + z ** 2 / (4 * n ** 2)) / den
     return p, max(0.0, c - h), min(1.0, c + h)
+
+
+def fisher_two_proportions(success_a, success_b) -> float:
+    """Unpaired two-sided Fisher exact test on success counts."""
+    a, b = np.asarray(success_a, bool), np.asarray(success_b, bool)
+    return float(stats.fisher_exact([[a.sum(), (~a).sum()], [b.sum(), (~b).sum()]])[1])

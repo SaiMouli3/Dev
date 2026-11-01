@@ -150,6 +150,32 @@ _source: `h5_robustness.csv`_
 | s10_mixed              | oracle-params                  | inf [inf, inf] | inf [inf, inf]    | inf [inf, inf] | inf [inf, inf]     |               10066 |                0.92  |
 | s10_mixed              | static-optimised-on-belief     | inf [inf, inf] | inf [inf, inf]    | inf [inf, inf] | inf [inf, inf]     |                 inf |                0     |
 
+## Ablations
+
+_source: `ablations.csv`_
+
+| scenario               | ablation                                                            | variant     | cap@0.99                | mean_spend@0.99      | cap@0.999         | mean_spend@0.999     |   mean_cost_success |
+|:-----------------------|:--------------------------------------------------------------------|:------------|:------------------------|:---------------------|:------------------|:---------------------|--------------------:|
+| s2_heterogeneous       | full (E)                                                            | failure1    | 6,000 [inf, inf]        | 4,347 [4,328, 4,364] | inf [inf, inf]    | inf [inf, inf]       |               4,331 |
+| s2_heterogeneous       | A: -reliability-aware placement                                     |             | 13,560 [12,590, 15,455] | 7,232 [7,169, 7,294] | inf [inf, inf]    | inf [inf, inf]       |               7,222 |
+| s2_heterogeneous       | B: -adaptive sequencing (static optimised weights)                  |             | 5,739 [5,613, 5,835]    | 5,739 [5,613, 5,835] | inf [inf, inf]    | inf [inf, inf]       |               4,301 |
+| s2_heterogeneous       | E: fixed stopping (controller's mean allocation, committed)         |             | 5,739 [5,613, 5,835]    | 5,739 [5,613, 5,835] | inf [inf, inf]    | inf [inf, inf]       |               4,301 |
+| s2_heterogeneous       | F: perfect channel information (oracle)                             |             | 6,000 [inf, inf]        | 4,347 [4,328, 4,364] | inf [inf, inf]    | inf [inf, inf]       |               4,331 |
+| s2_heterogeneous       | G: independent instead of joint optimisation                        |             | 12,895 [11,990, 13,805] | 7,176 [7,118, 7,234] | inf [inf, inf]    | inf [inf, inf]       |               7,177 |
+| s2_heterogeneous       | joint with static-budget proxy (v1) instead of adaptive-in-the-loop | failure0    | 8,910 [8,330, 9,605]    | 6,195 [6,165, 6,226] | 15,490 [inf, inf] | 6,214 [6,180, 6,249] |               6,205 |
+| s2_heterogeneous       | adaptive stopping only (uniform round-robin allocation)             |             | 6,000 [inf, inf]        | 4,347 [4,328, 4,364] | inf [inf, inf]    | inf [inf, inf]       |               4,331 |
+| s2_heterogeneous       | coverage-greedy instead of pivotal                                  |             | 6,000 [inf, inf]        | 4,347 [4,328, 4,364] | inf [inf, inf]    | inf [inf, inf]       |               4,331 |
+| s4_correlated_failures | full (E)                                                            | failure1    | 20,635 [inf, inf]       | 5,202 [5,106, 5,309] | inf [inf, inf]    | inf [inf, inf]       |               5,046 |
+| s4_correlated_failures | A: -reliability-aware placement                                     |             | inf [inf, inf]          | inf [inf, inf]       | inf [inf, inf]    | inf [inf, inf]       |               6,952 |
+| s4_correlated_failures | B: -adaptive sequencing (static optimised weights)                  |             | inf [inf, inf]          | inf [inf, inf]       | inf [inf, inf]    | inf [inf, inf]       |               8,426 |
+| s4_correlated_failures | D: -correlated failure modelling                                    | reliability | inf [inf, inf]          | inf [inf, inf]       | inf [inf, inf]    | inf [inf, inf]       |               5,360 |
+| s4_correlated_failures | E: fixed stopping (controller's mean allocation, committed)         |             | inf [inf, inf]          | inf [inf, inf]       | inf [inf, inf]    | inf [inf, inf]       |               5,834 |
+| s4_correlated_failures | F: perfect channel information (oracle)                             |             | 20,185 [inf, inf]       | 5,184 [5,091, 5,288] | inf [inf, inf]    | inf [inf, inf]       |               5,033 |
+| s4_correlated_failures | G: independent instead of joint optimisation                        |             | inf [inf, inf]          | inf [inf, inf]       | inf [inf, inf]    | inf [inf, inf]       |               6,931 |
+| s4_correlated_failures | joint with static-budget proxy (v1) instead of adaptive-in-the-loop |             |                         |                      |                   |                      |                     |
+| s4_correlated_failures | adaptive stopping only (uniform round-robin allocation)             |             | 84,920 [inf, inf]       | 9,323 [8,876, 9,795] | inf [inf, inf]    | inf [inf, inf]       |               8,559 |
+| s4_correlated_failures | coverage-greedy instead of pivotal                                  |             | 20,725 [inf, inf]       | 5,124 [5,027, 5,232] | inf [inf, inf]    | inf [inf, inf]       |               4,966 |
+
 ## Redundancy allocation (uniform vs risk-adaptive parity)
 
 _source: `redundancy.csv`_

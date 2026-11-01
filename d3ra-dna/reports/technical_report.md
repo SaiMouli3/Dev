@@ -17,24 +17,28 @@ The main findings below are all *in simulation, under stated assumptions*.
    - At 0.999 the cut is 69% (5,913 vs 19,010).
    - This works because the reliability tail is dominated by rare slow trials. A fixed policy must pay for them on every retrieval; an adaptive one pays only when they happen.
 
-2. **Joint optimisation helps only when retrieval is in the loop (H4, supported in its refined form; the first form was a negative result).**
-   - *First attempt.* We scored placements by their static budget-to-target. The resulting design spent 12% **more** than the simple reliability-weighted placement once retrieval was adaptive (archived in `results/archive_v1_static_proxy_joint/`).
-   - *Refined method.* We scored candidate placements by simulating the adaptive controller on the **believed** channel. The design it picks needs 12–37% less expected spend than reliability-weighted placement with the same adaptive controller (D), with bootstrap 95% CIs excluding 0, across scenarios s2, s3, s5, s7 and s9:
+2. **The cost-optimal "distributed" layout is often not distributed (H4, with an important caveat).**
+   - The joint optimiser scores candidate placements by simulating the adaptive controller on the *believed* channel. In s2, s3, s5 and s7 it placed **all 48 fragments of every stripe in the single best container**. That container's failure probability (0.5%) is below the 1% the 0.99 target allows, and its yield and error rate are the best available.
+   - Against reliability-weighted spreading with the same adaptive controller (D), this cut expected spend at 0.99:
 
      | Scenario | E vs D (expected spend) | 95% CI |
      |---|---|---|
      | s2 | −21.6% | [−14%, −24%] |
      | s3 | −28.5% | — |
      | s5 | −37.1% | — |
-     | s9 | −11.4% | — |
 
-   - **Trade-off:** E is tuned to just meet the target. Its P(exact) at the reference budget is 0.994–0.996, against 0.998 for D.
+   - **The saving comes from *not* distributing.** Spreading dilutes reads across worse containers. The price is reliability margin: P(exact) at the reference budget is 0.996 against 0.998.
+   - **Design rule:** at a target of 1 − ε, if some container already meets ε by itself, distribution costs reads. Distribution earns its place only when no single container meets the target.
+   - **Where distribution was chosen.**
+     - *s4, correlated failure domains:* counts 9/8/15/2/0/18/0/0 across five containers. E was the **only** design to reach 0.99, at 5,217.
+     - *s9, wrong estimates:* three containers; −11% vs D.
+   - **Static proxy (negative result).** Scoring placements by their static budget-to-target instead gave designs 12–43% *worse* than this simulation-in-the-loop search. In s4 it found no feasible design at all.
 
 3. **Failure-aware placement is non-monotone in parity (new spreading-threshold result).**
    - With D failure domains, spreading a stripe evenly over domains beats concentrating it **only when the parity fraction (N−K)/N clears ≈ 1/D plus a dropout margin.**
    - Below the threshold, spreading makes every domain a single point of failure. At parity 12/44 with 4 domains, the file is unrecoverable 14.0% of the time with domain-spreading versus 3.6% with exposure-minimising concentration.
    - Above it (parity ≥ 16/48), spreading wins.
-   - Only E reached the 0.99 target in the correlated-failure scenario s4.
+   - This and point 2 are the same principle at two scales: distribute only as far as the parity budget can absorb the resulting exposure.
 
 4. **Container-specific channel models predict recovery far better (H1, supported).**
    - Mean absolute error in P(exact recovery): 0.0067 for the heterogeneous model, 0.073 for a homogeneous-average model, 0.36 for Poisson without overdispersion.
@@ -64,7 +68,7 @@ A file is split into S stripes. Each stripe carries K information fragments plus
 | H1 | Container-specific channel models predict retrieval better than homogeneous ones | Supported (§6.1) |
 | H2 | Reliability-aware placement improves recovery under uneven coverage and container failures | Supported, with the spreading threshold (§6.2) |
 | H3 | Marginal-benefit adaptive allocation reduces reads at equal reliability | Supported. Most of the gain comes from adaptive stopping; allocation adds 0–35% depending on placement (§6.3) |
-| H4 | Joint optimisation beats independent optimisation | Supported only with the adaptive policy in the loop; negative with a static proxy (§6.4) |
+| H4 | Joint optimisation beats independent optimisation | Supported with the adaptive policy in the loop: −65% vs independent (s2), and the only design to meet 0.99 in s4. In 4/8 scenarios the optimum is a single container. Negative with a static proxy (§6.4, §7) |
 | H5 | Uncertainty-aware control generalises better to unseen channels | Supported for post-placement channel change (prior sd 1.0 matches oracle completion; point estimate loses 23% of retrievals); no difference under moderate noise; Thompson sampling worse (§6.5) |
 
 ## 2. System
@@ -149,6 +153,8 @@ What the table shows:
   - D vs B: −44% in s2, −63% in s3, −36% in s5, −57% in s9.
   - Exception: in s9, C needs a much higher *cap* than A (28,120 vs 20,755) even though its mean spend is lower. Uniform placement plus wrong channel estimates makes the adaptive tail heavy.
 - **Joint vs reliability-weighted placement with the same adaptive controller (E vs D).** E is cheaper in every heterogeneous scenario; the reductions are listed in the executive summary (§0, point 2). All differences hold under bootstrap and Cliff's |δ| ≥ 0.6.
+  - **Important:** in s2, s3, s5 and s7, E's layout puts *every* fragment in container 0, the most reliable and highest-yield container, whose failure probability of 0.005 is below ε = 0.01. The comparison there is effectively "no distribution" against "reliability-weighted distribution". With one container, all controllers behave identically, which is why E = F in those rows.
+  - E used several containers only in s4 (five) and s9 (three).
   - **Trade-off:** P(exact) at the reference budget is 0.996 for E against 0.998 for D. The difference is not significant after Holm correction (Fisher p ≥ 0.35), but it is consistently in D's favour. E sits closer to the 0.99 boundary by design.
 - **Correlated failures (s4).** Only E reaches 0.99. The joint search picked a failure-aware placement that partly concentrates fragments in the containers and domains least likely to fail.
 - **Channel change (s7) — failure case.**
@@ -245,9 +251,50 @@ What the table shows:
 
 **Development finding.** With posterior support θ ≥ 0.2, the controller abandoned heavily degraded containers after one empty probe in s7: 4% of trials did not finish (archived in `results/archive_v2_narrow_theta/`). Support down to 0.01 cut this to 0.7% in a 300-trial check. In the 2,000-trial baseline run, C and D in s7 still finish within the cap in only 96.9–98.0% of trials, so the robustness problem is reduced, not solved.
 
-## 7. Ablations, s10 and H5 details
+## 7. Ablations
 
-*(Filled in from `results/ablations.csv`, `results/h5_robustness.csv` and the s10 rows of `results/baselines.csv` — see §7 addendum below.)*
+Source: `results/ablations.csv`. Each ablation removes one component from the full design E (adaptive-in-the-loop joint placement + pivotal Bayesian controller), with 2,000 adaptive or 10,000 static trials and the same 4× cap. Values are expected spend at 0.99, or "—" with the achieved success rate where 0.99 is not reached.
+
+**s2 (heterogeneous). E = all fragments in container 0.**
+
+| Ablation | Expected spend @0.99 | vs full | P(complete) |
+|---|---|---|---|
+| full (E) | 4,347 [4,328; 4,364] | — | 0.990 |
+| A: uniform (round-robin) placement | 7,232 | +66% | 0.996 |
+| B: static optimised weights (fixed depth) | 5,739 (committed) | +32% | 0.994 |
+| E: fixed stopping at the controller's mean allocation | 5,739 (committed) | +32% | 0.994 |
+| F: oracle channel knowledge | 4,347 | 0% | 0.990 |
+| G: independent instead of joint optimisation | 7,176 | +65% | 0.998 |
+| static-budget-proxy joint (v1) | 6,195 | +43% | 0.999 |
+| uniform allocation / coverage-greedy controller | 4,347 | 0% (one container, nothing to allocate) | 0.990 |
+
+**s4 (correlated failure domains). E = 5 containers.**
+
+| Ablation | Expected spend @0.99 | vs full | P(complete) |
+|---|---|---|---|
+| full (E) | 5,202 [5,106; 5,309] | — | 0.990 |
+| A: uniform placement | — | target missed | 0.984 |
+| B: static optimised weights (fixed depth) | — | target missed | 0.987 |
+| D: placement optimised *without* correlated-failure modelling | — | target missed | 0.952 |
+| E: fixed stopping at the controller's mean allocation | — | target missed | 0.987 |
+| F: oracle channel knowledge | 5,184 | −0.3% (CI overlaps) | 0.990 |
+| G: independent instead of joint optimisation | — | target missed | 0.982 |
+| static-budget-proxy joint (v1) | no feasible design found | — | — |
+| adaptive stopping only (uniform round-robin allocation) | 9,323 | **+79%** | 0.990 |
+| coverage-greedy instead of pivotal | 5,124 | **−1.5%** | 0.990 |
+
+What the ablations show:
+
+1. **Placement matters most.**
+   - In s2, removing it costs +66%.
+   - In s4, every ablation that changes placement misses 0.99: uniform, independent, and no correlated-failure model. Ignoring the domains is the worst of these (0.952).
+2. **Adaptive stopping vs fixed depth.**
+   - Committing a fixed budget instead of stopping adaptively costs +32% in s2.
+   - In s4 a fixed budget cannot reach 0.99 at any affordable depth (0.987).
+3. **Adaptive allocation matters only when there is something to allocate.**
+   - In s4, where data spans 5 containers, the uniform round-robin controller costs +79% over the pivotal controller. Allocation steers reads away from containers whose domain has failed and towards the cheapest live holders of the needed fragments.
+   - **Negative result for the pivotal weighting.** Coverage-greedy (no Birnbaum weights) was 1.5% *cheaper* than pivotal, with overlapping CIs. The stripe-importance weighting brought no measurable benefit here. The gain comes from hazard-based allocation itself.
+4. **Perfect channel knowledge** (oracle) changed costs by ≤ 0.3%. The posterior learns containers quickly at this scale.
 
 ## 8. Other experiments
 

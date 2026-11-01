@@ -78,7 +78,14 @@ This makes 10⁴–10⁵-trial reliability estimates (targets 0.99 and 0.999) ch
 
 ## Results
 
-See `reports/technical_report.md` for all numbers, confidence intervals, negative results and failure cases.
+All results are in simulation, under the documented assumptions. Full tables, CIs, negative results and failure cases are in `reports/technical_report.md`.
+
+- **Adaptive stopping vs fixed depth.** Stopping once every stripe holds K verified fragments cuts expected sequencing spend at 0.99 reliability by 48–79% compared with the fixed depth that reaches 0.99.
+- **Placement must be optimised with the adaptive reader in the loop. It is often *not* distributed.** When one container meets the failure budget, putting each stripe there is 22–37% cheaper than reliability-weighted spreading. With correlated failure domains, the search spreads over five containers and is the only design to reach 0.99. Without adaptive allocation, that design costs +79%.
+- **Spreading threshold.** Spreading stripes over D failure domains helps only once the parity fraction exceeds about 1/D. Below it, concentration was 3.9× safer.
+- **Channel models (H1).** Container-specific models predict recovery with mean absolute error 0.007, versus 0.073 for homogeneous models.
+- **Robustness (H5).** Wide Bayesian priors match oracle completion under post-placement channel change (97.6% vs 74% for an over-confident controller).
+- **Negative results.** Thompson sampling; stripe-importance weighting vs plain hazard-greedy allocation; risk-adaptive parity (predictor tail too optimistic); shared-bias vs replication; no design meets 0.99 under the compound-stress scenario.
 
 ## Limitations
 

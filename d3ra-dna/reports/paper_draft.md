@@ -10,7 +10,10 @@ The basis of the study is a *recovery-time-matrix* surrogate. Each (fragment, co
 
 Across nine scenarios we find four things.
 1. Closed-loop sequencing that stops when every stripe holds K verified fragments needs 48–79% less expected spend than the fixed depth that reaches the same 0.99 reliability.
-2. Placement must be optimised *with the adaptive retrieval policy in the loop*. A placement chosen for fixed-depth retrieval cost 12% more than a simple reliability-weighted placement. One chosen by simulating the adaptive controller on the believed channel cost 11–37% less, at a slightly smaller reliability margin.
+2. Placement must be optimised *with the adaptive retrieval policy in the loop*, and the optimum is often *not* distributed.
+   - When a single container already meets the failure budget, the search concentrates each stripe there, cutting expected spend by 22–37% against reliability-weighted spreading.
+   - When no container does (correlated failure domains), the search spreads data over five containers and is the only design to reach 0.99.
+   - A placement chosen for fixed-depth retrieval cost 12–43% more.
 3. Spreading stripes over failure domains is beneficial only above a parity-fraction threshold of about 1/D. Below it, exposure-minimising concentration is 3.9× safer.
 4. Bayesian container beliefs must be able to represent severe degradation. Otherwise controllers abandon degraded containers and fail under channel change, which remains the main open failure case.
 
@@ -32,7 +35,7 @@ We study the operational setting that follows from it, in which containers are *
 
 - **C-sim. Recovery-time-matrix surrogate.** It is calibrated from sequence-level consensus decoding. It turns policy evaluation into order statistics on one sampled matrix and gives common random numbers across policies (§3).
 - **C-ctrl. Closed-loop sequencing controller.** It uses a discrete Bayesian posterior over container efficiency, with an explicit failure atom, and scores containers by posterior hazards weighted with stripe-level Birnbaum importance [Birnbaum 1969]. It stops on verified decodability (§4).
-- **C-joint. Retrieval-in-the-loop placement.** It is a joint search over placement families (failure-exposure-minimising, cost-tiered capped water-filling, domain-spreading, reliability-weighted) and parity, scored by simulating the controller on the *believed* channel (§5). We show that the static-proxy alternative is a trap.
+- **C-joint. Retrieval-in-the-loop placement.** It is a joint search over placement families (failure-exposure-minimising, cost-tiered capped water-filling, domain-spreading, reliability-weighted) and parity, scored by simulating the controller on the *believed* channel (§5). We show that the static-proxy alternative is a trap, and that the optimum is often a single container: distribute only when no container meets the failure budget alone.
 - **C-rule. The spreading threshold.** It is a design rule for failure domains in multi-container archives (§6.2).
 - **Honest evaluation.** Nine scenarios, six baselines, Holm-corrected tests, and reported negative results (§6–7).
 
@@ -139,7 +142,13 @@ Expected spend at 0.99, E (joint) vs D (reliability-weighted + adaptive):
 
 Bootstrap 95% CIs exclude 0 in all four. P(exact) at the reference budget is 0.996 for E against 0.998 for D: a consistent but non-significant reliability margin traded for cost.
 
-In the correlated-failure scenario s4, only E reaches 0.99. The static-proxy joint optimiser (v1) was 12% *worse* than D.
+**Caveat that shapes the interpretation.** In s2, s3 and s5, E puts *all* fragments in the single best container, whose failure probability of 0.5% is below ε = 1%. Its advantage is the advantage of not distributing; with only one container, the controllers tie.
+
+Distribution was chosen where no container meets ε alone:
+- **s4 (correlated failure domains):** five containers. E is the only design reaching 0.99. Removing its adaptive *allocation* (uniform round-robin) costs +79%. Placement without the correlated-failure model misses the target (0.952).
+- **s9 (wrong estimates):** three containers.
+
+The stripe-importance (Birnbaum) weighting gave no measurable benefit over plain hazard-greedy allocation (−1.5%, CIs overlap). The static-proxy joint optimiser (v1) was 12–43% *worse*, and in s4 it found no feasible design.
 
 ### 6.5 Robustness (H5) and failure cases
 
@@ -165,6 +174,10 @@ H5 details and ablations: `results/h5_robustness.csv` and `results/ablations.csv
 
 ## 9. Conclusion
 
-The cheapest reliable way to read a multi-container DNA archive is to stop as soon as the data is provably decodable. For that to work, the archive must have been laid out with that adaptive reader in mind: placement chosen with retrieval in the loop, failure-aware, and respecting the spreading threshold. A layout tuned for fixed-depth sequencing is the wrong layout for adaptive sequencing.
+The cheapest reliable way to read a multi-container DNA archive is to stop as soon as the data is provably decodable. For that to work, the archive must have been laid out with that adaptive reader in mind.
+
+**Counter-intuitive consequence:** distribution is not free. At a given failure budget ε, placing data in many containers dilutes sequencing effort. The search distributes only when no single container — or, for correlated failures, no single domain — meets ε, and only as far as the parity fraction can absorb the resulting exposure (the spreading threshold).
+
+When data is genuinely distributed, adaptive allocation matters a great deal: +79% cost without it in our correlated-failure scenario. The specific choice of allocation score matters little.
 
 **Wet-lab validation needed.** Real container failure statistics and real per-run sequencing costs. In particular, a split-pool experiment with deliberately degraded aliquots would test both the adaptive controller and the spreading threshold.

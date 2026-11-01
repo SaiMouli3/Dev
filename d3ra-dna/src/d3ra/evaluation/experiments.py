@@ -15,7 +15,7 @@ import numpy as np
 from ..channel.failures import FailureModel
 from ..channel.surrogate import ChannelParams, Layout, Predictor, sample_T, static_budget_samples
 from ..optimization.budget_optimizer import min_budget, optimise_weights
-from ..optimization.joint_optimizer import _layout, independent_optimise, joint_optimise
+from ..optimization.joint_optimizer import _layout, independent_optimise, joint_optimise, joint_optimise_adaptive
 from ..optimization.placement_optimizer import PlacementProblem, compare_methods
 from ..optimization.redundancy_optimizer import build_layout, risk_adaptive, uniform_parity
 from ..retrieval.adaptive_policy import AdaptiveConfig, AdaptiveController
@@ -182,9 +182,10 @@ def h5_robustness(trials: int = 2000, seed: int = 0) -> list[dict]:
 def ablations(name: str = "s10_mixed", trials: int = 2000, seed: int = 0) -> list[dict]:
     sc = S.make(name, seed)
     rows = []
-    res = joint_optimise(sc.n_stripes, sc.k, sc.belief, 0.99, sc.domain, parities=[sc.parity], iters=3, p0=sc.parity)
+    res = joint_optimise_adaptive(sc.n_stripes, sc.k, sc.belief, 0.99, sc.domain, parities=[sc.parity])
     full_layout = res.layout
-    variant = res.history[-1]["variant"]
+    variant = res.variant
+    res_static = joint_optimise(sc.n_stripes, sc.k, sc.belief, 0.99, sc.domain, parities=[sc.parity], iters=3, p0=sc.parity)
     rng_seed = seed + 11
 
     def adaptive(layout, controller="pivotal", belief=None):
@@ -199,15 +200,20 @@ def ablations(name: str = "s10_mixed", trials: int = 2000, seed: int = 0) -> lis
     rows.append({"ablation": "full (E)", "variant": variant, **_flat(adaptive_summary(c, r.success, TARGETS))})
     c2, r2 = adaptive(uniform_layout(sc))
     rows.append({"ablation": "A: -reliability-aware placement", **_flat(adaptive_summary(c2, r2.success, TARGETS))})
-    s = static(full_layout, res.weights)
+    from ..optimization.budget_optimizer import optimise_weights as _ow
+    _pred = Predictor(full_layout, sc.belief)
+    _w = uniform_weights(full_layout)
+    _B = min_budget(_pred, _w, 0.99)
+    w_full = _ow(_pred, _B, w0=_w, iters=15) if np.isfinite(_B) else _w
+    s = static(full_layout, w_full)
     rows.append({"ablation": "B: -adaptive sequencing (static optimised weights)", **_flat(static_summary(s, TARGETS))})
     # D: placement optimised ignoring correlated failures (independent marginals only)
     if sc.truth.failure.domains:
         nodom = ChannelParams(sc.belief.yield_, sc.belief.shape, sc.belief.dropout, sc.belief.cost, sc.belief.phi,
                               FailureModel(sc.belief.failure.marginal()), sc.belief.sigma_g, sc.belief.d_syn)
-        res_nd = joint_optimise(sc.n_stripes, sc.k, nodom, 0.99, None, parities=[sc.parity], iters=3, p0=sc.parity)
+        res_nd = joint_optimise_adaptive(sc.n_stripes, sc.k, nodom, 0.99, None, parities=[sc.parity])
         c3, r3 = adaptive(res_nd.layout)
-        rows.append({"ablation": "D: -correlated failure modelling", "variant": res_nd.history[-1]["variant"],
+        rows.append({"ablation": "D: -correlated failure modelling", "variant": res_nd.variant,
                      **_flat(adaptive_summary(c3, r3.success, TARGETS))})
     # E: fixed stopping -- commit the controller's mean allocation as a fixed budget
     w_ad = r.reads_per_container.mean(0)
@@ -219,6 +225,9 @@ def ablations(name: str = "s10_mixed", trials: int = 2000, seed: int = 0) -> lis
     ind = independent_optimise(sc.n_stripes, sc.k, sc.belief, 0.99, sc.domain, parities=[sc.parity])
     c5, r5 = adaptive(ind.layout)
     rows.append({"ablation": "G: independent instead of joint optimisation", **_flat(adaptive_summary(c5, r5.success, TARGETS))})
+    cs_, rs_ = adaptive(res_static.layout)
+    rows.append({"ablation": "joint with static-budget proxy (v1) instead of adaptive-in-the-loop",
+                 "variant": res_static.history[-1]["variant"], **_flat(adaptive_summary(cs_, rs_.success, TARGETS))})
     c6, r6 = adaptive(full_layout, "uniform")
     rows.append({"ablation": "adaptive stopping only (uniform round-robin allocation)", **_flat(adaptive_summary(c6, r6.success, TARGETS))})
     c7, r7 = adaptive(full_layout, "coverage")

@@ -14,7 +14,7 @@ from dataclasses import dataclass
 import numpy as np
 
 from ..channel.surrogate import Layout
-from ..optimization.joint_optimizer import _layout, joint_optimise
+from ..optimization.joint_optimizer import _layout, joint_optimise, joint_optimise_adaptive
 from ..retrieval.fixed_policy import coverage_equalising_weights, uniform_weights
 from ..storage.placement import reliability_weighted, round_robin
 from .scenarios import Scenario
@@ -56,16 +56,20 @@ def joint_design(sc: Scenario, target: float = 0.99, parities=None):
     return res, variant
 
 
-def designs(sc: Scenario, target: float = 0.99) -> list[Design]:
+def designs(sc: Scenario, target: float = 0.99, joint: str = "adaptive") -> list[Design]:
     U = uniform_layout(sc)
     RW = reliability_layout(sc)
-    res, variant = joint_design(sc, target)
+    if joint == "adaptive":
+        res = joint_optimise_adaptive(sc.n_stripes, sc.k, sc.belief, target, sc.domain, parities=[sc.parity])
+        variant = res.variant
+    else:
+        res, variant = joint_design(sc, target)
     E_layout = res.layout if res is not None else _layout("tiered1", sc.n_stripes, sc.k, sc.parity, sc.belief, sc.domain)
     return [
         Design("A_uniform_fixed", U, "static", uniform_weights(U)),
         Design("B_reliability_fixed", RW, "static", coverage_equalising_weights(RW, sc.belief)),
         Design("C_uniform_adaptive", U, "pivotal"),
         Design("D_reliability_adaptive", RW, "pivotal"),
-        Design("E_joint_adaptive", E_layout, "pivotal", res.weights if res is not None else None, variant, sc.parity),
+        Design("E_joint_adaptive", E_layout, "pivotal", None, variant, sc.parity),
         Design("F_oracle", E_layout, "oracle", None, variant, sc.parity),
     ]

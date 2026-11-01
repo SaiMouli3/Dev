@@ -147,3 +147,63 @@ def independent_optimise(n_stripes: int, k: int, ch: ChannelParams, target: floa
     B = min_budget(pred, w, target)
     return JointResult(L, w, p, B, pred.p_file(B * w / (ch.cost @ w)), L.n / (n_stripes * k),
                        _objective(B, L.n, n_stripes * k, alpha, beta, chosen[2]))
+
+
+# --------------------------------------------------------------------------- simulation-in-the-loop joint optimisation
+
+ADAPTIVE_VARIANTS = ("reliability", "tiered0", "tiered1", "tiered2", "domain", "failure0", "failure1")
+
+
+def _reliability_scores(ch: ChannelParams) -> np.ndarray:
+    return (1 - ch.failure.marginal()) * (1 - ch.dropout) * ch.yield_ * ch.phi[:, 3]
+
+
+def layout_for(variant: str, n_stripes: int, k: int, p: int, ch: ChannelParams, domain) -> Layout:
+    if variant == "reliability":
+        from ..storage.placement import reliability_weighted
+        stripe_of = np.repeat(np.arange(n_stripes), k + p)
+        return Layout(stripe_of, np.full(n_stripes, k), reliability_weighted(stripe_of, _reliability_scores(ch)))
+    return _layout(variant, n_stripes, k, p, ch, domain)
+
+
+def joint_optimise_adaptive(n_stripes: int, k: int, belief: ChannelParams, target: float, domain=None,
+                            parities=(16,), controller: str = "pivotal", trials: int = 300,
+                            feas_trials: int = 4000, beta: float = 0.0, seed: int = 12345,
+                            variants=ADAPTIVE_VARIANTS) -> JointResult | None:
+    """Joint placement x redundancy optimisation with the *adaptive retrieval
+    policy in the loop*: each candidate (variant, parity) is scored by simulating
+    the controller on the **believed** channel (never the truth):
+
+        feasible  iff  P_infeasible(belief) <= 1 - target   (MC on the T matrix)
+        J = E[adaptive spend | belief] / ref  +  beta * storage overhead
+
+    Infeasible candidates are only chosen if no candidate is feasible (then the
+    one with the smallest infeasibility wins). Common random numbers are used
+    across candidates."""
+    from ..channel.surrogate import file_time, fragment_times, sample_T
+    from ..retrieval.adaptive_policy import AdaptiveConfig, AdaptiveController
+    hist = []
+    best = None
+    ref = None
+    for p in parities:
+        for v in variants:
+            L = layout_for(v, n_stripes, k, p, belief, domain)
+            T = sample_T(L, belief, feas_trials, np.random.default_rng(seed))
+            p_inf = float(np.isinf(file_time(L, fragment_times(L, T, np.ones(L.m)))).mean())
+            ctl = AdaptiveController(L, belief, AdaptiveConfig(controller, cap=np.inf))
+            r = ctl.run(trials, np.random.default_rng(seed + 1))
+            spend = float(r.cost[r.success].mean()) if r.success.any() else np.inf
+            ref = ref or spend
+            J = spend / ref + beta * (L.placement.sum() / (n_stripes * k) - 1)
+            feasible = p_inf <= 1 - target
+            hist.append({"variant": v, "parity": p, "p_infeasible": p_inf, "spend": spend, "J": J, "feasible": feasible})
+            key = (not feasible, p_inf if not feasible else 0.0, J)
+            if best is None or key < best[0]:
+                best = (key, v, p, L, spend, p_inf)
+    if best is None:
+        return None
+    _, v, p, L, spend, p_inf = best
+    res = JointResult(L, (L.stored_per_container() > 0) / max((L.stored_per_container() > 0).sum(), 1), p, spend,
+                      1 - p_inf, L.placement.sum() / (n_stripes * k), best[0][2], hist)
+    res.variant = v
+    return res

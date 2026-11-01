@@ -1,0 +1,19 @@
+sampling_model: multinomial        # poisson | multinomial | negbin
+sigma_g: 0.3                       # log-sd of sequence-intrinsic (shared) bias [M] lognormal 0.30 (Gimpel 2023); stress 0.58-1.30
+d_syn: 0.002                       # shared synthesis dropout [H]
+pcr_cycles: 0                      # GC-dependent PCR bias off by default (Chen 2020: PCR bias stochastic, not GC-driven)
+duplicate_rate: 0.0
+read_loss: 0.0
+homopolymer_boost: 1.5             # indel multiplier per extra base in a run [H]
+position_slope: 0.5                # 3'-end error increase [H]
+quality_sigma: 0.3                 # per-read quality log-sd [H]
+strand:
+  payload_bytes: 32
+  inner_rs_nsym: 4
+  crc_bytes: 2
+  address_check_bytes: 1
+  codec: scrambled-2bit            # 2bit | scrambled-2bit | rotating-ternary
+adaptive:
+  batch_fraction: 0.02             # reads per action = max(50, 2% of fragments)
+  horizon_batches: 6
+  prior_sd: 0.5

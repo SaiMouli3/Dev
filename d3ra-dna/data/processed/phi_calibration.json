@@ -1,0 +1,662 @@
+{
+ "213212569b7715a2": {
+  "n": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   8,
+   10,
+   13,
+   16,
+   20
+  ],
+  "success": [
+   0.55,
+   0.5,
+   0.975,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "strand_nt": 172,
+  "error": {
+   "e_sub": 0.004,
+   "e_ins": 0.0004,
+   "e_del": 0.002,
+   "homopolymer_boost": 1.5,
+   "quality_sigma": 0.3,
+   "position_slope": 0.5,
+   "burst_rate": 0.0,
+   "burst_len": 3.0
+  },
+  "format": {
+   "payload": 32,
+   "nsym": 4,
+   "codec": "scrambled-2bit"
+  }
+ },
+ "1b9391142a69f7d3": {
+  "n": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   8,
+   10,
+   13,
+   16,
+   20
+  ],
+  "success": [
+   0.05,
+   0.1,
+   0.475,
+   0.85,
+   0.925,
+   0.95,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "strand_nt": 172,
+  "error": {
+   "e_sub": 0.01,
+   "e_ins": 0.002,
+   "e_del": 0.008,
+   "homopolymer_boost": 1.5,
+   "quality_sigma": 0.3,
+   "position_slope": 0.5,
+   "burst_rate": 0.0,
+   "burst_len": 3.0
+  },
+  "format": {
+   "payload": 32,
+   "nsym": 4,
+   "codec": "scrambled-2bit"
+  }
+ },
+ "194eb2d56b0e5700": {
+  "n": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   8,
+   10,
+   13,
+   16,
+   20
+  ],
+  "success": [
+   0.0,
+   0.0,
+   0.075,
+   0.125,
+   0.25,
+   0.375,
+   0.625,
+   0.6,
+   0.85,
+   0.875,
+   0.925
+  ],
+  "strand_nt": 172,
+  "error": {
+   "e_sub": 0.02,
+   "e_ins": 0.01,
+   "e_del": 0.025,
+   "homopolymer_boost": 1.5,
+   "quality_sigma": 0.3,
+   "position_slope": 0.5,
+   "burst_rate": 0.0,
+   "burst_len": 3.0
+  },
+  "format": {
+   "payload": 32,
+   "nsym": 4,
+   "codec": "scrambled-2bit"
+  }
+ },
+ "459f506ba241a130": {
+  "n": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   8,
+   10,
+   13,
+   16,
+   20
+  ],
+  "success": [
+   0.3333333333333333,
+   0.5333333333333333,
+   0.9333333333333333,
+   0.9333333333333333,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "strand_nt": 168,
+  "error": {
+   "e_sub": 0.004718603556792878,
+   "e_ins": 0.0011796508891982196,
+   "e_del": 0.003538952667594659,
+   "homopolymer_boost": 1.5,
+   "quality_sigma": 0.3,
+   "position_slope": 0.5,
+   "burst_rate": 0.0,
+   "burst_len": 3.0
+  },
+  "format": {
+   "payload": 32,
+   "nsym": 4,
+   "codec": "scrambled-2bit"
+  }
+ },
+ "ca5c083e921fa3d8": {
+  "n": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   8,
+   10,
+   13,
+   16,
+   20
+  ],
+  "success": [
+   0.3333333333333333,
+   0.5,
+   0.9333333333333333,
+   0.9,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "strand_nt": 168,
+  "error": {
+   "e_sub": 0.004799830281236135,
+   "e_ins": 0.0011999575703090337,
+   "e_del": 0.003599872710927101,
+   "homopolymer_boost": 1.5,
+   "quality_sigma": 0.3,
+   "position_slope": 0.5,
+   "burst_rate": 0.0,
+   "burst_len": 3.0
+  },
+  "format": {
+   "payload": 32,
+   "nsym": 4,
+   "codec": "scrambled-2bit"
+  }
+ },
+ "5a47e298cf1579da": {
+  "n": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   8,
+   10,
+   13,
+   16,
+   20
+  ],
+  "success": [
+   0.43333333333333335,
+   0.5666666666666667,
+   0.9333333333333333,
+   0.9666666666666667,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "strand_nt": 168,
+  "error": {
+   "e_sub": 0.0031431789894057352,
+   "e_ins": 0.0007857947473514338,
+   "e_del": 0.0023573842420543016,
+   "homopolymer_boost": 1.5,
+   "quality_sigma": 0.3,
+   "position_slope": 0.5,
+   "burst_rate": 0.0,
+   "burst_len": 3.0
+  },
+  "format": {
+   "payload": 32,
+   "nsym": 4,
+   "codec": "scrambled-2bit"
+  }
+ },
+ "38c34f6dffe2e091": {
+  "n": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   8,
+   10,
+   13,
+   16,
+   20
+  ],
+  "success": [
+   0.4,
+   0.5333333333333333,
+   0.9666666666666667,
+   0.9,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "strand_nt": 168,
+  "error": {
+   "e_sub": 0.004016317553616528,
+   "e_ins": 0.001004079388404132,
+   "e_del": 0.003012238165212396,
+   "homopolymer_boost": 1.5,
+   "quality_sigma": 0.3,
+   "position_slope": 0.5,
+   "burst_rate": 0.0,
+   "burst_len": 3.0
+  },
+  "format": {
+   "payload": 32,
+   "nsym": 4,
+   "codec": "scrambled-2bit"
+  }
+ },
+ "fd24b0cb5027e9ca": {
+  "n": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   8,
+   10,
+   13,
+   16,
+   20
+  ],
+  "success": [
+   0.4,
+   0.5,
+   1.0,
+   0.9666666666666667,
+   1.0,
+   0.9666666666666667,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "strand_nt": 168,
+  "error": {
+   "e_sub": 0.003665293137519669,
+   "e_ins": 0.0009163232843799172,
+   "e_del": 0.0027489698531397515,
+   "homopolymer_boost": 1.5,
+   "quality_sigma": 0.3,
+   "position_slope": 0.5,
+   "burst_rate": 0.0,
+   "burst_len": 3.0
+  },
+  "format": {
+   "payload": 32,
+   "nsym": 4,
+   "codec": "scrambled-2bit"
+  }
+ },
+ "213eeb6dd21d6c23": {
+  "n": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   8,
+   10,
+   13,
+   16,
+   20
+  ],
+  "success": [
+   0.7,
+   0.675,
+   0.975,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "strand_nt": 172,
+  "error": {
+   "e_sub": 0.002,
+   "e_ins": 0.0002,
+   "e_del": 0.001,
+   "homopolymer_boost": 1.5,
+   "quality_sigma": 0.3,
+   "position_slope": 0.5,
+   "burst_rate": 0.0,
+   "burst_len": 3.0
+  },
+  "format": {
+   "payload": 32,
+   "nsym": 4,
+   "codec": "scrambled-2bit"
+  }
+ },
+ "7c3cecc7965e9223": {
+  "n": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   8,
+   10,
+   13,
+   16,
+   20
+  ],
+  "success": [
+   0.3,
+   0.225,
+   0.875,
+   0.975,
+   1.0,
+   0.975,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "strand_nt": 172,
+  "error": {
+   "e_sub": 0.008,
+   "e_ins": 0.0008,
+   "e_del": 0.004,
+   "homopolymer_boost": 1.5,
+   "quality_sigma": 0.3,
+   "position_slope": 0.5,
+   "burst_rate": 0.0,
+   "burst_len": 3.0
+  },
+  "format": {
+   "payload": 32,
+   "nsym": 4,
+   "codec": "scrambled-2bit"
+  }
+ },
+ "e6e38e19ba64baac": {
+  "n": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   8,
+   10,
+   13,
+   16,
+   20
+  ],
+  "success": [
+   0.1,
+   0.075,
+   0.525,
+   0.975,
+   0.875,
+   0.975,
+   0.95,
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "strand_nt": 172,
+  "error": {
+   "e_sub": 0.012,
+   "e_ins": 0.0012000000000000001,
+   "e_del": 0.006,
+   "homopolymer_boost": 1.5,
+   "quality_sigma": 0.3,
+   "position_slope": 0.5,
+   "burst_rate": 0.0,
+   "burst_len": 3.0
+  },
+  "format": {
+   "payload": 32,
+   "nsym": 4,
+   "codec": "scrambled-2bit"
+  }
+ },
+ "95b4de4edf0f046a": {
+  "n": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   8,
+   10,
+   13,
+   16,
+   20
+  ],
+  "success": [
+   0.05,
+   0.025,
+   0.45,
+   0.85,
+   0.875,
+   0.925,
+   1.0,
+   1.0,
+   0.975,
+   1.0,
+   0.975
+  ],
+  "strand_nt": 172,
+  "error": {
+   "e_sub": 0.016,
+   "e_ins": 0.0016,
+   "e_del": 0.008,
+   "homopolymer_boost": 1.5,
+   "quality_sigma": 0.3,
+   "position_slope": 0.5,
+   "burst_rate": 0.0,
+   "burst_len": 3.0
+  },
+  "format": {
+   "payload": 32,
+   "nsym": 4,
+   "codec": "scrambled-2bit"
+  }
+ },
+ "aa7db4767e7ccc11": {
+  "n": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   8,
+   10,
+   13,
+   16,
+   20
+  ],
+  "success": [
+   0.0,
+   0.0,
+   0.3,
+   0.45,
+   0.675,
+   0.825,
+   1.0,
+   0.975,
+   0.975,
+   1.0,
+   1.0
+  ],
+  "strand_nt": 172,
+  "error": {
+   "e_sub": 0.024,
+   "e_ins": 0.0024000000000000002,
+   "e_del": 0.012,
+   "homopolymer_boost": 1.5,
+   "quality_sigma": 0.3,
+   "position_slope": 0.5,
+   "burst_rate": 0.0,
+   "burst_len": 3.0
+  },
+  "format": {
+   "payload": 32,
+   "nsym": 4,
+   "codec": "scrambled-2bit"
+  }
+ },
+ "3db05dd523c9bfd3": {
+  "n": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   8,
+   10,
+   13,
+   16,
+   20
+  ],
+  "success": [
+   0.0,
+   0.0,
+   0.125,
+   0.275,
+   0.525,
+   0.525,
+   0.875,
+   0.9,
+   0.95,
+   0.95,
+   0.95
+  ],
+  "strand_nt": 172,
+  "error": {
+   "e_sub": 0.032,
+   "e_ins": 0.0032,
+   "e_del": 0.016,
+   "homopolymer_boost": 1.5,
+   "quality_sigma": 0.3,
+   "position_slope": 0.5,
+   "burst_rate": 0.0,
+   "burst_len": 3.0
+  },
+  "format": {
+   "payload": 32,
+   "nsym": 4,
+   "codec": "scrambled-2bit"
+  }
+ },
+ "afeb61064c8705e2": {
+  "n": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   8,
+   10,
+   13,
+   16,
+   20
+  ],
+  "success": [
+   0.0,
+   0.0,
+   0.0,
+   0.075,
+   0.2,
+   0.225,
+   0.5,
+   0.55,
+   0.65,
+   0.8,
+   0.75
+  ],
+  "strand_nt": 172,
+  "error": {
+   "e_sub": 0.048,
+   "e_ins": 0.0048000000000000004,
+   "e_del": 0.024,
+   "homopolymer_boost": 1.5,
+   "quality_sigma": 0.3,
+   "position_slope": 0.5,
+   "burst_rate": 0.0,
+   "burst_len": 3.0
+  },
+  "format": {
+   "payload": 32,
+   "nsym": 4,
+   "codec": "scrambled-2bit"
+  }
+ }
+}

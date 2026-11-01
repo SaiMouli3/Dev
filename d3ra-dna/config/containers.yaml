@@ -1,0 +1,25 @@
+# Container populations used by the scenarios (see src/d3ra/evaluation/scenarios.py).
+# Provenance tags: [M] measured in cited work, [E] estimated from published evidence,
+# [H] hypothetically assigned for controlled simulation. See docs/channel_calibration.md.
+base_error_profile:          # per nt, Illumina after array synthesis  [M] Organick et al. 2018
+  e_sub: 4.0e-3
+  e_ins: 4.0e-4
+  e_del: 2.0e-3
+error_scale_grid: [0.5, 1, 2, 3, 4, 6, 8, 12]   # x12 ~ 7.7%/nt, nanopore-like [E]
+heterogeneous:               # scenario s2 (all [H] except dropout range [M]: 1-2% healthy, up to ~8% aged)
+  yield_:          [0.95, 0.92, 0.88, 0.85, 0.75, 0.65, 0.55, 0.45]
+  abundance_shape: [20, 16, 12, 10, 6, 8, 4, 3]       # gamma shape; CV = 1/sqrt(shape)
+  err_scale:       [1, 1, 1.5, 2, 3, 1.5, 4, 6]
+  dropout:         [0.005, 0.01, 0.01, 0.015, 0.03, 0.02, 0.05, 0.08]
+  fail_prob:       [0.005, 0.01, 0.01, 0.02, 0.03, 0.02, 0.05, 0.08]
+  cost_per_read:   [1.0, 1.0, 0.9, 0.9, 0.8, 0.6, 0.5, 0.5]
+homogeneous:                 # scenario s1
+  yield_: 0.85
+  abundance_shape: 10
+  err_scale: 1.5
+  dropout: 0.015
+  fail_prob: 0.02
+  cost_per_read: 1.0
+correlated_failure_domains:  # scenario s4 [H]
+  domains: [[0, 1], [2, 3], [4, 5], [6, 7]]
+  domain_fail_prob: [0.04, 0.03, 0.03, 0.05]

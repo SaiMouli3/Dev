@@ -1,0 +1,4 @@
+/home/user/Dev/d3ra-dna/src/d3ra/optimization/budget_optimizer.py:28: RuntimeWarning: invalid value encountered in multiply
+  return np.log(max(pred.p_file(budget * vv / c), 1e-300))
+/home/user/Dev/d3ra-dna/src/d3ra/optimization/budget_optimizer.py:51: RuntimeWarning: invalid value encountered in multiply
+  R = budget * v / c

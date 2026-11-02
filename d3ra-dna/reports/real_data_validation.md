@@ -69,7 +69,7 @@ Findings:
 - **Errors are dominated by substitutions.** My literature-based default (sub 0.4%, del 0.2%, ins 0.04%; Organick 2018 profile) overstated deletions 2–3× and insertions about 4× for this platform.
   - Deletions are 1.1–1.5× more likely inside homopolymers, consistent with the model's homopolymer boost.
   - Per-read error counts are over-dispersed: variance 1.2–2.1 against a mean of 0.46–1.37. This supports per-read quality variation (`quality_sigma`) rather than a pure Poisson model.
-- **A shared, sequence-intrinsic abundance component exists and is large.** After removing sampling noise, **69%** of log-coverage variance is shared by a strand across all six containers, and 31% is container-specific (mean pairwise log-coverage correlation 0.54).
+- **A large share of coverage variance is shared across samples of one batch.** After removing sampling noise, up to **69%** of log-coverage variance is shared by a strand across the six samples (52% in the independent Genscript pool). The samples are aliquots of a single synthesis batch and are lineage-related: serial PCR, aging of the same pool. So this is an **upper bound for same-batch aliquots**, and the shared part is batch-inherited rather than proven sequence-intrinsic. *(Wording corrected after the novelty review, `docs/novelty_assessment.md`.)*
   - The shared standard deviation is σ_g = 0.31, matching the model default of 0.30 taken from the literature.
   - This directly supports C1 (correlated coverage across replicas or containers from one synthesis batch). It also confirms the warning in the literature review: the correlation is a property of the synthesis batch.
 - **Coverage barely depends on GC.** Spearman ρ between GC and coverage is −0.19 to +0.03, consistent with Chen et al. 2020: PCR bias is stochastic rather than GC-driven.
@@ -93,12 +93,32 @@ Findings:
 - **Diagnosis** (500 strands with at least 40 reads, 20 reads per consensus):
   - Real reads give 89.2% exact consensus.
   - Real *edit scripts* from other strands' reads, replayed independently across reads, give **100%**. These keep the real within-read error structure and the real rate.
-  - **The whole gap therefore comes from errors correlated across reads of the same strand**, not from the error rate or within-read structure.
+  - In this dataset the gap comes from **dependence among reads of the same cluster**. Possible sources are systematic basecalling errors, synthesis variants, or clustering and reference artefacts; a 2024 note reports malformed references in this dataset. The re-test on an independent two-flowcell dataset with verified references (§4b) confirms a smaller but real effect.
   - 3–5% of strands fail with two disjoint read sets of 20 reads. Whether both sets produce the *same* wrong sequence depends on the consensus algorithm: 67% with two-sided, 8% with forward-only. We therefore claim only correlation, not that the molecules truly deviate from the design.
 - **Implication.**
-  - Independent-error simulators overstate nanopore consensus success by 20–40 percentage points at 5–10 reads, and miss a plateau of about 10% strand failures at 20 reads.
+  - In this dataset, independent-error simulation overstated consensus success by 20–40 points at 5–10 reads. **On references verified against an independent flowcell (§4b), the gap is 6–15 points.** Use that as the defensible magnitude.
   - For nanopore retrieval, φ must be *calibrated from real reads*, as D3RA-DNA does. The outer code must also budget parity for about 5–10% **strand-systematic erasures** that no extra coverage removes.
   - Position-wise majority voting is useless under nanopore indels (≈1%). Alignment-aware consensus is required.
+
+## 4b. Re-test on an independent two-flowcell dataset with verified references (Q3)
+
+Zenodo 17473983 (DNAformer): 55,000 strands of 140 nt, sequenced on two separate nanopore flowcells. Sources: `results/q3_summary.json`, `results/q3b_reference_audit.json`.
+
+**Reference audit.** For 86% of 2,393 audited strands, the published design equals the consensus of the other flowcell's reads. Wrong-reference signature positions (more than half the reads deviate) make up only 0.1% of positions.
+
+**On the 2,057 verified strands** (this selection favours easier strands, so it is conservative):
+
+| reads | real exact consensus | independent errors | real edit scripts replayed independently |
+|---|---|---|---|
+| 5 | 0.729 | 0.880 | 0.856 |
+| 10 | 0.937 | 0.997 | 0.996 |
+
+**Persistence across flowcells:**
+- Per-(strand, position) error rates correlate between flowcells (r = 0.47–0.60).
+- The part not explained by local context (5-mer + homopolymer) still correlates at r = 0.57, against r = 0.002 for a random strand with the same context.
+- A consensus failure on flowcell 1 raises the failure probability on flowcell 2 from 17% to 45%.
+
+**Model.** Fitted on flowcell 1 and evaluated on held-out strands of flowcell 2, the hierarchical beta-binomial model has mean absolute error 0.083. The independent-error model has 0.181 and the context-only model 0.153.
 
 ## 5. Real-read evaluation of placement × sequencing policy
 
@@ -139,7 +159,7 @@ Findings on real reads:
 | round-robin, 6 containers (loses 8 of 48 per stripe) | 55,610 | +5% to +32% (58–73k); always finishes |
 | reliability-weighted | 53,993 | +3% to +41%; always finishes |
 
-**Real-data form of the spreading rule: the post-failure cost is governed by the post-failure margin.** The margin is the number of fragments left per stripe minus K. With 6 spare fragments (round-robin), losing a container costs about +30%. With 2 spare (tiered), it costs about +200% and the retrieval often stalls. With none (single container), the data is gone.
+**Post-failure margin.** The cost after a failure is governed by the margin: fragments left per stripe minus K. This is **consistent with coupon-collector theory**: E[reads] = n(H_n − H_{n−k}) (Bar-Lev et al.), and expected time ∝ 1/(surplus+1) after a container failure (Levy et al. 2026). It is *confirmed here on real heterogeneous read streams, including stall rates*, rather than discovered.
 
 So the cheapest layout is only the right one if container loss is acceptably unlikely, which is exactly what the joint objective encodes through ε. Without measured failure rates for real vials, the choice of ε, not the optimiser, decides between these layouts.
 
@@ -175,7 +195,7 @@ Caveat: transplanted scripts are independent across reads, so the nanopore run d
 **Established on real reads:**
 - the retrieval stack (mapping/clustering, consensus, the exact-recovery criterion);
 - container heterogeneity;
-- a shared sequence-intrinsic coverage component (C1);
+- a large shared (batch-inherited) coverage component across same-batch samples, as an upper bound;
 - the placement × adaptive-stopping gains, with smaller magnitudes than simulated;
 - the post-failure-margin rule;
 - the inadequacy of independent-error models for nanopore consensus.

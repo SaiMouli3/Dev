@@ -34,7 +34,7 @@ The main findings below are all *in simulation, under stated assumptions*.
      - *s9, wrong estimates:* three containers; −11% vs D.
    - **Static proxy (negative result).** Scoring placements by their static budget-to-target instead gave designs 12–43% *worse* than this simulation-in-the-loop search. In s4 it found no feasible design at all.
 
-3. **Failure-aware placement is non-monotone in parity (new spreading-threshold result).**
+3. **Failure-aware placement is non-monotone in parity.** This is an application of known allocation theory (Leong, Dimakis and Ho 2012): see `docs/theory_spreading.md` and `docs/novelty_assessment.md`.
    - With D failure domains, spreading a stripe evenly over domains beats concentrating it **only when the parity fraction (N−K)/N clears ≈ 1/D plus a dropout margin.**
    - Below the threshold, spreading makes every domain a single point of failure. At parity 12/44 with 4 domains, the file is unrecoverable 14.0% of the time with domain-spreading versus 3.6% with exposure-minimising concentration.
    - Above it (parity ≥ 16/48), spreading wins.
@@ -206,7 +206,7 @@ The search optimises *stripe*-level survival, so at parity 16 it is slightly wor
 
 The cost-tiered placement, which concentrates on cheap containers up to the N−K cap, is **never** best for reliability here. Cheap containers were also the failure-prone ones in this scenario. It is useful only when combined with failure awareness (the λ > 0 variant, "failure1"), which the joint search selected in 8 of 9 scenarios.
 
-Both parts of the threshold rule follow from erasure-coding first principles. To our knowledge it has not been stated for multi-container DNA archives. We present it as a design rule, not a theorem.
+Both parts of the threshold rule follow from erasure-coding first principles. The rule is a direct special case of the symmetric-allocation analysis of Leong, Dimakis and Ho (IEEE Trans. IT 2012), comparing spreading over m = D nodes with m = 1. Nath et al. (NSDI 2006) observed the same phenomenon empirically. We present it as an explicit design rule for DNA containers, with a dropout margin and a heterogeneous extension (Theorem 1 and Proposition 2 in `docs/theory_spreading.md`), not as a new result.
 
 ### 6.3 H3 — adaptive sequencing
 
@@ -345,7 +345,7 @@ At 50–100 containers the predictor's sampled failure tail disagrees with Monte
 - **Failure predictor.** Sampled failure states are inaccurate for large M. Exact enumeration is used only up to 2^12 states.
 - **Reliability targets.** 0.999 was not reachable by any design in most scenarios, because the hypothetical failure rates (0.5–8% per container) leave an infeasibility floor at parity 16. Targets of 0.999 and above need more parity or lower failure rates. Their sequencing comparison remains future work.
 - **Abstract costs.** Real sequencing has large per-run fixed costs (`setup_cost`, 0 by default). Positive setup costs would penalise the many small adaptive batches, which average 100–750 rounds. On a real nanopore with Read Until, batches are effectively free; on Illumina they are not. The adaptive gains therefore apply most directly to nanopore-style streaming sequencing.
-- **Novelty.** See `docs/literature_review.md` §9. The closest prior work is Kong, Elishco, Wang and Duman, "The coverage depth problem in distributed DNA data storage" (arXiv:2610.02931, Oct 2026), which covers uniform, failure-free, non-adaptive sampling. The pivotal weight is Birnbaum importance (1969). Failure-domain caps are standard in erasure-coded storage (CRUSH, Copysets). Our claims are therefore about the **combination**: adaptive closed-loop sequencing, failure-aware placement selected with the adaptive policy in the loop, and the spreading-threshold rule, studied in multi-container DNA archives.
+- **Novelty.** See `docs/literature_review.md` §9. The closest prior work is Levy, Con, Yaakobi and Kiah, *Expected recovery time in DNA-based distributed storage systems* (arXiv:2602.07601, Feb 2026), which covers containers with failures; and Kong, Elishco, Wang and Duman, "The coverage depth problem in distributed DNA data storage" (arXiv:2610.02931, Oct 2026), which covers uniform, failure-free, non-adaptive sampling. The pivotal weight is Birnbaum importance (1969). Failure-domain caps are standard in erasure-coded storage (CRUSH, Copysets). Our claims are therefore about the **combination**: adaptive closed-loop sequencing, failure-aware placement selected with the adaptive policy in the loop, and the spreading-threshold rule, studied in multi-container DNA archives.
 
 
 ## 11. Real-data validation (summary)
@@ -358,7 +358,7 @@ Full details are in `reports/real_data_validation.md`. Data: ENA PRJEB65931 (6 r
   - Real container heterogeneity: up to 2× the reads per strand and 4× the dropout.
   - **69% of coverage variance is shared across containers** (σ_g = 0.31, matching the assumed 0.30).
   - The real Illumina φ(n) matches the simulator.
-- **Nanopore.** Independent-error simulation at the measured rates overstates consensus success by 20–40 points. Replaying real edit scripts independently gives 100%, so the gap is **cross-read correlated errors**. About 10% of strands are not exactly recovered even at 20 reads.
+- **Nanopore.** On references verified against an independent flowcell, independent-error simulation overstates consensus success by 6–15 points (20–40 on the Microsoft dataset, which has a reference caveat). Replaying real edit scripts independently gives ≥ 99.6% at 10 reads, so reads of a strand are dependent. The strand-specific error component persists across flowcells (r = 0.57). A hierarchical model cuts prediction error 2.2×.
 - **Placement × policy on real recovery-time matrices.**
   - Single best container with adaptive stopping is −34% vs uniform placement with fixed depth.
   - Adaptive stopping alone is worth 15–17%, much less than in simulation, because these real containers never fail.

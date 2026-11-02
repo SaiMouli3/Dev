@@ -36,7 +36,7 @@ We study the operational setting that follows from it, in which containers are *
 - **C-sim. Recovery-time-matrix surrogate.** It is calibrated from sequence-level consensus decoding. It turns policy evaluation into order statistics on one sampled matrix and gives common random numbers across policies (§3).
 - **C-ctrl. Closed-loop sequencing controller.** It uses a discrete Bayesian posterior over container efficiency, with an explicit failure atom, and scores containers by posterior hazards weighted with stripe-level Birnbaum importance [Birnbaum 1969]. It stops on verified decodability (§4).
 - **C-joint. Retrieval-in-the-loop placement.** It is a joint search over placement families (failure-exposure-minimising, cost-tiered capped water-filling, domain-spreading, reliability-weighted) and parity, scored by simulating the controller on the *believed* channel (§5). We show that the static-proxy alternative is a trap, and that the optimum is often a single container: distribute only when no container meets the failure budget alone.
-- **C-rule. The spreading threshold.** It is a design rule for failure domains in multi-container archives (§6.2).
+- **C-rule. Spreading threshold.** This is *not* a new result: it is a direct application of Leong, Dimakis and Ho's (2012) allocation analysis. We state it as a design rule for DNA containers, with a dropout margin and a heterogeneous extension (§6.2).
 - **Honest evaluation.** Nine scenarios, six baselines, Holm-corrected tests, and reported negative results (§6–7).
 
 ## 2. Related work
@@ -48,7 +48,7 @@ See `docs/literature_review.md`. The main lines are:
 - distributed-storage placement [CRUSH; Copysets; LRC];
 - adaptive sampling [Loose 2016].
 
-**Differences from Kong et al. [2026].** We add container heterogeneity and failure, sequence-level calibration, adaptive allocation and stopping, and placement chosen under failure risk and retrieval cost.
+**Differences from Levy et al. [2026] and Kong et al. [2026].** Levy, Con, Yaakobi and Kiah study expected recovery time in DNA distributed storage with container failures; Kong et al. study coverage depth with uniform per-container sampling. We add container heterogeneity and failure, sequence-level calibration, adaptive allocation and stopping, and placement chosen under failure risk and retrieval cost.
 
 **Differences from the coverage-depth line.** That work assumes a fixed sampling law. Bar-Lev et al. show that the uniform law is optimal when the sampler *cannot* be controlled; we study a controllable sampler.
 
@@ -165,7 +165,7 @@ H5 details and ablations: `results/h5_robustness.csv` and `results/ablations.csv
 The data are six Illumina runs of one 12,000-strand pool after different handling (ENA PRJEB65931), used as six real containers, plus real nanopore clusters with ground truth.
 
 - **Shared coverage bias.** 69% of coverage variance is shared across containers (σ_g = 0.31).
-- **Nanopore consensus.** Independent-error models overstate it by 20–40 points; replaying real edit scripts independently restores 100%. Real nanopore errors are therefore correlated across reads of a strand.
+- **Nanopore consensus.** On references verified against an independent flowcell, independent-error models overstate it by 6–15 points; real edit scripts replayed independently do not reproduce the gap. The strand-specific error component persists across flowcells (r = 0.57). A hierarchical beta-binomial model reduces prediction error 2.2×.
 - **Real recovery-time matrices** (12,000 strands, 200 permutations of real reads):
   - Placement plus adaptive stopping is −34% versus uniform placement with fixed depth.
   - Adaptive stopping alone is −17%.

@@ -114,14 +114,14 @@ All results are in simulation, under the documented assumptions. Full tables, CI
 
 - **Adaptive stopping vs fixed depth.** Stopping once every stripe holds K verified fragments cuts expected sequencing spend at 0.99 reliability by 48–79% compared with the fixed depth that reaches 0.99.
 - **Placement must be optimised with the adaptive reader in the loop. It is often *not* distributed.** When one container meets the failure budget, putting each stripe there is 22–37% cheaper than reliability-weighted spreading. With correlated failure domains, the search spreads over five containers and is the only design to reach 0.99. Without adaptive allocation, that design costs +79%.
-- **Spreading threshold.** Spreading stripes over D failure domains helps only once the parity fraction exceeds about 1/D. Below it, concentration was 3.9× safer.
+- **Spreading threshold.** Spreading stripes over D failure domains helps only once the parity fraction exceeds about 1/D; below it, concentration was 3.9× safer. This is a known allocation-theory result (Leong, Dimakis and Ho 2012), restated with a proof as a design rule in `docs/theory_spreading.md`.
 - **Channel models (H1).** Container-specific models predict recovery with mean absolute error 0.007, versus 0.073 for homogeneous models.
 - **Robustness (H5).** Wide Bayesian priors match oracle completion under post-placement channel change (97.6% vs 74% for an over-confident controller).
 - **Real data** (ENA PRJEB65931 Illumina runs; Microsoft nanopore clusters; `reports/real_data_validation.md`):
   - The real coverage bias is 69% shared across containers.
-  - Independent-error models overstate nanopore consensus by 20–40 points, because of cross-read correlated errors.
+  - On verified references, independent-error models overstate nanopore consensus by 6–15 points. The strand-specific error component persists across flowcells, and a hierarchical model cuts prediction error 2.2×.
   - On real read streams, placement plus adaptive stopping saves 34% (stopping alone 15–17%).
-  - After a container loss, cost is governed by the post-failure margin.
+  - After a container loss, cost is governed by the post-failure margin, consistent with coupon-collector theory.
   - Real files are recovered byte-exact from FASTQ with real error profiles.
 - **Negative results.** Thompson sampling; stripe-importance weighting vs plain hazard-greedy allocation; risk-adaptive parity (predictor tail too optimistic); shared-bias vs replication; no design meets 0.99 under the compound-stress scenario.
 

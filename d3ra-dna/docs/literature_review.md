@@ -83,8 +83,9 @@ This is the most important body of prior work for D3RA-DNA.
   performance of random codes," arXiv:2610.07370, 2026.
 - [28] A. Gruica, A. Petrillo, F. Zullo, "The generalized random access problem for linear codes," arXiv:2608.20152, 2026.
   Covers recovery of several symbols at once.
+- [29b] **D. Levy, R. Con, E. Yaakobi, H. M. Kiah, "Expected recovery time in DNA-based distributed storage systems," arXiv:2602.07601, Feb 2026 (preprint).** Studies multi-container DNA storage *with container failures* and expected recovery time. This is closer prior work for the failure aspect than [29]; it was added after the novelty review (`docs/novelty_assessment.md`).
 - [29] **X. Kong, O. Elishco, C. Wang, T. M. Duman, "The coverage depth problem in distributed DNA data storage,"
-  arXiv:2610.02931, Oct 2026 (preprint).** *This is the closest prior work to the D3RA-DNA multi-container setting.*
+  arXiv:2610.02931, Oct 2026 (preprint).** *Together with [29b], this is the closest prior work to the D3RA-DNA multi-container setting.*
   Model: strands are partitioned among **M containers**, and each round draws one strand per container, uniformly and
   with replacement. Results:
   - Exact recovery-time distribution and expectation for any linear code and partition.

@@ -318,9 +318,9 @@ def gen(scens=None, workers=4):
             print("gen", path, msg, flush=True)
 
 
-def run(scen, policies=None, workers=4, tag=""):
+def run(scen, policies=None, workers=4, tag="", cfg_kw=None):
     pols = policies or list(POLICIES)
-    jobs = [(scen, r, p, pol, {}, np.inf) for pol in pols for r in range(N_REP) for p in range(N_PERM)]
+    jobs = [(scen, r, p, pol, dict(cfg_kw or {}), np.inf) for pol in pols for r in range(N_REP) for p in range(N_PERM)]
     rows = []
     t0 = time.time()
     with Pool(workers) as pool:
@@ -340,6 +340,9 @@ if __name__ == "__main__":
         gen(sys.argv[2:] or None, int(os.environ.get("D3RA_WORKERS", 4)))
     elif cmd == "run":
         run(sys.argv[2], sys.argv[3:] or None, int(os.environ.get("D3RA_WORKERS", 4)))
+    elif cmd == "posthoc_rho0":     # POST-HOC ablation (not in the frozen protocol): binomial likelihood
+        run(sys.argv[2], ["coverage", "thompson", "tail_aware", "pivotal"], int(os.environ.get("D3RA_WORKERS", 4)),
+            tag="_posthoc_rho0", cfg_kw={"overdispersion": 0.0})
     elif cmd == "static":
         static_family(sys.argv[2], int(os.environ.get("D3RA_WORKERS", 4)))
     elif cmd == "forecast":

@@ -1,0 +1,2 @@
+single_best static_uniform {'mean_cost_success': 306204.9, 'cap@0.99': 409341.0, 'mean_spend@0.99': 409341.0, 'pred_mean': 1239634.3, 'pred_mean_cost': nan, 'p_success_uncapped': 1.0}
+single_best static_coverage_eq {'mean_cost_success': 306204.9, 'cap@0.99': 409341.0, 'mean_spend@0.99': 409341.0, 'pred_mean': 1239634.3, 'pred_mean_cost': nan, 'p_success_uncapped': 1.0}

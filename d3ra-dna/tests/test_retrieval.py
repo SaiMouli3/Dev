@@ -220,3 +220,17 @@ def test_posterior_is_distribution_and_detects_failure(surrogate_setup):
     assert post[0, :, 0].max() < 1e-6                      # recovered fragments rule out failure
     mean = post @ THETA
     assert mean[1, 1] < 0.3 * mean[0, 1]                   # silent container looks (near-)dead
+
+
+def test_overdispersed_posterior_is_wider(surrogate_setup):
+    L, ch = surrogate_setup
+    R = np.full((1, 4), 300.0)
+    U = np.array([[12, 12, 12, 12]], dtype=float)
+    sd = []
+    for od in (0.0, 0.05):
+        post = AdaptiveController(L, ch, AdaptiveConfig(controller="pivotal", overdispersion=od)).posterior(R, U)
+        np.testing.assert_allclose(post.sum(2), 1.0)
+        lt = np.log(THETA[1:])
+        p = post[0, 0, 1:] / post[0, 0, 1:].sum()
+        sd.append(np.sqrt(p @ lt ** 2 - (p @ lt) ** 2))
+    assert sd[1] > sd[0]                                   # beta-binomial spreads the posterior

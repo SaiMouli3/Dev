@@ -1,0 +1,131 @@
+# Supplementary S2: Reproducibility
+
+Every number in the manuscript is read from a file in `d3ra-dna/results/`. The files are produced by the scripts below. `evidence/evidence_traceability.csv` maps each claim to its script and result file.
+
+## Environment used for the reported runs
+- **Software:**
+  - Python 3.13 on Linux x86-64, 4 CPU cores, 15 GB RAM.
+  - numpy 2.5.3, scipy 1.18.1, pandas 3.0.5, matplotlib 3.11.2, plus reedsolo and edlib.
+  - Minimum versions are listed in `requirements.txt`.
+- **Paper build:**
+  - pdfTeX 3.141592653-2.6-1.40.25 (TeX Live 2023), BibTeX with `IEEEtran.bst`.
+  - IEEEtran class v1.8b, obtained from CTAN.
+  - IEEE's own template download page returned an empty response to our automated download (see `audit/scientific_quality_report.md`). We therefore used the CTAN copy of the same official class, unchanged, together with `bare_conf.tex` as the structural reference. No unofficial template was used.
+- **Code version:** the commit containing this directory, which builds on `main` at 3ba5f04.
+
+## Seeds
+| Item | Seed |
+|---|---|
+| Base seed of every experiment script | 0 |
+| Empirical recovery-time matrices | seed + 7 |
+| Surrogate T matrices | seed + 9 |
+| Controller | seed + 11 |
+| Paired bootstrap | `default_rng(0)`, 2,000 resamples |
+
+- The per-run consensus-curve seed is `hash(run) % 2**32`. Python string hashing is randomised per process unless `PYTHONHASHSEED` is set, so set `PYTHONHASHSEED=0` for bit-identical φ̂ curves. The reported numbers were computed without fixing it. Re-runs agree closely but are not bit-identical; e.g. the ED flag rate of PCR_60c at R* was 73% in one run and 82% in a re-run (200 trials each), which exceeds binomial sampling error, and we have not fully traced the cause.
+
+## Data (public; nothing new was sequenced)
+| Dataset | Accession | Use |
+|---|---|---|
+| Twist and Genscript Illumina runs | ENA PRJEB65931 | real read streams (6 runs per pool) |
+| DT4DDS design files | Zenodo 12666365 | designed strands |
+| DNAformer nanopore reads (2 flowcells) | Zenodo 17473983 | correlated-error study |
+| Srinivasavaradhan et al. clustered nanopore reads | Zenodo 14296588 | reference audit |
+
+## Commands (run from `d3ra-dna/`)
+
+Set up the environment:
+```bash
+python -m venv .venv && . .venv/bin/activate && pip install -r requirements.txt && pip install -e .
+```
+
+Run the tests:
+```bash
+pytest -q
+```
+
+Simulation scenarios s1–s7, ablations, H1 and H5:
+```bash
+python experiments/run_all.py
+```
+
+Theory checks:
+```bash
+python experiments/theory_checks.py
+```
+
+Q4 stopping safety, Q5 seed sweep, and Q3/Q3b correlated nanopore errors:
+```bash
+python experiments/q4_stopping_safety.py
+python experiments/q5_seed_sensitivity.py
+python experiments/q3_correlated_errors.py
+python experiments/q3b_reference_audit.py
+```
+
+Real-data pipeline, Twist pool:
+```bash
+python experiments/real_data.py download prep channel policies failures
+```
+
+Real-data pipeline, Genscript pool:
+```bash
+D3RA_POOL=genscript python experiments/real_data.py download prep channel
+```
+```bash
+D3RA_POOL=genscript D3RA_SKIP_JOINT=1 D3RA_VARIANTS=round_robin python experiments/real_data.py policies
+```
+```bash
+D3RA_POOL=genscript D3RA_SKIP_JOINT=1 D3RA_VARIANTS=single_best D3RA_TRIALS=100 python experiments/real_data.py policies
+```
+
+Paper experiments (E4 limited calibration, EC confidence, ED change detection; then E10 cross-pool):
+```bash
+python experiments/paper_experiments.py e4 ec ed
+```
+```bash
+D3RA_POOL=genscript python experiments/paper_experiments.py e10 e10_static
+```
+
+Exploratory overdispersed likelihood (selection set), then the held-out check on Genscript:
+```bash
+PYTHONHASHSEED=0 python experiments/paper_experiments.py ed_od
+```
+```bash
+D3RA_POOL=genscript PYTHONHASHSEED=0 python experiments/paper_experiments.py ed_holdout
+```
+
+Statistics added for the paper:
+```bash
+python research_paper/experiments/statistical_analysis/ec_discrimination.py
+python research_paper/experiments/statistical_analysis/ed_overdispersion_summary.py
+```
+
+All of the above in one script: `research_paper/experiments/scripts/run_all_paper_experiments.sh`. Configuration summary: `research_paper/experiments/configurations/paper_experiments.yaml`.
+
+Figures and PDF:
+```bash
+python research_paper/experiments/scripts/make_figures.py
+```
+```bash
+cd research_paper/manuscript && latexmk -pdf main.tex
+```
+
+Independent reproduction with explicit tolerances:
+```bash
+python experiments/reproduce.py --real
+```
+
+## Approximate wall-clock time (4 cores; order of magnitude, not benchmarked)
+| Run | Time |
+|---|---|
+| Real-data prep | ~15–30 min per pool |
+| Twist policies | ~1 h |
+| Genscript round-robin policies | ~2 h |
+| E4 | ~1.5 h |
+| EC | ~1 h |
+| ED | ~20 min |
+| E10 | ~1 h |
+
+## Verifying file integrity
+- Run `sha256sum results/*.csv results/*.json > evidence/verification_reports/results_sha256.txt`.
+- The checksums at submission time are in `evidence/verification_reports/results_sha256.txt`.

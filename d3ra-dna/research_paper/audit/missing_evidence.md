@@ -1,0 +1,18 @@
+# Missing Evidence and Pending Work
+
+This file lists what the manuscript does **not** establish and what would be needed to establish it. Items are ordered by importance to the paper's claims.
+
+| # | Gap | Why it matters | What would close it | Feasible without wet-lab? |
+|---|---|---|---|---|
+| 1 | No independently synthesised containers. All "containers" are aliquots of one synthesis batch (69% / 52% shared coverage variance). | The value of adaptive allocation depends on how different the containers are. Same-batch aliquots understate heterogeneity at synthesis level and overstate cross-container correlation. | A split-pool experiment with ≥4 independent syntheses of one design, deliberately aged or over-amplified, sequenced separately. | No |
+| 2 | No observed container-failure statistics. Failures are injected. | The choice between concentrating and spreading depends on the failure budget ε and on f_j. | Long-term storage studies that report vial or capsule loss rates. | No |
+| 3 | Our encoding (inner RS + CRC, Cauchy-RS outer) was never synthesised. Real-data recovery is measured as exact consensus against the design. | The inner-code correction gain and mis-correction rate on real reads are unmeasured. | Synthesise and sequence the D3RA strands. | No |
+| 4 | Posterior over-confidence (CI coverage 0–83%) and P_complete under-confidence (ECE 0.30–0.60). | Uncertainty outputs cannot be used as probabilities. The futility rule is disabled. | *Partly done:* a beta-binomial likelihood option (ICC 0.01) raised CI coverage to 0.85 on the held-out Genscript pool (exploratory; the ICC was chosen post hoc). Still to do: estimate the ICC from calibration data, use it in the cost experiments, and recompute P_complete by posterior simulation, then re-run EC. | Yes (partly done) |
+| 5 | The correlated-error model is not coupled into the controller. | RQ "beta-binomial correlated errors" is validated only as a φ predictor. | Derive φ_j from the hierarchical error model fitted on calibration reads, and run E4 with it. | Yes (not done) |
+| 6 | Currency cost / Illumina run economics. | Read savings may not equal cost savings with fixed flowcell sizes. | A cost model with per-run setup cost c^setup > 0 and discrete flowcell sizes, re-run on the real matrices. | Yes (not done) |
+| 7 | Regret or optimality guarantee for container selection. | The method is a heuristic. | Theory (e.g. a bandit formulation with K-of-N completion). | Yes (theory) |
+| 8 | Real-data ablation of the allocation components. | The ablation figure is simulated (s4). The real-data policy table gives only partial ablations (round-robin vs adaptive allocation; pivotal vs coverage). | Run all ablation variants on the real matrices. | Yes (partially covered) |
+| 9 | Bit-identical reproducibility of φ̂. | The per-run seed uses Python `hash()`, which is randomised per process. | Replace it with a stable hash (e.g. zlib.crc32) and re-run. | Yes (not done; documented) |
+| 10 | Birnbaum (1969) and Holm (1979) could not be verified against a primary record. | These citations are omitted. Birnbaum importance is mentioned without a reference. | Library check. | Yes |
+| 11 | Official IEEE template download. | IEEE's template page returned an empty response to the automated download. We used the CTAN copy of the official IEEEtran class v1.8b instead. | Download manually from the IEEE Template Selector for the target venue and recompile. | Yes (manual) |
+| 12 | Target venue not chosen. | Page limits and formatting requirements are unknown. The paper is 11 pages. | Choose a venue and adapt the length. | Yes |

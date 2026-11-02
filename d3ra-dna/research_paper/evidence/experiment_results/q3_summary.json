@@ -1,0 +1,27 @@
+{
+ "strands_both_flowcells": 6789,
+ "global_error_rate_FC1": 0.04309065233457432,
+ "type_mix_sub_del_ins": [
+  0.3955286975006442,
+  0.3821300888946148,
+  0.22234121360474104
+ ],
+ "icc_FC1": 0.07103095079262106,
+ "icc_FC2": 0.1195053535116246,
+ "rate_corr_raw": 0.6049561732265029,
+ "rate_corr_context_vs_FC2": 0.29297598130186364,
+ "rate_corr_residual_strand_specific": 0.568821196678239,
+ "rate_corr_residual_null": 0.0015967398743984497,
+ "consensus_fail_FC1": 0.094,
+ "consensus_fail_FC2": 0.17466666666666666,
+ "p_fail_FC2_given_FC1": 0.44680851063829785,
+ "identical_wrong_across_flowcells": 9,
+ "both_fail": 63,
+ "model_mae_vs_real": {
+  "iid": 0.18083333333333332,
+  "context_only": 0.15305555555555558,
+  "hierarchical": 0.08333333333333333,
+  "strand_plugin_FC1": 0.11055555555555559
+ },
+ "contexts": 1682
+}

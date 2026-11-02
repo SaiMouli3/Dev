@@ -29,6 +29,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 import numpy as np
+from scipy.special import gammaln
 from scipy.special import log_ndtr
 
 from ..channel.surrogate import GH_W, GH_X, ChannelParams, Layout, SuccessTable, file_time, sample_T
@@ -50,6 +51,7 @@ class AdaptiveConfig:
     prior_sd: float = 0.5          # log-sd of efficiency prior (estimation uncertainty)
     futility_eps: float = 0.0
     seed: int = 0
+    overdispersion: float = 0.0    # beta-binomial ICC of recoveries in the posterior (0 -> binomial)
 
 
 @dataclass
@@ -121,7 +123,15 @@ class AdaptiveController:
             q[:, :, gi] = self.q.per_container(mu[:, :, gi])
         q = np.clip(q, 1e-12, 1 - 1e-12)
         n = self.n_j[None, :, None]
-        ll = U[:, :, None] * np.log(q) + (n - U[:, :, None]) * np.log1p(-q)
+        u = U[:, :, None]
+        r = self.cfg.overdispersion
+        if r > 0:
+            # beta-binomial likelihood: recoveries within a container are positively correlated
+            # (shared abundance / error effects), which the binomial ignores -> over-confidence
+            a, b = q * (1 - r) / r, (1 - q) * (1 - r) / r
+            ll = gammaln(u + a) + gammaln(n - u + b) - gammaln(n + a + b) - gammaln(a) - gammaln(b) + gammaln(a + b)
+        else:
+            ll = u * np.log(q) + (n - u) * np.log1p(-q)
         # theta = 0 : no fragments can be recovered
         ll[:, :, 0] = np.where(U > 0, -np.inf, 0.0)
         lpst = ll + self.log_prior[None]
@@ -182,7 +192,11 @@ class AdaptiveController:
 
     # ------------------------------------------------------------------ run
     def run(self, trials: int, rng: np.random.Generator, T: np.ndarray | None = None,
-            failed: np.ndarray | None = None) -> AdaptiveResult:
+            failed: np.ndarray | None = None, checkpoints=None) -> AdaptiveResult:
+        """checkpoints: optional list of spend levels; when an unfinished trial first
+        reaches a level, the controller's posterior-predictive probability of completing
+        within the remaining cap is recorded (meta['checkpoints']: rows of
+        (trial, level, p_complete)). Used to evaluate confidence calibration."""
         L, cfg, ch = self.L, self.cfg, self.ch
         if T is None:
             T, failed = sample_T(L, self.truth, trials, rng, return_state=True)
@@ -222,6 +236,9 @@ class AdaptiveController:
             cost[infeasible] = cfg.cap
         active &= feasible
         gave_up = np.zeros(trials, dtype=bool)
+        cps = sorted(checkpoints) if checkpoints is not None else []
+        next_cp = np.zeros(trials, dtype=int)
+        cp_rows = []
         it = 0
         while active.any():
             it += 1
@@ -251,6 +268,16 @@ class AdaptiveController:
                     quit_ = pc < cfg.futility_eps
                     gave_up[a[quit_]] = True
                     active[a[quit_]] = False
+            if cps and cfg.controller not in ("uniform", "clairvoyant"):
+                due = np.flatnonzero((next_cp[a] < len(cps)) &
+                                     (cost[a] >= np.array(cps + [np.inf])[np.minimum(next_cp[a], len(cps))]))
+                if due.size:
+                    th = theta if cfg.controller != "oracle" else np.where(failed[a], 0.0, 1.0)
+                    sub = a[due]
+                    pc = self.p_complete(R[sub], rec_pair[sub], rec_frag[sub], by_stripe[sub], th[due])
+                    for tr, v in zip(sub, pc):
+                        cp_rows.append((int(tr), cps[next_cp[tr]], float(v)))
+                        next_cp[tr] += 1
             R[a, choice] += self.batch
             cost[a] += ch.cost[choice] * self.batch + ch.setup_cost[choice]
             rounds[a] += 1
@@ -263,7 +290,8 @@ class AdaptiveController:
         success = done & (cost <= cfg.cap + 1e-9)
         latency = (R / self.batch) @ ch.latency
         return AdaptiveResult(cost, R.sum(1), success, rounds, (R > 0).sum(1), R,
-                              cost - probe_cost, latency, {"gave_up": gave_up, "batch": self.batch})
+                              cost - probe_cost, latency, {"gave_up": gave_up, "batch": self.batch,
+                                                           "checkpoints": cp_rows})
 
     def _clairvoyant(self, T, R, rec_pair, rec_frag, by_stripe) -> np.ndarray:
         """Greedy with knowledge of realised T: pick the container whose next

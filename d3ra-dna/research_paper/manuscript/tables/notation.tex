@@ -1,0 +1,32 @@
+\begin{table}[!t]
+\centering
+\caption{Notation and the code object implementing each quantity (package \texttt{d3ra}; full paths in the supplementary mathematical specification).}
+\label{tab:notation}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{11mm}>{\raggedright\arraybackslash}p{38mm}>{\raggedright\arraybackslash\tiny}p{31mm}@{}}
+\toprule
+Symbol & Meaning & Code \\
+\midrule
+$K,N$ & data / total fragments per stripe (MDS) & \texttt{erasure\_codes} \\
+$S$ & number of stripes & \texttt{surrogate} \\
+$M$ & number of containers & \texttt{surrogate} \\
+$x_{ij}$ & fragment $i$ stored in container $j$ & \texttt{Layout} \\
+$y_j$ & usable read yield of container $j$ & \texttt{ChannelParams} \\
+$g_i$, $\sigma_g$ & shared strand abundance effect, its log-sd & \texttt{ChannelParams} \\
+$h_{ij}$, $k_j$ & container-specific abundance, NB shape & \texttt{ChannelParams} \\
+$d_j$, $f_j$ & molecule dropout, container failure prob. & \texttt{ChannelParams}, \texttt{FailureModel} \\
+$\varphi_j(n)$ & P(consensus correct with $n$ reads) & \texttt{ChannelParams} \\
+$t_{ij}$, $T_{ij}$ & reads needed in cluster; container reads until pair recoverable & \texttt{sample\_T}, \texttt{empirical\_T} \\
+$Q_j(\mu)$ & pair decodability at mean coverage $\mu$ & \texttt{\_QTable} \\
+$R_j$, $U_j$ & reads taken, verified recoveries & \texttt{AdaptiveController} \\
+$\theta_j$, $\Theta$, $s$ & efficiency multiplier, its grid, prior sd & \texttt{AdaptiveConfig} \\
+$h_{ij}(\Delta)$ & recovery hazard over $\Delta$ reads & \texttt{AdaptiveController} \\
+$\rho_i$, $\nu_s$, $W_s$ & horizon recovery prob., stripe need, stripe weight & \texttt{AdaptiveController} \\
+$b$, $H$ & batch size (reads), look-ahead (batches) & \texttt{AdaptiveConfig} \\
+$c_j$, $c_j^{\mathrm{setup}}$ & per-read and per-batch cost & \texttt{ChannelParams} \\
+$\varepsilon$, $B_\varepsilon$ & failure budget, spend cap & \texttt{realdata.empirical} \\
+$\mu_c$, $\rho$ & context error rate, error ICC & \texttt{correlated\_errors} \\
+\bottomrule
+\end{tabular}
+\end{table}

@@ -1,0 +1,27 @@
+# Configuration of every experiment reported in the manuscript.
+# Values mirror the committed code; the code is authoritative.
+common:
+  code: {outer: "Cauchy RS GF(2^8)", K: 32, N: 48, inner_parity_bytes: 4, crc_bits: 16}
+  real_layout: {stripes: 250, strands: 12000, placement: round_robin}
+  read_split: {calibration_reads: 300000, evaluation_reads: 900000}
+  controller: {batch: 200, probe_batches: 1, horizon_batches: 6, theta_grid: "{0} U logspace(0.01, 5, 25)",
+               prior_sd: 0.5, overdispersion: 0.0, futility_eps: 0.0}
+  statistics: {bootstrap_resamples: 2000, ci: percentile_95, paired: true, target: 0.99}
+  seeds: {base: 0, T_matrices: base+7, surrogate: base+9, controller: base+11}
+experiments:
+  RQ4_policies_twist:     {script: "experiments/real_data.py policies", pool: twist, trials: 200, placements: [round_robin, reliability, tiered2, single_best, joint]}
+  RQ4_policies_genscript: {script: "experiments/real_data.py policies", pool: genscript, trials: {round_robin: 200, single_best: 100}, env: {D3RA_SKIP_JOINT: 1}}
+  RQ5_failure_injection:  {script: "experiments/real_data.py failures", pool: twist, trials: 60}
+  RQ2_E4_limited_calibration: {script: "experiments/paper_experiments.py e4", pool: twist, trials: 100,
+                           calibration_reads: [0, 1000, 3000, 10000, 30000, 300000, full], prior_sd: [0.5, 1.0]}
+  EC_confidence:          {script: "experiments/paper_experiments.py ec", pool: twist, trials: 200, cap: median_adaptive_cost,
+                           checkpoints_fraction_of_cap: [0.3, 0.5, 0.7, 0.85], beliefs: [full_calibration, generic_prior]}
+  RQ3_ED_change_detection: {script: "experiments/paper_experiments.py ed", trials: 200, operating_points: ["R*", "2R*"],
+                           R_star: "belief-model 0.4-quantile of recovery time", flag: "P(theta<0.7)>0.9", prior_sd: 1.0}
+  RQ3_ED_overdispersion:  {script: "experiments/paper_experiments.py ed_od", env: {PYTHONHASHSEED: 0}, overdispersion: [0.0, 0.01, 0.05], status: exploratory}
+  RQ3_ED_holdout:         {script: "experiments/paper_experiments.py ed_holdout", pool: genscript, env: {PYTHONHASHSEED: 0}, overdispersion: [0.0, 0.01]}
+  RQ1_E10_cross_pool:     {script: "experiments/paper_experiments.py e10", pool: genscript, trials: 60,
+                           beliefs: [in_pool, transferred_from_twist, generic_prior], prior_sd: [0.5, 1.0]}
+  RQ1_E10_static_reference: {script: "experiments/paper_experiments.py e10_static", pool: genscript, trials: 60}
+  generic_prior: {yield: 0.9, nb_shape: 10, dropout: 0.005, phi: "phi_for_scale(1.0)", failure: 0.001, sigma_g: 0.3}
+  simulation: {script: experiments/run_all.py, adaptive_trials: 2000, static_trials: 20000, scenarios: [s1, s2, s3, s4, s5, s6, s7]}

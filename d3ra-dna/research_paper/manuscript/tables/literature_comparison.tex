@@ -1,0 +1,39 @@
+% literature_comparison.tex -- comparison of the closest prior work (see supplementary/literature_review.md, Sec. 13).
+% Entries reflect only what each paper does (Kong et al.: abstract only). Requires \usepackage{booktabs}.
+% Y = yes, N = no, P = partial, I = implicit (reads-until-decodable analysed, no operational rule), -- = not stated.
+\begin{table*}[!t]
+\centering
+\caption{Positioning against the closest prior work. Y: yes; N: no; P: partial; I: implicit (expected reads until
+decodability analysed, no operational stopping rule); --: not stated. ``Containers'' in \cite{leong2012distributed} are
+storage nodes, and in \cite{bubeck2013optimal} they are sampling sources (``experts'').}
+\label{tab:literature_comparison}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lccccccc@{}}
+\toprule
+Work & Multi- & Container & Heterog. & Correlated & Adaptive read & Stopping & Real-data \\
+     & container & failures & containers & errors & allocation & rule & evaluation \\
+\midrule
+Lopez et al.\ 2019 \cite{lopez2019dna}                      & N & N & N & -- & N & P & Y \\
+Gimpel et al.\ 2023 \cite{gimpel2023digital}                & N & N & P & N & N & N & Y \\
+Bar-Lev et al.\ 2025 \cite{barlev2025cover}                 & N & N & N & N & N & I & N \\
+Gruica et al.\ 2024 \cite{gruica2024combinatorial}          & N & N & N & N & N & I & N \\
+Cao \& Chen 2025 \cite{cao2025optimizing}                   & N & N & N & N & N & I & P \\
+Kas Hanna 2026 \cite{kashanna2026reliability}               & N & N & N & N & N & N & N \\
+Levy et al.\ 2026 \cite{levy2026expected}                   & Y & Y & N & N & N & I & N \\
+Kong et al.\ 2026 \cite{kong2026coverage}                   & Y & N & P & N & N & I & N \\
+Leong et al.\ 2012 \cite{leong2012distributed}              & Y & Y & N & N & N & N & N \\
+Weilguny et al.\ 2023 \cite{weilguny2023dynamic}            & N & N & -- & N & Y & -- & Y \\
+Bubeck et al.\ 2013 \cite{bubeck2013optimal}                & Y & N & Y & N & Y & N & N \\
+\midrule
+This work                                                   & Y & Y$^{a}$ & Y & Y & Y & Y & Y$^{b}$ \\
+\bottomrule
+\end{tabular}
+
+\vspace{2pt}
+\parbox{\textwidth}{\scriptsize $^{a}$Failures injected on real read streams; real failure rates are not measured.
+$^{b}$ENA PRJEB65931 \cite{gimpel2023prjeb65931} (same-batch aliquots), Zenodo 17473983 \cite{technion2025dnaformerreads}
+and 14296588 \cite{barlev2024binned}. Gimpel et al.\ \cite{gimpel2023digital}: heterogeneity characterised across
+handling conditions of one pool. Cao \& Chen \cite{cao2025optimizing}: log-normal channel fitted to their own data.
+Weilguny et al.\ \cite{weilguny2023dynamic}: genomic loci, not storage containers.}
+\end{table*}

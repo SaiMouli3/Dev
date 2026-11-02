@@ -1,0 +1,29 @@
+\begin{table*}[!t]
+\centering
+\caption{Claim-to-evidence summary (full table: \texttt{evidence/evidence\_traceability.csv}).
+``Real reanalysis'' = computation on public sequencing reads; no result is wet-lab evidence produced for this work.}
+\label{tab:evidence}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}p{58mm}p{38mm}p{46mm}p{27mm}@{}}
+\toprule
+Claim & Experiment / script & Result file & Status \\
+\midrule
+Adaptive $-$11 to $-$17\% vs.\ oracle-tuned static (Twist) & \texttt{real\_data.py policies} & \texttt{realdata\_policies.csv} & verified, real reanalysis \\
+Adaptive $-$11\% vs.\ oracle static; $-$63\% vs.\ fixed depth (Genscript) & \texttt{real\_data.py policies} (Genscript) & \texttt{realdata\_genscript\_\allowbreak policies\_*.csv} & verified, real reanalysis \\
+Pivotal score no better than coverage-greedy & real-data policies; ablation & \texttt{realdata\_policies.csv}, \texttt{ablations.csv} & verified, negative \\
+Zero-calibration prior matches full calibration (RQ2) & \texttt{paper\_experiments.py e4} & \texttt{paper\_e4\_limited\_calibration.csv} & verified, real reanalysis \\
+Degraded containers flagged; CIs over-confident (RQ3) & \texttt{paper\_experiments.py ed} & \texttt{paper\_ed\_change\_detection.csv} & verified (sim.\ + real); negative part \\
+$\hat P_{\mathrm{complete}}$ under-confident, AUC $\le$0.71 & \texttt{paper\_experiments.py ec} & \texttt{paper\_ec\_*.csv} & verified, negative \\
+Cross-pool transfer (RQ1) & \texttt{paper\_experiments.py e10} & \texttt{paper\_e10\_cross\_pool.csv} & verified, real reanalysis \\
+Degradation under container loss (RQ5) & \texttt{real\_data.py failure\_injection} & \texttt{realdata\_failure\_injection.csv} & verified; failures injected \\
+No wrong output; 0/10{,}567 false accepts & \texttt{q4\_stopping\_safety.py} & \texttt{q4\_summary.json} & verified, simulated channel \\
+Futility rule harmful & \texttt{q4\_stopping\_safety.py} & \texttt{q4\_futility.csv} & verified, negative \\
+Component ablation & \texttt{run\_all.py} & \texttt{ablations.csv} & simulated \\
+Beta-binomial errors: MAE 0.083 vs.\ 0.181 & \texttt{q3\_correlated\_errors.py} & \texttt{q3\_summary.json} & verified, real nanopore \\
+Spreading threshold $q^\star$ & \texttt{theory\_checks.py} & \texttt{theory\_summary.json} & theoretical (known result) \\
+Correlated-error likelihood in controller; regret bounds & -- & -- & proposed future work \\
+Independent synthesis; observed vial failure rates; currency cost & -- & -- & unsupported \\
+\bottomrule
+\end{tabular}
+\end{table*}

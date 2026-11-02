@@ -1,0 +1,64 @@
+# FROZEN EVALUATION PROTOCOL (pre-registration) -- written 2026-11-02 BEFORE the final runs.
+# Any deviation after this point is reported in the paper as a deviation.
+#
+# Lane: rigorous computational empirical study (no wet lab). "Exact retrieval" means ONLY:
+# the output file of the full decode chain is byte-identical to the stored file and its
+# SHA-256 matches. The real-read replay is secondary evidence and never called exact retrieval.
+
+primary_evidence: digital_twin_end_to_end
+digital_twin:
+  simulator: DT4DDS 1.1.0 (Gimpel et al., Nat. Commun. 2023), published default parameters
+  chain: store -> per-container independent synthesis (Twist model; CustomArray in one scenario)
+         -> aging -> PCR (HiFi) -> iSeq100 single-end 150 nt -> adapter trim -> inventory clustering
+         -> BMA consensus -> inner RS(4)+CRC-16+address check -> outer Cauchy RS (32,48)
+         -> per-stripe CRC-32 (leave-one-out repair) -> SHA-256 -> byte comparison
+  oracle_decodability: none (true payloads used only after the fact to count false accepts)
+  archive: 18,432-byte random file (seed 20261102), payload 24 B, K=32, N=48, 25 stripes,
+           1,200 strands (136 nt), 6 containers, round-robin placement
+  stream_per_container: 60 reads per stored strand (never exhausted in practice)
+  replicates: 30 independent syntheses of all six containers x 10 read orders = 300 retrievals per policy
+  seeds: zlib.crc32 of "scenario|rep|container" xor 20261102 (synthesis); "perm|..." (read order); "ctl|..." (controller)
+  scenarios:
+    baseline: [fresh, aged_1hl, aged_2hl_lowcopy(10 copies), pcr_30c, pcr_45c_lowcopy(20), near_dead(3 copies)]
+    fail1: baseline with 'fresh' failed (returns only junk reads)
+    fail2: baseline with 'fresh' and 'pcr_30c' failed
+    homog: six fresh containers (control: allocation should not matter)
+    customarray: baseline histories with the CustomArray synthesis model
+    sweep_cov{200,30,10,3,1}: baseline with the last container's copy number varied
+  batch: 50 reads; probe: one batch per container
+
+belief: generic literature prior for every container (yield 0.9, NB shape 10, dropout 0.5%,
+        generic consensus curve, failure 1e-3); NO calibration data of any kind (primary).
+policies:
+  adaptive (verification-gated stopping): round_robin_stop, coverage, pivotal, thompson, ucb (q=0.9),
+           learn_then_commit (5 exploration batches per container), info_greedy, tail_aware (LCB theta + bottleneck stripes)
+  static (no adaptivity): w_j ~ e_j^alpha, alpha in {0 (uniform = fixed depth), 0.5, 1, 2};
+           e_j = hindsight per-read recovery rate on the same scenario (so the best alpha is a hindsight-tuned plan)
+metrics:
+  primary: mean reads per retrieval (pay-per-read cost); q99 of reads (reserved-capacity budget)
+  static plans: budget = q99 of their per-retrieval requirement; mean spend = budget
+  success: file byte-identical; wrong_output count with exact 95% upper bound (Clopper-Pearson)
+  false accepts per decode attempt (exact 95% upper bound)
+statistics:
+  CIs: cluster bootstrap over synthesis replicates (2,000 resamples), percentile 95%
+  paired comparisons: same replicates and read orders; difference of means / q99 with cluster bootstrap
+  no significance stars; all pre-specified comparisons reported, including negative ones
+pre_specified_comparisons:
+  C1: each adaptive policy vs uniform fixed depth and vs best static (mean reads), baseline/fail1/fail2/customarray
+  C2: tail_aware vs coverage on q99 (tail hypothesis); report either outcome
+  C3: homog: adaptive allocation gain expected ~0 (control)
+  C4: sweep: gain vs severity of the degraded container
+calibration:
+  rho_U (beta-binomial ICC) selected on DISJOINT calibration replicates 1000-1009 of 'baseline' from
+  {0, 0.003, 0.01, 0.03, 0.1}: value whose 90% credible-interval coverage of theta* is closest to 0.90
+  (ties -> smaller rho). theta* = multiplier that best fits the container's full recovery curve under
+  the generic model. Then fixed as the controller default and evaluated on held-out replicates 0-29
+  and on the real-read replay (Twist, Genscript).
+  completion forecast: analytic normal vs posterior simulation (200 draws); budget = median coverage-controller
+  cost; checkpoints 30/50/70/85%; ECE (10 bins), Brier vs climatology, AUC with bootstrap CI.
+  futility (early abandon): disabled in all runs.
+secondary_evidence: real_read_replay
+  data: ENA PRJEB65931 Twist and Genscript, six runs each (containers emulated by subsetting runs)
+  caches: v3 (consensus curves of the belief from CALIBRATION reads only; crc32 seeds)
+  primary belief: generic prior; leaky v1/v2 'calibrated' numbers only in an appendix as an upper bound
+  decodability: oracle (exact consensus) -- labelled as such

@@ -1,6 +1,6 @@
 ........................................................................ [ 35%]
 ........................................................................ [ 71%]
-.........................................................                [100%]
+..........................................................               [100%]
 ==================================== PASSES ====================================
 =========================== short test summary info ============================
 PASSED tests/test_channel.py::test_sample_counts_means[poisson]
@@ -204,4 +204,5 @@ PASSED tests/test_retrieval.py::test_all_controllers_succeed
 PASSED tests/test_retrieval.py::test_controller_probe_and_batch_defaults
 PASSED tests/test_retrieval.py::test_controller_respects_cap
 PASSED tests/test_retrieval.py::test_posterior_is_distribution_and_detects_failure
-201 passed in 10.85s
+PASSED tests/test_retrieval.py::test_overdispersed_posterior_is_wider
+202 passed in 10.97s

@@ -7,3 +7,5 @@ recovered/
 # large raw downloads (re-fetch with experiments/real_data.py --download)
 data/raw/ena/
 data/raw/zenodo/
+data/processed/realdata/*.pkl
+data/processed/realdata/invalid_two_sided/

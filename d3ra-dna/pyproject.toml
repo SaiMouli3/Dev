@@ -23,7 +23,6 @@ dependencies = [
 [project.optional-dependencies]
 test = ["pytest>=7", "hypothesis>=6"]
 dashboard = ["streamlit>=1.30"]
-data = ["pyarrow>=14"]
 
 [project.scripts]
 d3ra = "d3ra.cli:main"

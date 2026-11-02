@@ -1,2 +1,0 @@
-  s6_tight_budget: 387s
-[saved] baselines_part2: 11 rows

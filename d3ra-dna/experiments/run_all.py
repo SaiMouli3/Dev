@@ -25,10 +25,6 @@ def save(rows, name):
     RES.mkdir(exist_ok=True)
     df = pd.DataFrame(rows)
     df.to_csv(RES / f"{name}.csv", index=False)
-    try:
-        df.to_parquet(RES / f"{name}.parquet", index=False)
-    except Exception:
-        pass
     print(f"[saved] {name}: {len(df)} rows", flush=True)
 
 
@@ -71,7 +67,7 @@ def main(argv=None):
     if run("scalability"):
         save(E.scalability(adaptive_trials=100 if q else 200), "scalability")
     meta["finished"] = time.ctime()
-    (RES / f"run_meta{a.tag}.json").write_text(json.dumps(meta, indent=1))
+    print(json.dumps(meta), flush=True)
 
 
 if __name__ == "__main__":

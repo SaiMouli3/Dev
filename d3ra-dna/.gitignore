@@ -10,3 +10,8 @@ data/raw/zenodo/
 data/processed/realdata/*.pkl
 data/processed/realdata/invalid_two_sided/
 data/processed/phi_calibration_local.json
+data/processed/realdata_genscript/
+*.parquet
+results/*_log*.txt
+results/run_meta*.json
+results/baselines_part*.csv

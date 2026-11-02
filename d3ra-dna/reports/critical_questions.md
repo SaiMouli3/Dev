@@ -224,4 +224,4 @@ What replicates and what does not:
 - **Pivotal and coverage-greedy scoring tie again.**
 - **A heuristic static allocator can be catastrophic.** The coverage-equalising static weights (2.3× worse than uniform) poured reads into the near-dead container. Adaptive allocation learns this from the data.
 - **Negative: the surrogate fails on this pool.** On the believed channel it called round-robin infeasible and over-predicted single-best cost 3.7× (1.13M predicted vs 306k real). On Twist it was 5–18% *optimistic*. Its abundance/φ fit does not transfer to deletion-heavy, very skewed channels. Model-based budgets must be calibrated empirically per pool.
-- **Not run on Genscript:** the joint optimiser, because each candidate's simulation exceeded 1.5 h of compute. The adaptive-in-the-loop joint search is therefore validated on one real pool only.
+- **Not run on Genscript:** the tiered placement, stopped for compute; and the joint optimiser, because each candidate's simulation exceeded 1.5 h of compute. The adaptive-in-the-loop joint search is therefore validated on one real pool only.

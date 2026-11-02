@@ -160,6 +160,18 @@ The stripe-importance (Birnbaum) weighting gave no measurable benefit over plain
 
 H5 details and ablations: `results/h5_robustness.csv` and `results/ablations.csv`.
 
+## 6.6 Validation on real sequencing data
+
+The data are six Illumina runs of one 12,000-strand pool after different handling (ENA PRJEB65931), used as six real containers, plus real nanopore clusters with ground truth.
+
+- **Shared coverage bias.** 69% of coverage variance is shared across containers (σ_g = 0.31).
+- **Nanopore consensus.** Independent-error models overstate it by 20–40 points; replaying real edit scripts independently restores 100%. Real nanopore errors are therefore correlated across reads of a strand.
+- **Real recovery-time matrices** (12,000 strands, 200 permutations of real reads):
+  - Placement plus adaptive stopping is −34% versus uniform placement with fixed depth.
+  - Adaptive stopping alone is −17%.
+  - The surrogate is 5–18% optimistic.
+- **Container loss.** Removing one container's real stream leaves round-robin placement +5–32% more costly. The 4-container tiered placement becomes +120–190% more costly and frequently stalls, and the single-container placement loses everything. The post-failure margin governs the degradation.
+
 ## 7. Negative results
 
 - **Risk-adaptive parity.** It saved 16–32% of parity at an equal *predicted* reliability. Monte Carlo revealed that the predictor's sampled failure tail is optimistic at M = 24, so the claim is not established.

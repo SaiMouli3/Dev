@@ -347,6 +347,26 @@ At 50–100 containers the predictor's sampled failure tail disagrees with Monte
 - **Abstract costs.** Real sequencing has large per-run fixed costs (`setup_cost`, 0 by default). Positive setup costs would penalise the many small adaptive batches, which average 100–750 rounds. On a real nanopore with Read Until, batches are effectively free; on Illumina they are not. The adaptive gains therefore apply most directly to nanopore-style streaming sequencing.
 - **Novelty.** See `docs/literature_review.md` §9. The closest prior work is Kong, Elishco, Wang and Duman, "The coverage depth problem in distributed DNA data storage" (arXiv:2610.02931, Oct 2026), which covers uniform, failure-free, non-adaptive sampling. The pivotal weight is Birnbaum importance (1969). Failure-domain caps are standard in erasure-coded storage (CRUSH, Copysets). Our claims are therefore about the **combination**: adaptive closed-loop sequencing, failure-aware placement selected with the adaptive policy in the loop, and the spreading-threshold rule, studied in multi-container DNA archives.
 
+
+## 11. Real-data validation (summary)
+
+Full details are in `reports/real_data_validation.md`. Data: ENA PRJEB65931 (6 real Illumina runs of one 12,000-strand pool) and Zenodo 14296588 (real nanopore clusters).
+
+- **Retrieval bug found by real data, now fixed.** Two-sided consensus fails on raw reads with read-through tails. Forward-only consensus raises 3-read exact recovery from 1% to 97%.
+- **Real channel.**
+  - Substitution-dominated errors, 0.35–1.15%/nt. Deletions 2–3× and insertions about 4× lower than my default.
+  - Real container heterogeneity: up to 2× the reads per strand and 4× the dropout.
+  - **69% of coverage variance is shared across containers** (σ_g = 0.31, matching the assumed 0.30).
+  - The real Illumina φ(n) matches the simulator.
+- **Nanopore.** Independent-error simulation at the measured rates overstates consensus success by 20–40 points. Replaying real edit scripts independently gives 100%, so the gap is **cross-read correlated errors**. About 10% of strands are not exactly recovered even at 20 reads.
+- **Placement × policy on real recovery-time matrices.**
+  - Single best container with adaptive stopping is −34% vs uniform placement with fixed depth.
+  - Adaptive stopping alone is worth 15–17%, much less than in simulation, because these real containers never fail.
+  - Adaptive allocation is worth −10% when data is spread over 4 containers; pivotal and coverage-greedy scoring tie.
+  - The surrogate is 5–18% optimistic.
+- **Container loss on real streams.** The single-container layout loses everything if its container fails. Tiered (4 containers, 2 spare fragments per stripe after a loss) costs +120–190% and often stalls. Round-robin (6 spare) costs +5–32% and always finishes. **The post-failure margin governs degradation.**
+- **End-to-end.** Real files (175 KB) were recovered byte-exact through FASTQ with real Illumina and nanopore error scripts transplanted onto our strands.
+
 ## 10. Reproducibility
 
 ```bash
@@ -369,7 +389,8 @@ python experiments/merge_results.py
 streamlit run dashboard/app.py
 ```
 
-- `python -m pytest -q` runs 187 tests in about 7 s.
+- `python -m pytest -q` runs 199 tests in about 20 s.
+- Real data: `python experiments/real_data.py download prep transplant nanopore nanodiag channel policies failures plots` (about 1 h).
 - `python experiments/run_all.py` takes about 1–2 h on 4 cores when run with `--tag` parts in parallel.
 - `python experiments/merge_results.py` writes `results/baselines.csv`, `reports/figures/*.png` and `reports/results_tables.md`.
 - All random number generators are seeded. Archived intermediate runs are kept in `results/archive_*` with the reason they were superseded.

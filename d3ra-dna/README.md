@@ -57,6 +57,22 @@ PYTHONPATH=src python -m d3ra.visualization.plots results reports/figures
 streamlit run dashboard/app.py
 ```
 
+```bash
+PYTHONPATH=src python -m d3ra.cli store my.pdf --archive arch
+```
+
+```bash
+PYTHONPATH=src python -m d3ra.cli simulate --archive arch --out fq --transplant illumina
+```
+
+```bash
+PYTHONPATH=src python -m d3ra.cli retrieve --archive arch --fastq fq --out recovered
+```
+
+```bash
+python experiments/real_data.py download prep transplant nanopore nanodiag channel policies failures plots
+```
+
 What each command does, in order:
 1. Installs dependencies.
 2. Runs the test suite.
@@ -65,6 +81,8 @@ What each command does, in order:
 5. Runs the full programme, which writes `results/*.csv` (about 1–2 h on a laptop CPU).
 6. Renders the figures.
 7. Starts the dashboard.
+
+The last four commands are the on-disk workflow: store the archive, write FASTQ files with real error profiles, retrieve by streaming FASTQ adaptively, then run the real-data validation (downloads about 0.5 GB from ENA and Zenodo).
 
 Everything runs on a CPU. No GPU is needed.
 
@@ -85,6 +103,12 @@ All results are in simulation, under the documented assumptions. Full tables, CI
 - **Spreading threshold.** Spreading stripes over D failure domains helps only once the parity fraction exceeds about 1/D. Below it, concentration was 3.9× safer.
 - **Channel models (H1).** Container-specific models predict recovery with mean absolute error 0.007, versus 0.073 for homogeneous models.
 - **Robustness (H5).** Wide Bayesian priors match oracle completion under post-placement channel change (97.6% vs 74% for an over-confident controller).
+- **Real data** (ENA PRJEB65931 Illumina runs; Microsoft nanopore clusters; `reports/real_data_validation.md`):
+  - The real coverage bias is 69% shared across containers.
+  - Independent-error models overstate nanopore consensus by 20–40 points, because of cross-read correlated errors.
+  - On real read streams, placement plus adaptive stopping saves 34% (stopping alone 15–17%).
+  - After a container loss, cost is governed by the post-failure margin.
+  - Real files are recovered byte-exact from FASTQ with real error profiles.
 - **Negative results.** Thompson sampling; stripe-importance weighting vs plain hazard-greedy allocation; risk-adaptive parity (predictor tail too optimistic); shared-bias vs replication; no design meets 0.99 under the compound-stress scenario.
 
 ## Limitations

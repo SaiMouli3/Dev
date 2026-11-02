@@ -305,6 +305,135 @@ def policies(trials=200, n_stripes=250, k=32, parity=16, seed=0):
     return rows
 
 
+def _real_setup(n_stripes=250, k=32, parity=16, seed=0):
+    _, refs = read_fasta(REF_FASTA)
+    C = load_cached()
+    runs = [C[r]["run"] for r in RUNS]
+    belief, dec = belief_from_calibration(C, refs)
+    rng = np.random.default_rng(seed)
+    N = k + parity
+    perm = rng.permutation(len(refs))[: n_stripes * N]
+    phi_full = [EM.grid_to_full(rd.phi_strand) for rd in runs]
+    inv = np.full(len(refs), -1)
+    inv[perm] = np.arange(perm.size)
+    runs_v = []
+    for rd in runs:
+        r = np.where(rd.ref_of_read >= 0, inv[np.maximum(rd.ref_of_read, 0)], -1)
+        unused = (rd.ref_of_read >= 0) & (r < 0)
+        runs_v.append(EM.RunData(rd.name, r[~unused].astype(np.int32), rd.calib_counts[perm], rd.calib_yield))
+    phi_v = [ph[perm] for ph in phi_full]
+    return belief, runs_v, phi_v, np.repeat(np.arange(n_stripes), N), np.full(n_stripes, k)
+
+
+def failure_injection(trials=60, n_stripes=250, k=32, parity=16, seed=0):
+    """Knock out each container's real read stream in turn (container loss) and
+    measure static feasibility and adaptive cost/success per placement."""
+    from d3ra.channel.surrogate import Layout, file_time, fragment_times
+    from d3ra.optimization.joint_optimizer import layout_for
+    from d3ra.retrieval.adaptive_policy import AdaptiveConfig, AdaptiveController
+    from d3ra.retrieval.fixed_policy import budget_for_target, uniform_weights
+    from d3ra.storage.placement import round_robin
+    belief, runs_v, phi_v, stripe_of, kk = _real_setup(n_stripes, k, parity, seed)
+    m = belief.m
+    layouts = {"round_robin": Layout(stripe_of, kk, round_robin(stripe_of, m)),
+               "reliability": layout_for("reliability", n_stripes, k, parity, belief, None),
+               "tiered2": layout_for("tiered2", n_stripes, k, parity, belief, None),
+               "failure1 (joint choice)": layout_for("failure1", n_stripes, k, parity, belief, None)}
+    rows = []
+    for name, L in layouts.items():
+        T = EM.empirical_T(L, runs_v, phi_v, trials, np.random.default_rng(seed + 7))
+        w = uniform_weights(L)
+        base = file_time(L, fragment_times(L, T, w))
+        cap = 3 * budget_for_target(base, 0.95)
+        for lost in [None] + list(range(m)):
+            Tf = T.copy()
+            if lost is not None:
+                Tf[:, L.pair_cont == lost] = np.inf
+            st = file_time(L, fragment_times(L, Tf, w))
+            ctl = AdaptiveController(L, belief, AdaptiveConfig("coverage", cap=cap, batch=200))
+            failed = np.zeros((trials, m), bool)
+            if lost is not None:
+                failed[:, lost] = True
+            r = ctl.run(trials, np.random.default_rng(seed + 11), T=Tf, failed=failed)
+            rows.append({"placement": name, "counts": " ".join(map(str, L.placement.sum(0).astype(int))),
+                         "lost_container": "none" if lost is None else RUNS[list(RUNS)[lost]],
+                         "static_p_recoverable": float(np.isfinite(st).mean()),
+                         "adaptive_p_success_within_cap": float(r.success.mean()),
+                         "adaptive_mean_cost_success": float(r.cost[r.success].mean()) if r.success.any() else np.inf,
+                         "cap": cap})
+            print(rows[-1], flush=True)
+        pd.DataFrame(rows).to_csv(RES / "realdata_failure_injection.csv", index=False)
+    return rows
+
+
+def plots():
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from d3ra.evaluation.scenarios import ERR_SCALES, phi_grid
+    out = ROOT / "reports" / "figures"
+    out.mkdir(parents=True, exist_ok=True)
+    okabe = ["#0072B2", "#E69F00", "#009E73", "#D55E00", "#CC79A7", "#56B4E9", "#000000"]
+    # 1) Illumina real phi per container vs simulated grid
+    ch = pd.read_csv(RES / "realdata_channel.csv")
+    fig, ax = plt.subplots(1, 2, figsize=(11, 4))
+    for i, row in ch.iterrows():
+        ax[0].plot(EM.N_GRID, [row[f"phi_exact_n{n}"] for n in EM.N_GRID], "o-", color=okabe[i % 7], label=row["condition"])
+    try:
+        G = phi_grid()
+        for gi, sc in enumerate(ERR_SCALES[:3]):
+            ax[0].plot(range(0, 17), G[gi, :17], "--", color="grey", alpha=0.4 + 0.2 * gi, lw=1)
+        ax[0].plot([], [], "--", color="grey", label="simulated (error x0.5/1/2)")
+    except Exception:
+        pass
+    ax[0].set(xlabel="reads per strand (n)", ylabel="P(exact consensus)", title="Illumina (ENA PRJEB65931): real consensus curves", xlim=(0.5, 16))
+    ax[0].legend(fontsize=7)
+    nano = pd.read_csv(RES / "realdata_nanopore_phi.csv")
+    ax[1].plot(nano.n_reads, nano.real_exact, "o-", color=okabe[3], label="real nanopore reads")
+    ax[1].plot(nano.n_reads, nano.simulated_exact_at_measured_rates, "s--", color=okabe[0], label="simulated, i.i.d. errors at measured rates")
+    ax[1].plot(nano.n_reads, nano.real_majority_vote_exact, "x:", color=okabe[6], label="real, position-wise majority vote")
+    ax[1].set(xlabel="reads per strand (n)", ylabel="P(exact consensus)", title="Nanopore (Srinivasavaradhan et al.): real vs model")
+    ax[1].legend(fontsize=7)
+    fig.tight_layout()
+    fig.savefig(out / "realdata_consensus_curves.png", dpi=150)
+    plt.close(fig)
+    # 2) policies on real recovery-time matrices
+    d = pd.read_csv(RES / "realdata_policies.csv")
+    d = d[d.placement.isin(["round_robin", "reliability", "tiered2", "single_best"])]
+    pols = ["static_uniform", "adaptive_uniform", "adaptive_coverage", "adaptive_pivotal"]
+    fig, ax = plt.subplots(figsize=(9, 4.2))
+    pl = list(dict.fromkeys(d.placement))
+    wdt = 0.2
+    for k, pol in enumerate(pols):
+        sub = d[d.policy == pol].set_index("placement").reindex(pl)
+        y = sub["mean_spend@0.99"].values
+        lo = y - sub["mean_spend@0.99_ci_lo"].values
+        hi = sub["mean_spend@0.99_ci_hi"].values - y
+        ax.bar(np.arange(len(pl)) + (k - 1.5) * wdt, y, wdt, yerr=[lo, hi], color=okabe[k], label=pol, capsize=2)
+        pred = (sub["pred_mean"].fillna(sub["pred_mean_cost"])).values
+        ax.plot(np.arange(len(pl)) + (k - 1.5) * wdt, pred, "k_", ms=12)
+    ax.plot([], [], "k_", ms=12, label="surrogate prediction (calibrated belief)")
+    ax.set_xticks(range(len(pl)), pl)
+    ax.set(ylabel="reads to reach 0.99 (expected spend)", title="Real recovery-time matrices: 12,000 strands, 6 real containers")
+    ax.legend(fontsize=7, ncol=2)
+    fig.tight_layout()
+    fig.savefig(out / "realdata_policies.png", dpi=150)
+    plt.close(fig)
+    # 3) failure injection
+    f = RES / "realdata_failure_injection.csv"
+    if f.exists():
+        fi = pd.read_csv(f)
+        fig, ax = plt.subplots(figsize=(9, 4))
+        for k, (name, g) in enumerate(fi.groupby("placement", sort=False)):
+            ax.plot(g.lost_container, g.adaptive_p_success_within_cap, "o-", color=okabe[k], label=name)
+        ax.set(ylabel="P(exact recovery within cap)", xlabel="container lost", title="Real read streams with one container removed")
+        ax.legend(fontsize=8)
+        fig.tight_layout()
+        fig.savefig(out / "realdata_failure_injection.png", dpi=150)
+        plt.close(fig)
+    print("plots written")
+
+
 def nanopore(max_clusters=600, min_reads=20, draws=4, seed=0):
     """Real nanopore phi(n) (clustered reads with ground truth) vs our simulator
     at the measured per-type error rates on the same reference strands."""
@@ -372,3 +501,7 @@ if __name__ == "__main__":
         channel()
     if "policies" in a.stages:
         policies()
+    if "failures" in a.stages:
+        failure_injection()
+    if "plots" in a.stages:
+        plots()

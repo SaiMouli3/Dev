@@ -12,7 +12,7 @@ Across nine scenarios we find four things.
 1. Closed-loop sequencing that stops when every stripe holds K verified fragments needs 48–79% less expected spend than the fixed depth that reaches the same 0.99 reliability.
 2. Placement must be optimised *with the adaptive retrieval policy in the loop*, and the optimum is often *not* distributed.
    - When a single container already meets the failure budget, the search concentrates each stripe there, cutting expected spend by 22–37% against reliability-weighted spreading.
-   - When no container does (correlated failure domains), the search spreads data over five containers and is the only design to reach 0.99.
+   - When no container does (correlated failure domains), the search spreads data over five containers. It is the most reliable design in 3 of 5 seeds (0.977–0.989) but does not reliably reach 0.99.
    - A placement chosen for fixed-depth retrieval cost 12–43% more.
 3. Spreading stripes over failure domains is beneficial only above a parity-fraction threshold of about 1/D. Below it, exposure-minimising concentration is 3.9× safer.
 4. Bayesian container beliefs must be able to represent severe degradation. Otherwise controllers abandon degraded containers and fail under channel change, which remains the main open failure case.
@@ -145,7 +145,7 @@ Bootstrap 95% CIs exclude 0 in all four. P(exact) at the reference budget is 0.9
 **Caveat that shapes the interpretation.** In s2, s3 and s5, E puts *all* fragments in the single best container, whose failure probability of 0.5% is below ε = 1%. Its advantage is the advantage of not distributing; with only one container, the controllers tie.
 
 Distribution was chosen where no container meets ε alone:
-- **s4 (correlated failure domains):** five containers. E is the only design reaching 0.99. Removing its adaptive *allocation* (uniform round-robin) costs +79%. Placement without the correlated-failure model misses the target (0.952).
+- **s4 (correlated failure domains):** five containers. E is the most reliable design in s4 in 3 of 5 seeds (0.977–0.989), but it does **not** reliably reach 0.99 (`results/q5_seed_sensitivity.csv`); the single-seed 0.990 reported earlier was within Monte-Carlo noise. Removing its adaptive *allocation* (uniform round-robin) costs +79%. Placement without the correlated-failure model misses the target (0.952).
 - **s9 (wrong estimates):** three containers.
 
 The stripe-importance (Birnbaum) weighting gave no measurable benefit over plain hazard-greedy allocation (−1.5%, CIs overlap). The static-proxy joint optimiser (v1) was 12–43% *worse*, and in s4 it found no feasible design.

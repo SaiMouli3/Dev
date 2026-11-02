@@ -122,7 +122,44 @@ Script: `experiments/q4_stopping_safety.py`. Code: `decoding/reconstruction.py`,
 
 ## Q5. Reproducibility and generalisation
 
-See §5 below, which is filled from `results/q5_*` and `results/realdata_genscript_*`.
+**Clean-environment reproduction** (independent agent; fresh clone of commit f8fb9a9; new virtualenv; Python 3.13.18). Report: `scratchpad/repro_report.md`; summary below.
+- `experiments/reproduce.py`: **4/4 PASS**, deterministic across two runs:
+  - Theorem 1: 8148/8148;
+  - predictor vs Monte Carlo: max |ΔP| = 0.0044;
+  - spreading direction: correct;
+  - adaptive-stopping saving: 0.439 at reduced trial counts, against 0.48 at full counts.
+- `theory_checks.py`: outputs **byte-identical** to the committed files.
+- **Reproducibility defects found and fixed:**
+  1. `edlib` was undeclared, so the test suite failed on a fresh install; it is now in `requirements.txt` and `pyproject.toml`.
+  2. The README demo command was wrong.
+  3. The demo wrote into a committed cache file; it now writes to a gitignored local cache.
+  4. The README listed the transplant step before the data step it depends on.
+
+  After the fixes: 201 tests pass.
+
+**Seed sensitivity** (`results/q5_seed_sensitivity.csv`; 5 seeds; 1,000 adaptive / 10,000 static trials).
+
+| scenario | A fixed | C uniform+adaptive | D reliability+adaptive | E joint+adaptive |
+|---|---|---|---|---|
+| s2, expected spend @0.99 (range over seeds) | 18,819–20,658 | 7,153–7,204 | 5,509–5,549 | 4,332–4,357 |
+| s2, P(exact) at ref | 0.990 | 0.997–0.998 | 0.998–0.999 | 0.990–0.999 |
+| s4, P(exact) at ref (0.99 never reached) | 0.970–0.975 | 0.973–0.989 | 0.944–0.969 | 0.977–0.989 |
+
+- The cost rankings are stable to the seed. Note that s2's container parameters are fixed, so here the seed varies only the Monte-Carlo draws.
+- **Negative correction:** the earlier claim that E is "the only design reaching 0.99 in s4" is **not robust**. E is the most reliable design in 3 of 5 seeds but below 0.99 in all of them. The claim has been corrected throughout.
+
+**Strongest static baseline and paired statistics on real reads** (Twist pool, `results/realdata_policies.csv`). The static read fractions were optimised *on the evaluation recovery-time matrix itself*, an oracle that no deployable static plan can beat. The difference is a paired bootstrap over the same 200 read orders.
+
+| placement | oracle-tuned static (reads @0.99) | adaptive | paired difference [95% CI] |
+|---|---|---|---|
+| round-robin | 63,142 | 55,744 | −7,398 [−12,140; −7,053] |
+| reliability | 61,947 | 54,059 | −7,888 [−13,305; −7,577] |
+| tiered | 53,088 | 46,186 | −6,902 [−19,092; −6,196] |
+| single best | 53,867 | 44,753 | −9,114 [−10,962; −6,735] |
+
+Adaptive retrieval beats even the oracle-tuned static allocation by 11–17%, and every CI excludes 0. The intervals are asymmetric because the statistic involves a 0.99 quantile.
+
+**Independent pool (Genscript, different vendor and design: 12,472 strands of 102 nt).** Results are in `results/realdata_genscript_*`; see the addendum below.
 
 ## Q6. Novelty and scientific contribution
 

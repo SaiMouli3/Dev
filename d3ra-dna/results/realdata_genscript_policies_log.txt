@@ -3,3 +3,4 @@ round_robin static_coverage_eq {'mean_cost_success': 1322109.2, 'cap@0.99': 1938
 round_robin static_oracle_weights {'mean_cost_success': 555462.8, 'cap@0.99': 650709.5, 'mean_spend@0.99': 650709.5, 'pred_mean': inf, 'pred_mean_cost': nan, 'p_success_uncapped': 1.0}
 round_robin adaptive_uniform {'mean_cost_success': 641863.0, 'cap@0.99': 831200.0, 'mean_spend@0.99': 641721.0, 'pred_mean': nan, 'pred_mean_cost': inf, 'p_success_uncapped': 1.0}
 round_robin adaptive_coverage {'mean_cost_success': 577949.0, 'cap@0.99': 974400.0, 'mean_spend@0.99': 577722.0, 'pred_mean': nan, 'pred_mean_cost': inf, 'p_success_uncapped': 1.0}
+round_robin adaptive_pivotal {'mean_cost_success': 577880.0, 'cap@0.99': 974400.0, 'mean_spend@0.99': 577653.0, 'pred_mean': nan, 'pred_mean_cost': inf, 'p_success_uncapped': 1.0}

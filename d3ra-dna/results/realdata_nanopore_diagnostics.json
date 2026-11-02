@@ -1,0 +1,10 @@
+{
+ "n_reads": 20,
+ "clusters": 500,
+ "real_exact": 0.892,
+ "transplant_independent_exact": 1.0,
+ "transplant_mean_errors_per_read": 5.53175,
+ "frac_both_disjoint_wrong": 0.048,
+ "frac_identical_wrong_given_both_wrong": 0.6666666666666666,
+ "median_edit_distance_of_wrong_consensus": 2.0
+}

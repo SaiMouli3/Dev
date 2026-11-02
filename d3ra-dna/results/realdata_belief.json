@@ -1,0 +1,102 @@
+{
+ "yield": [
+  0.9969133333333333,
+  0.9963866666666666,
+  0.9962666666666666,
+  0.9974633333333334,
+  0.9953733333333333,
+  0.9947933333333333
+ ],
+ "shape": [
+  12.024839188643144,
+  10.731401496493076,
+  10.109994031511304,
+  12.380215351283164,
+  8.937739862039573,
+  7.1305310589486455
+ ],
+ "dropout": [
+  0.002416666651664603,
+  0.00341666665146577,
+  0.0034166666514200985,
+  0.0001,
+  0.004833333317742427,
+  0.007499999984181379
+ ],
+ "sigma_g": 0.3103479005978769,
+ "runs": [
+  "Aging_0d",
+  "Aging_2d",
+  "Aging_7d",
+  "PCR_15c",
+  "PCR_60c",
+  "PCR_90c"
+ ],
+ "joint_choice": "failure1",
+ "joint_history": [
+  {
+   "variant": "reliability",
+   "parity": 16,
+   "p_infeasible": 0.0,
+   "spend": 48373.2,
+   "J": 1.0,
+   "feasible": true
+  },
+  {
+   "variant": "tiered0",
+   "parity": 16,
+   "p_infeasible": 0.0025,
+   "spend": 42940.606060606064,
+   "J": 0.8876941376755324,
+   "feasible": true
+  },
+  {
+   "variant": "tiered1",
+   "parity": 16,
+   "p_infeasible": 0.00125,
+   "spend": 43515.979899497484,
+   "J": 0.8995886131059654,
+   "feasible": true
+  },
+  {
+   "variant": "tiered2",
+   "parity": 16,
+   "p_infeasible": 0.0005,
+   "spend": 43839.6,
+   "J": 0.9062786832378259,
+   "feasible": true
+  },
+  {
+   "variant": "domain",
+   "parity": 16,
+   "p_infeasible": 0.0,
+   "spend": 48904.8,
+   "J": 1.0109895562005409,
+   "feasible": true
+  },
+  {
+   "variant": "failure0",
+   "parity": 16,
+   "p_infeasible": 0.0,
+   "spend": 48904.8,
+   "J": 1.0109895562005409,
+   "feasible": true
+  },
+  {
+   "variant": "failure1",
+   "parity": 16,
+   "p_infeasible": 0.00075,
+   "spend": 36944.4,
+   "J": 0.763736945250676,
+   "feasible": true
+  }
+ ],
+ "shared_variance": {
+  "var_shared": 0.09631581940550969,
+  "var_container_specific": 0.0426637475544402,
+  "poisson_var": 0.03986146241674015,
+  "shared_fraction": 0.6930214384195431,
+  "mean_pairwise_log_corr": 0.5447764259755642,
+  "strands_used": 11893
+ }
+}

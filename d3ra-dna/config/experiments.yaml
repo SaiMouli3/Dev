@@ -1,0 +1,12 @@
+seed: 0
+targets: [0.99, 0.999]
+adaptive_trials: 3000
+static_trials: 30000
+geometry: {n_stripes: 25, k: 32, parity: 12}
+scenarios: [s1_homogeneous, s2_heterogeneous, s3_nonuniform_abundance, s4_correlated_failures,
+            s5_high_errors, s6_tight_budget, s7_channel_change, s9_uncertain_estimates, s10_mixed]
+# Tuning protocol: controller hyper-parameters (batch fraction, horizon, prior_sd) and placement
+# slack variants were fixed a priori and NOT tuned on any reported scenario. Any future tuning must use
+# validation seeds (below) and never the test seed.
+validation_seeds: [100, 101, 102, 103, 104]
+test_seed: 0

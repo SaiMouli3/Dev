@@ -1,0 +1,24 @@
+{
+ "T1_sign_agreement": 0.9955357142857143,
+ "T1_cases": 1344,
+ "T1_closed_form_max_abs_err": 3.9968028886505635e-15,
+ "T1_mc_max_abs_err": 0.009279999999999733,
+ "T1a_rho_below_1_over_D_spread_never_better": true,
+ "P2_instances": 1680,
+ "P2_violations": 0,
+ "T4_min_rho_where_spreading_wins_delta2pct": {
+  "0.01": 0.2727272727272727,
+  "0.03": 0.2727272727272727,
+  "0.05": 0.2727272727272727
+ },
+ "T5_share_tolerant_better_when_feasible": 0.9112426035502958,
+ "T5_rho_tolerant_better_median": 0.3333333333333333,
+ "T5_rho_concentrated_better_median": 0.1875,
+ "T5_infeasible_tolerance_share": 0.155,
+ "T6_min_rho_spread_wins_by_eps": {
+  "0.0": 0.2727272727272727,
+  "0.05": 0.3333333333333333,
+  "0.1": 0.3333333333333333,
+  "0.2": 0.38461538461538464
+ }
+}

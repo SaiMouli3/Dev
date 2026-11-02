@@ -1,0 +1,93 @@
+{
+ "pairwise_summary": {
+  "('excess_logratio_var', 'mean')": {
+   "different flowcell": 0.0614,
+   "same flowcell, different handling": 0.051597,
+   "technical replicate": 0.011146
+  },
+  "('excess_logratio_var', 'min')": {
+   "different flowcell": 0.02605,
+   "same flowcell, different handling": 0.00924,
+   "technical replicate": 0.011146
+  },
+  "('excess_logratio_var', 'max')": {
+   "different flowcell": 0.092399,
+   "same flowcell, different handling": 0.189839,
+   "technical replicate": 0.011146
+  },
+  "('excess_logratio_var', 'count')": {
+   "different flowcell": 12,
+   "same flowcell, different handling": 8,
+   "technical replicate": 1
+  },
+  "('log_corr', 'mean')": {
+   "different flowcell": 0.68253,
+   "same flowcell, different handling": 0.7164,
+   "technical replicate": 0.803305
+  },
+  "('log_corr', 'min')": {
+   "different flowcell": 0.528273,
+   "same flowcell, different handling": 0.394667,
+   "technical replicate": 0.803305
+  },
+  "('log_corr', 'max')": {
+   "different flowcell": 0.783944,
+   "same flowcell, different handling": 0.830674,
+   "technical replicate": 0.803305
+  },
+  "('log_corr', 'count')": {
+   "different flowcell": 12,
+   "same flowcell, different handling": 8,
+   "technical replicate": 1
+  },
+  "('sub_rate_diff', 'mean')": {
+   "different flowcell": 0.003294,
+   "same flowcell, different handling": 0.002486,
+   "technical replicate": 0.000731
+  },
+  "('sub_rate_diff', 'min')": {
+   "different flowcell": 0.001284,
+   "same flowcell, different handling": 0.000336,
+   "technical replicate": 0.000731
+  },
+  "('sub_rate_diff', 'max')": {
+   "different flowcell": 0.005502,
+   "same flowcell, different handling": 0.00798,
+   "technical replicate": 0.000731
+  },
+  "('sub_rate_diff', 'count')": {
+   "different flowcell": 12,
+   "same flowcell, different handling": 8,
+   "technical replicate": 1
+  },
+  "('del_rate_diff', 'mean')": {
+   "different flowcell": 0.000203,
+   "same flowcell, different handling": 0.000164,
+   "technical replicate": 0.000125
+  },
+  "('del_rate_diff', 'min')": {
+   "different flowcell": 6.1e-05,
+   "same flowcell, different handling": 2.1e-05,
+   "technical replicate": 0.000125
+  },
+  "('del_rate_diff', 'max')": {
+   "different flowcell": 0.0004,
+   "same flowcell, different handling": 0.000461,
+   "technical replicate": 0.000125
+  },
+  "('del_rate_diff', 'count')": {
+   "different flowcell": 12,
+   "same flowcell, different handling": 8,
+   "technical replicate": 1
+  }
+ },
+ "headers": {
+  "Aging_0d_repA": "instrument FS10000169 run 123",
+  "Aging_0d_repB": "instrument FS10000169 run 123",
+  "Aging_2d": "instrument FS10000169 run 123",
+  "Aging_7d": "instrument FS10000169 run 123",
+  "PCR_15c": "instrument FS10000169 run 121",
+  "PCR_60c": "instrument FS10000169 run 121",
+  "PCR_90c": "instrument FS10000169 run 121"
+ }
+}

@@ -1,0 +1,19 @@
+experiment,scenario,controller,cap,trials,p_success_uncapped,cap@0.99,cap@0.99_ci_lo,cap@0.99_ci_hi,mean_spend@0.99,mean_spend@0.99_ci_lo,mean_spend@0.99_ci_hi,cap@0.999,cap@0.999_ci_lo,cap@0.999_ci_hi,mean_spend@0.999,mean_spend@0.999_ci_lo,mean_spend@0.999_ci_hi,mean_cost_success,p_exact@ref,p_exact@ref_ci_lo,p_exact@ref_ci_hi,predicted_cap@0.99
+H5,s7_channel_change,point-estimate (prior_sd=0.02),146907.65159511165,2000,0.7425,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,39001.81144781145,0.508,0.48609541136198264,0.5298739158815173,
+H5,s7_channel_change,bayes (prior_sd=0.5),146907.65159511165,2000,0.9735,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,22483.389830508473,0.8065,0.7886059138137534,0.8232189362028385,
+H5,s7_channel_change,thompson (prior_sd=0.5),146907.65159511165,2000,0.78,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,16624.785256410258,0.735,0.7152208664166256,0.7538781213611855,
+H5,s7_channel_change,bayes (prior_sd=1.0),146907.65159511165,2000,0.9765,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,12427.788018433179,0.972,0.9638155173143411,0.9783747900521559,
+H5,s7_channel_change,oracle-params,146907.65159511165,2000,0.9765,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,11071.664106502816,0.9735,0.9655014766396225,0.979683079585031,
+H5,s7_channel_change,static-optimised-on-belief,,10000,0.0,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,,,,1200000.0
+H5,s9_uncertain_estimates,point-estimate (prior_sd=0.02),72712.4934255193,2000,0.9645,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,5150.316226023847,0.9635,0.9543526494507533,0.9708702477195252,
+H5,s9_uncertain_estimates,bayes (prior_sd=0.5),72712.4934255193,2000,0.9645,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,5074.35977190254,0.9635,0.9543526494507533,0.9708702477195252,
+H5,s9_uncertain_estimates,thompson (prior_sd=0.5),72712.4934255193,2000,0.9645,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,5056.4282011404875,0.9625,0.9532479878280714,0.9699787434367696,
+H5,s9_uncertain_estimates,bayes (prior_sd=1.0),72712.4934255193,2000,0.9645,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,5069.66822187662,0.963,0.9538001190471888,0.9704246951703708,
+H5,s9_uncertain_estimates,oracle-params,72712.4934255193,2000,0.9645,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,5033.481078278901,0.963,0.9538001190471888,0.9704246951703708,
+H5,s9_uncertain_estimates,static-optimised-on-belief,,10000,0.0,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,,,,1200000.0
+H5,s10_mixed,point-estimate (prior_sd=0.02),666811.1351879323,2000,0.92,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,10072.83695652174,0.92,0.9072892548014819,0.9311004254822657,
+H5,s10_mixed,bayes (prior_sd=0.5),666811.1351879323,2000,0.92,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,10256.52445652174,0.92,0.9072892548014819,0.9311004254822657,
+H5,s10_mixed,thompson (prior_sd=0.5),666811.1351879323,2000,0.92,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,9884.641304347826,0.92,0.9072892548014819,0.9311004254822657,
+H5,s10_mixed,bayes (prior_sd=1.0),666811.1351879323,2000,0.92,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,10790.39402173913,0.92,0.9072892548014819,0.9311004254822657,
+H5,s10_mixed,oracle-params,666811.1351879323,2000,0.92,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,10066.111413043478,0.92,0.9072892548014819,0.9311004254822657,
+H5,s10_mixed,static-optimised-on-belief,,10000,0.0,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,inf,,,,1300000.0

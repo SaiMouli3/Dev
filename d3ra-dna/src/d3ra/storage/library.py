@@ -58,7 +58,8 @@ class DNALibrary:
 
 def build_library(files: list[FileRecord], payload_bytes: int = 32, k: int = 32, parity: int = 8,
                   inner_nsym: int = 4, codec: str = "scrambled-2bit", compression: str = "auto",
-                  code: str = "rs-mds", plan: RedundancyPlan | None = None, obj: int = 0) -> DNALibrary:
+                  code: str = "rs-mds", plan: RedundancyPlan | None = None, obj: int = 0,
+                  crc_bytes: int = 2) -> DNALibrary:
     raw = bundle(files)
     blob, method = compress(raw, compression)
     data_stripes = split_into_stripes(blob, payload_bytes, k)
@@ -68,7 +69,7 @@ def build_library(files: list[FileRecord], payload_bytes: int = 32, k: int = 32,
     assert plan.n_stripes == S, "redundancy plan must match stripe count"
     max_n = max(plan.n)
     layout = AddressLayout.compact(1, S, max_n)
-    fmt = StrandFormat.build(layout, payload_bytes, inner_nsym, codec)
+    fmt = StrandFormat.build(layout, payload_bytes, inner_nsym, codec, crc_bytes=crc_bytes)
     frags: list[Fragment] = []
     for s, data in enumerate(data_stripes):
         n_s = plan.n[s]
@@ -79,5 +80,6 @@ def build_library(files: list[FileRecord], payload_bytes: int = 32, k: int = 32,
                                   ENCODING_VERSION, plan.code, crc32(payload)))
     man = Manifest(ENCODING_VERSION, codec, method, len(blob), sha256(blob), payload_bytes, inner_nsym,
                    fmt.inner.crc_bytes, fmt.addr_check, layout.__dict__, plan.code,
-                   [{"k": k, "n": n} for n in plan.n], [f.metadata() for f in files], obj)
+                   [{"k": k, "n": n, "crc32": crc32(data_stripes[i].tobytes())} for i, n in enumerate(plan.n)],
+                   [f.metadata() for f in files], obj)
     return DNALibrary(man, fmt, frags)

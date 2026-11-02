@@ -62,7 +62,7 @@ def test_library_structure(lib):
     S = len(man.stripes)
     assert S == -(-man.blob_length // (16 * 6)) and S >= 3
     assert len(lib.fragments) == 9 * S
-    assert all(s == {"k": 6, "n": 9} for s in man.stripes)
+    assert all((s["k"], s["n"]) == (6, 9) and "crc32" in s for s in man.stripes)
     assert len({len(s) for s in lib.strands}) == 1 and len(lib.strands[0]) == lib.fmt.strand_nt
     assert len(set(lib.strands)) == len(lib.strands)
     st_ = lib.stats()
@@ -126,14 +126,39 @@ def test_reconstruct_parity_only(lib):
     _assert_exact(reconstruct(lib.manifest, _rows(lib, keep)), _files())
 
 
-def test_integrity_mismatch_when_payload_corrupted(lib):
-    rows = _rows(lib, {(s, i) for s in range(len(lib.manifest.stripes)) for i in range(6)})
-    p = bytearray(rows[(1, 2)])
+def _corrupt(rows, key):
+    p = bytearray(rows[key])
     p[0] ^= 0x55
-    rows[(1, 2)] = bytes(p)
-    res = reconstruct(lib.manifest, rows)
+    rows[key] = bytes(p)
+
+
+def test_integrity_mismatch_when_payload_corrupted_legacy_manifest(lib):
+    import copy
+    man = copy.deepcopy(lib.manifest)
+    for st in man.stripes:
+        st.pop("crc32", None)          # no per-stripe CRC: only the file hash can catch it
+    rows = _rows(lib, {(s, i) for s in range(len(man.stripes)) for i in range(6)})
+    _corrupt(rows, (1, 2))
+    res = reconstruct(man, rows)
     assert res.status == RecoveryStatus.INTEGRITY_MISMATCH
     assert res.files == [] and res.stripes_ok == res.stripes_total
+
+
+def test_stripe_crc_detects_and_localises_corruption(lib):
+    rows = _rows(lib, {(s, i) for s in range(len(lib.manifest.stripes)) for i in range(6)})   # exactly K
+    _corrupt(rows, (1, 2))
+    res = reconstruct(lib.manifest, rows)
+    assert res.status == RecoveryStatus.PARTIAL and res.unverified_stripes == [1]
+
+
+def test_stripe_crc_repairs_with_extra_fragments(lib):
+    rows = _rows(lib, {(s, i) for s in range(len(lib.manifest.stripes)) for i in range(8)})   # K + 2
+    _corrupt(rows, (1, 2))
+    _corrupt(rows, (2, 7))           # corrupt but unused (decoder takes the first K): no repair needed
+    _corrupt(rows, (3, 0))
+    res = reconstruct(lib.manifest, rows)
+    assert res.status == RecoveryStatus.EXACT
+    assert dict(res.repaired) == {1: (2,), 3: (0,)}
 
 
 def test_partial_and_failed(lib):

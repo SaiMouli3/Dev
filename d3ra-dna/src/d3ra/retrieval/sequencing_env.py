@@ -58,6 +58,8 @@ class SequencingEnv:
         self.rec_pair = {}
         self.reads_used = np.zeros(m)
         self.cluster_reads = {}
+        self.decode_attempts = 0
+        self.false_accepts = 0
 
     def sequence(self, j: int, reads: int) -> int:
         c = self.containers[j]
@@ -86,12 +88,15 @@ class SequencingEnv:
                 self.rec_pair[(i, j)] = True
                 continue
             est = consensus(self.pools[(j, i)], L)
+            self.decode_attempts += 1
             dec = self.lib.fmt.decode(est)
             if dec is None:
                 continue
             (obj, s, pos), payload = dec
             if (s, pos) != (f.stripe, f.index):
                 continue   # inner code accepted a different (mis-clustered) strand: ignore
+            if payload != f.payload:
+                self.false_accepts += 1      # wrong fragment passed inner RS + CRC + address check
             self.rec_pair[(i, j)] = True
             new += self.tracker.add(s, pos, payload, j)
         c.record(reads, new)
@@ -116,11 +121,23 @@ def run_policy(env: SequencingEnv, ch: ChannelParams, cfg: AdaptiveConfig, fixed
                 "cost": float(env.reads_used @ ch.cost), "actions": int((fixed_reads > 0).sum()), "result": res}
     ctl = AdaptiveController(layout, ch, cfg)
     used = layout.stored_per_container() > 0
+    repairs = 0
     for j in np.flatnonzero(used):
         env.sequence(j, ctl.probe)
     actions = int(used.sum())
     rr = 0
-    while not env.tracker.complete() and actions < max_actions and env.reads_used @ ch.cost < cfg.cap:
+    while actions < max_actions and env.reads_used @ ch.cost < cfg.cap:
+        if env.tracker.complete():
+            # verification gate: stop only if every stripe verifies (per-stripe CRC) and the file hash matches
+            res = env.result()
+            if res.status.value == "exact" or not res.unverified_stripes:
+                break
+            for s_bad in res.unverified_stripes:      # need one more fragment to localise the bad one
+                if env.tracker.k[s_bad] < env.tracker.n[s_bad]:
+                    env.tracker.k[s_bad] += 1
+            repairs += 1
+            if repairs > 20:
+                break
         R = env.reads_used[None, :].astype(float)
         rec_pair = np.array([env.rec_pair.get((i, j), False) for i, j in zip(layout.pair_frag, layout.pair_cont)])[None]
         rec_frag = np.zeros((1, layout.n), bool)
@@ -143,4 +160,6 @@ def run_policy(env: SequencingEnv, ch: ChannelParams, cfg: AdaptiveConfig, fixed
         actions += 1
     res = env.result()
     return {"status": res.status.value, "reads": float(env.reads_used.sum()),
-            "cost": float(env.reads_used @ ch.cost), "actions": actions, "result": res}
+            "cost": float(env.reads_used @ ch.cost), "actions": actions, "result": res,
+            "decode_attempts": env.decode_attempts, "false_accepts": env.false_accepts,
+            "verification_rounds": repairs, "repaired": res.repaired}

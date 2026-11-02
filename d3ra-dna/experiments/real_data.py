@@ -302,7 +302,7 @@ def policies(trials=200, n_stripes=250, k=32, parity=16, seed=0):
     phi_v = [ph[perm] for ph in phi_full]
     stripe_of = np.repeat(np.arange(n_stripes), N)
     kk = np.full(n_stripes, k)
-    variants = ["round_robin", "reliability", "failure1", "tiered2", "single_best"]
+    variants = os.environ.get("D3RA_VARIANTS", "round_robin,reliability,failure1,tiered2,single_best").split(",")
     best = int(np.argmax(belief.yield_ * belief.phi[:, 3] * (1 - belief.dropout)))
     skip_joint = os.environ.get("D3RA_SKIP_JOINT") == "1"
     js = None if skip_joint else joint_optimise_adaptive(n_stripes, k, belief, 0.99, None, parities=[parity], trials=200)
@@ -362,7 +362,7 @@ def policies(trials=200, n_stripes=250, k=32, parity=16, seed=0):
                          "T_build_s": t_T, **flat})
             print(v, pol, {x: round(flat.get(x, np.nan), 1) for x in ("mean_cost_success", "cap@0.99", "mean_spend@0.99",
                                                                         "pred_mean", "pred_mean_cost", "p_success_uncapped")}, flush=True)
-        pd.DataFrame(rows).to_csv(RES / f"realdata{SUF}_policies.csv", index=False)
+        pd.DataFrame(rows).to_csv(RES / f"realdata{SUF}_policies{os.environ.get('D3RA_TAG', '')}.csv", index=False)
     (RES / f"realdata{SUF}_belief.json").write_text(json.dumps({"yield": belief.yield_.tolist(), "shape": belief.shape.tolist(),
         "dropout": belief.dropout.tolist(), "sigma_g": belief.sigma_g, "runs": [RUNS[r] for r in RUNS],
         "joint_choice": None if js is None else js.variant, "joint_history": None if js is None else js.history,
@@ -565,7 +565,7 @@ if __name__ == "__main__":
     if "channel" in a.stages:
         channel()
     if "policies" in a.stages:
-        policies()
+        policies(trials=int(os.environ.get("D3RA_TRIALS", "200")))
     if "failures" in a.stages:
         failure_injection()
     if "plots" in a.stages:

@@ -25,7 +25,12 @@ from .fragment_tracker import FragmentTracker
 
 class FastqRetriever:
     def __init__(self, archive, fastqs: list, controller: str = "pivotal", batch: int | None = None,
-                 max_cluster_reads: int = 24, cap_reads: float = np.inf):
+                 max_cluster_reads: int = 24, cap_reads: float = np.inf, consensus_mode: str = "two_sided",
+                 adapter: str | None = "AGATCGGAAGAGC"):
+        """consensus_mode: 'two_sided' when reads end at the strand end (primer-trimmed or
+        simulated reads); 'forward' for raw reads with an uncertain 3' tail."""
+        self.two_sided = consensus_mode == "two_sided"
+        self.adapter = adapter
         self.man, self.fmt, self.placement, self.containers, self.addresses = load_archive(archive)
         self.fastqs = [Path(f) if f else None for f in fastqs]
         m = self.placement.shape[1]
@@ -58,7 +63,11 @@ class FastqRetriever:
         out = []
         for _ in range(n):
             try:
-                out.append(next(self.iters[j]).seq)
+                seq = next(self.iters[j]).seq
+                if self.adapter:
+                    k = seq.find(self.adapter)
+                    seq = seq[:k] if k >= 0 else seq
+                out.append(seq)
             except StopIteration:
                 self.exhausted[j] = True
                 break
@@ -85,7 +94,7 @@ class FastqRetriever:
             if (addr[1], addr[2]) in self.tracker.rows:
                 self.rec_pair[(i, j)] = True
                 continue
-            dec = self.fmt.decode(consensus(self.pools[(j, i)], L))
+            dec = self.fmt.decode(consensus(self.pools[(j, i)], L, two_sided=self.two_sided))
             if dec is None or dec[0] != addr:
                 continue
             self.rec_pair[(i, j)] = True

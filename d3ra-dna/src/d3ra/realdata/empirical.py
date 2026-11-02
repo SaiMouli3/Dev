@@ -72,8 +72,10 @@ def _hamming_ok(a: str, b: str, h: int) -> bool:
     return len(a) == len(b) and sum(x != y for x, y in zip(a, b)) <= h
 
 
-def strand_phi(reads: list[str], ref: str, rng, draws: int = 2, h: int = 2) -> tuple[np.ndarray, np.ndarray]:
-    """Empirical P(consensus of n random reads == ref) on N_GRID (exact and Hamming<=h)."""
+def strand_phi(reads: list[str], ref: str, rng, draws: int = 2, h: int = 2, two_sided: bool = False) -> tuple[np.ndarray, np.ndarray]:
+    """Empirical P(consensus of n random reads == ref) on N_GRID (exact and Hamming<=h).
+    Forward-only consensus by default: raw Illumina reads carry an uncertain 3' tail
+    beyond the strand (read-through), which breaks the reversed BMA pass."""
     L = len(ref)
     ex = np.full(len(N_GRID), np.nan)
     hh = np.full(len(N_GRID), np.nan)
@@ -86,7 +88,7 @@ def strand_phi(reads: list[str], ref: str, rng, draws: int = 2, h: int = 2) -> t
         s_ex = s_h = 0
         for _ in range(draws if n < len(reads) else 1):
             sub = [reads[i] for i in rng.choice(len(reads), n, replace=False)]
-            est = consensus(sub, L) if n > 1 else sub[0][:L]
+            est = consensus(sub, L, two_sided=two_sided) if n > 1 else sub[0][:L]
             s_ex += est == ref
             s_h += _hamming_ok(est, ref, h)
         d = draws if n < len(reads) else 1

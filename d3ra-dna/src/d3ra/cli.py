@@ -72,7 +72,8 @@ def cmd_retrieve(a):
     from .archive import load_archive
     m = load_archive(a.archive)[2].shape[1]
     fq = [Path(a.fastq) / f"container_{j:02d}.fq.gz" for j in range(m)]
-    r = FastqRetriever(a.archive, [f if f.exists() else None for f in fq], a.controller).run()
+    r = FastqRetriever(a.archive, [f if f.exists() else None for f in fq], a.controller,
+                       consensus_mode=a.consensus).run()
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     for f in r["result"].files:
@@ -117,6 +118,8 @@ def main(argv=None):
     s.add_argument("--fastq", required=True)
     s.add_argument("--controller", default="pivotal", choices=["pivotal", "uniform", "coverage"])
     s.add_argument("--out", default="recovered")
+    s.add_argument("--consensus", default="two_sided", choices=["two_sided", "forward"],
+                   help="forward for raw reads with untrimmed 3' tails")
     s.set_defaults(fn=cmd_retrieve)
     s = sub.add_parser("demo")
     s.add_argument("files", nargs="+")

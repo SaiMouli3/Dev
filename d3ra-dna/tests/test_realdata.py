@@ -147,3 +147,12 @@ def test_fastq_retrieval_missing_container(tmp_path):
     paths[2] = None          # container 2 lost: 3 of 20 fragments per stripe, parity 8
     r = FastqRetriever(tmp_path / "a", paths, "pivotal", batch=100).run()
     assert r["status"] == "exact" and r["reads_per_container"][2] == 0
+
+
+def test_forward_consensus_robust_to_tails():
+    from d3ra.retrieval.consensus import consensus
+    rng = np.random.default_rng(7)
+    ref = rand_seq(rng, 100)
+    em = ReadErrorModel(0.01, 0.001, 0.002, quality_sigma=0.0, position_slope=0.0)
+    reads = [r + rand_seq(rng, int(rng.integers(5, 40))) for r in noisy_reads(ref, 7, em, rng)]
+    assert consensus(reads, 100, two_sided=False) == ref

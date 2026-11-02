@@ -102,13 +102,21 @@ def _bma(reads: list[str], L: int, w: int = 3) -> str:
     return "".join(out)
 
 
-def consensus(reads: list[str], L: int, w: int = 3) -> str:
-    """Two-sided BMA consensus of length L."""
+def consensus(reads: list[str], L: int, w: int = 3, two_sided: bool = True) -> str:
+    """BMA consensus of length L.
+
+    two_sided=True: forward pass for the first half, reversed pass for the second
+    half (best when reads end exactly at the strand end, as in our own strands).
+    two_sided=False: forward only -- required when reads carry an uncertain 3'
+    tail (adapter read-through / poly-T after the insert, as in real iSeq reads),
+    because the reversed pass would anchor on that tail."""
     if not reads:
         return ""
     if len(reads) == 1:
         return reads[0][:L].ljust(L, "A")
     fwd = _bma(reads, L, w)
+    if not two_sided:
+        return fwd
     bwd = _bma([r[::-1] for r in reads], L, w)[::-1]
     h = L // 2
     return fwd[:h] + bwd[h:]

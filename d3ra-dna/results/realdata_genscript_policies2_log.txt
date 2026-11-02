@@ -1,3 +1,4 @@
 single_best static_uniform {'mean_cost_success': 306204.9, 'cap@0.99': 409341.0, 'mean_spend@0.99': 409341.0, 'pred_mean': 1239634.3, 'pred_mean_cost': nan, 'p_success_uncapped': 1.0}
 single_best static_coverage_eq {'mean_cost_success': 306204.9, 'cap@0.99': 409341.0, 'mean_spend@0.99': 409341.0, 'pred_mean': 1239634.3, 'pred_mean_cost': nan, 'p_success_uncapped': 1.0}
 single_best static_oracle_weights {'mean_cost_success': 306204.9, 'cap@0.99': 409341.0, 'mean_spend@0.99': 409341.0, 'pred_mean': 1239634.3, 'pred_mean_cost': nan, 'p_success_uncapped': 1.0}
+single_best adaptive_uniform {'mean_cost_success': 306296.0, 'cap@0.99': 409400.0, 'mean_spend@0.99': 306210.0, 'pred_mean': nan, 'pred_mean_cost': 1128032.0, 'p_success_uncapped': 1.0}

@@ -187,3 +187,41 @@ Full verified assessment: `docs/novelty_assessment.md`.
 The combination alone is a *systems/methods* contribution, not a theoretical one. The only algorithmic element without clear precedent in DNA storage, container selection, gave the smallest measured gain (≤ 10%, and pivotal scoring tied plain coverage-greedy). A theory-venue paper would need a new result, for example optimality or regret bounds for adaptive container selection with heterogeneous efficiencies. That is not established here.
 
 **Claims withdrawn or reworded:** the spreading threshold and margin rule as new results; "sequence-intrinsic" shared bias, now "batch-inherited, upper bound"; the 20–40-point nanopore gap, now 6–15 on verified references; Kong et al. as the closest prior work, Levy et al. added; "first multi-container" (never claimed, explicitly excluded).
+
+### Q5 addendum: independent replication on the Genscript pool
+
+Data: ENA PRJEB65931, Genscript_GCall. A different vendor and a different design: 12,472 strands of 102 nt. Runs used: aging 0 d (replicates A and B), 2 d, 7 d; PCR 15 and 30 cycles.
+
+Sources:
+- `results/realdata_genscript_channel.csv`
+- `results/realdata_genscript_shared_variance.json`
+- `results/realdata_genscript_policies_roundrobin.csv` (200 read-order permutations)
+- `results/realdata_genscript_policies_part2.csv` (100 permutations, to save compute)
+
+**Channel. Very different from the Twist pool:**
+- **Errors:** deletion-dominated (1.1–1.5%/nt), against substitution-dominated for Twist.
+- **Coverage:** much more uneven (CV ≈ 1.0, against 0.35 for Twist).
+- **Consensus:** much harder (P(exact) with 3 reads 0.61–0.69, against 0.98). 4–9% of strands are never exact at 16 reads.
+- **One container is effectively broken:** PCR 30 c has 54% dropout and 82% of strands unrecoverable.
+- **Shared coverage variance:** 52% (Twist: 69%).
+
+**Reads needed to reach 0.99:**
+
+| placement | policy | reads @0.99 |
+|---|---|---|
+| round-robin (6 containers, incl. the broken one) | fixed depth, uniform | 831,222 |
+| round-robin | static coverage-equalising | 1,938,018 (worse: it over-reads the broken container) |
+| round-robin | **oracle-tuned static** | 650,709 |
+| round-robin | adaptive, stopping only | 641,721 |
+| round-robin | adaptive coverage / pivotal | **577,722 / 577,653** |
+| single best container | fixed depth | 409,341 |
+| single best container | **adaptive** | **306,210** |
+
+What replicates and what does not:
+- **Adaptive retrieval beats the oracle-tuned static allocation again: −11%** with round-robin placement. That is the same size as on Twist (−11 to −17%).
+- **Adaptive stopping beats fixed depth: −23% to −31%** with round-robin, and −25% with the single best container. This is larger than on Twist (15–17%), as expected for a heavier-tailed channel.
+- **Placement plus adaptive stopping: −63%** against round-robin with fixed depth (Twist: −34%).
+- **Pivotal and coverage-greedy scoring tie again.**
+- **A heuristic static allocator can be catastrophic.** The coverage-equalising static weights (2.3× worse than uniform) poured reads into the near-dead container. Adaptive allocation learns this from the data.
+- **Negative: the surrogate fails on this pool.** On the believed channel it called round-robin infeasible and over-predicted single-best cost 3.7× (1.13M predicted vs 306k real). On Twist it was 5–18% *optimistic*. Its abundance/φ fit does not transfer to deletion-heavy, very skewed channels. Model-based budgets must be calibrated empirically per pool.
+- **Not run on Genscript:** the joint optimiser, because each candidate's simulation exceeded 1.5 h of compute. The adaptive-in-the-loop joint search is therefore validated on one real pool only.

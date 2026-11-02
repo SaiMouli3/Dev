@@ -57,11 +57,11 @@ class AdaptiveConfig:
     prior_sd: float = 0.5          # log-sd of efficiency prior (estimation uncertainty)
     futility_eps: float = 0.0
     seed: int = 0
-    overdispersion: float = 0.0    # beta-binomial ICC of recoveries in the posterior (0 -> binomial)
+    overdispersion: float = 0.1    # beta-binomial ICC of recoveries (0 -> binomial); 0.1 selected on DT calibration replicates (frozen protocol)
     explore_rounds: int = 5        # learn-then-commit: round-robin batches per container before committing
     quantile: float = 0.9          # UCB uses this upper posterior quantile, tail/LCB the lower (1-q)
     tail_frac: float = 0.1         # tail-aware: fraction of unfinished stripes treated as bottlenecks
-    forecast: str = "normal"       # p_complete: 'normal' (analytic) or 'mc' (posterior simulation)
+    forecast: str = "mc"           # p_complete: "normal" (analytic) or "mc" (posterior simulation, default)
     forecast_draws: int = 200
 
 

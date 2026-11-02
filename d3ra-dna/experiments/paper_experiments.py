@@ -29,7 +29,7 @@ sys.path.insert(0, str(ROOT / "experiments"))
 import real_data as RD  # noqa: E402  (pool selected by D3RA_POOL at import)
 from d3ra.channel.failures import FailureModel  # noqa: E402
 from d3ra.channel.surrogate import ChannelParams, Layout  # noqa: E402
-from d3ra.evaluation.metrics import adaptive_summary  # noqa: E402
+from d3ra.evaluation.metrics import adaptive_summary, static_summary  # noqa: E402
 from d3ra.realdata import empirical as EM  # noqa: E402
 from d3ra.retrieval.adaptive_policy import THETA, AdaptiveConfig, AdaptiveController  # noqa: E402
 from d3ra.storage.placement import round_robin  # noqa: E402
@@ -288,6 +288,45 @@ def e10_static(trials=60):
     pd.DataFrame(rows).to_csv(RES / "paper_e10_static_reference.csv", index=False)
 
 
+REPLAY_POLICIES = ["uniform", "coverage", "pivotal", "ts", "ucb", "ltc", "info", "tail_lcb"]
+
+
+def replay_v3(trials=200):
+    """Leak-free replay (v3 caches): every adaptive controller starts from the GENERIC prior.
+    Static references: fixed depth (uniform) and hindsight-tuned static weights. The leak-free
+    calibrated belief (calibration reads only) is run as a secondary condition. Per-trial
+    costs are saved so that every comparison can be re-computed (paired over read orders)."""
+    from d3ra.channel.surrogate import fragment_times, file_time
+    from d3ra.retrieval.fixed_policy import uniform_weights, budget_for_target
+    belief_cal, runs_v, phi_v, L = _setup_layout()
+    T = EM.empirical_T(L, runs_v, phi_v, trials, np.random.default_rng(SEED + 7))
+    gen = generic_prior(L.m)
+    per_trial, rows = {}, []
+    for name, w in [("static_uniform", uniform_weights(L)), ("static_hindsight", RD._oracle_static_weights(L, T))]:
+        c = file_time(L, fragment_times(L, T, w))
+        per_trial[name] = c
+        s = static_summary(c, (0.95, 0.99))
+        rows.append({"policy": name, "belief": "--", **_flat(s), "mean_reads": float(budget_for_target(c, 0.99)),
+                     "q99_reads": float(budget_for_target(c, 0.99)), "weights": json.dumps(np.round(w, 4).tolist())})
+        print(RD.POOL, name, round(rows[-1]["q99_reads"]), flush=True)
+    for belief_name, b in [("generic", gen), ("calibrated_leakfree", belief_cal)]:
+        for pol in (REPLAY_POLICIES if belief_name == "generic" else ["coverage"]):
+            ctl = AdaptiveController(L, b, AdaptiveConfig(pol, batch=200))
+            r = ctl.run(trials, np.random.default_rng(SEED + 11), T=T, failed=np.zeros((trials, L.m), bool))
+            c = np.where(r.success, r.cost, np.inf)
+            per_trial[f"{pol}|{belief_name}"] = c
+            s = adaptive_summary(c, r.success, (0.95, 0.99))
+            d = RD._paired_spend_diff(c, per_trial["static_hindsight"])
+            rows.append({"policy": pol, "belief": belief_name, **_flat(s), "mean_reads": float(np.mean(c)),
+                         "q99_reads": float(budget_for_target(c, 0.99)),
+                         "diff_vs_hindsight_static": d[0], "diff_lo": d[1], "diff_hi": d[2],
+                         "read_share": json.dumps((r.reads_per_container.mean(0) / r.reads_per_container.mean(0).sum()).round(4).tolist())})
+            print(RD.POOL, pol, belief_name, round(rows[-1]["mean_reads"]), round(rows[-1]["q99_reads"]), flush=True)
+    suf = "" if RD.POOL == "twist" else "_genscript"
+    pd.DataFrame(rows).to_csv(RES / f"replay_v3{suf}.csv", index=False)
+    pd.DataFrame({k: v for k, v in per_trial.items()}).to_csv(RES / f"replay_v3{suf}_per_trial.csv", index=False)
+
+
 if __name__ == "__main__":
     for stage in sys.argv[1:]:
-        {"e4": e4, "ec": ec, "ed": ed, "ed_od": ed_od, "ed_holdout": ed_holdout, "e10": e10, "e10_static": e10_static}[stage]()
+        {"e4": e4, "ec": ec, "ed": ed, "ed_od": ed_od, "ed_holdout": ed_holdout, "e10": e10, "e10_static": e10_static, "replay_v3": replay_v3}[stage]()

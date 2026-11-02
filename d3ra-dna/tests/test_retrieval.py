@@ -211,7 +211,9 @@ def test_controller_respects_cap(surrogate_setup):
 
 def test_posterior_is_distribution_and_detects_failure(surrogate_setup):
     L, ch = surrogate_setup
-    ctrl = AdaptiveController(L, ch, AdaptiveConfig(controller="pivotal"))
+    # binomial likelihood (rho=0): a silent container is quickly judged (near-)dead; with the
+    # overdispersed default (rho=0.1) zero recoveries remain plausible for longer (documented trade-off)
+    ctrl = AdaptiveController(L, ch, AdaptiveConfig(controller="pivotal", overdispersion=0.0))
     R = np.full((2, 4), 300.0)
     U = np.array([[12, 12, 12, 12], [12, 0, 12, 12]], dtype=float)
     post = ctrl.posterior(R, U)

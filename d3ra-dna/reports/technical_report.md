@@ -38,7 +38,7 @@ The main findings below are all *in simulation, under stated assumptions*.
    - **The saving comes from *not* distributing.** Spreading dilutes reads across worse containers. The price is reliability margin: P(exact) at the reference budget is 0.996 against 0.998.
    - **Design rule:** at a target of 1 − ε, if some container already meets ε by itself, distribution costs reads. Distribution earns its place only when no single container meets the target.
    - **Where distribution was chosen.**
-     - *s4, correlated failure domains:* counts 9/8/15/2/0/18/0/0 across five containers. With seed 0 and 2,000 trials E reached 0.990 at 5,217. A 5-seed re-run shows it is the most reliable design in s4 in 3 of 5 seeds (0.977–0.989), but it does **not** reliably reach 0.99 (`results/q5_seed_sensitivity.csv`); the single-seed 0.990 reported earlier was within Monte-Carlo noise.
+     - *s4, correlated failure domains:* counts 9/8/15/2/0/18/0/0 across five containers. With seed 0 and 2,000 trials E reached 0.990 at 5,217. A 5-seed re-run shows it is the most reliable design in s4 in only 2 of 5 seeds (uniform placement with adaptive reading is more reliable in seeds 2–4) (0.977–0.989), but it does **not** reliably reach 0.99 (`results/q5_seed_sensitivity.csv`); the single-seed 0.990 reported earlier was within Monte-Carlo noise.
      - *s9, wrong estimates:* three containers; −11% vs D.
    - **Static proxy (negative result).** Scoring placements by their static budget-to-target instead gave designs 12–43% *worse* than this simulation-in-the-loop search. In s4 it found no feasible design at all.
 
@@ -76,7 +76,7 @@ A file is split into S stripes. Each stripe carries K information fragments plus
 | H1 | Container-specific channel models predict retrieval better than homogeneous ones | Supported (§6.1) |
 | H2 | Reliability-aware placement improves recovery under uneven coverage and container failures | Supported, with the spreading threshold (§6.2) |
 | H3 | Marginal-benefit adaptive allocation reduces reads at equal reliability | Supported. Most of the gain comes from adaptive stopping; allocation adds 0–35% depending on placement (§6.3) |
-| H4 | Joint optimisation beats independent optimisation | Supported with the adaptive policy in the loop: −65% vs independent (s2), and the most reliable design in s4 in 3 of 5 seeds, though below 0.99 in all of them (seed sweep). In 4/8 scenarios the optimum is a single container. Negative with a static proxy (§6.4, §7) |
+| H4 | Joint optimisation beats independent optimisation | Supported with the adaptive policy in the loop: −65% vs independent (s2), and the most reliable design in s4 in only 2 of 5 seeds (uniform placement with adaptive reading is more reliable in seeds 2–4), though below 0.99 in all of them (seed sweep). In 4/8 scenarios the optimum is a single container. Negative with a static proxy (§6.4, §7) |
 | H5 | Uncertainty-aware control generalises better to unseen channels | Supported for post-placement channel change (prior sd 1.0 matches oracle completion; point estimate loses 23% of retrievals); no difference under moderate noise; Thompson sampling worse (§6.5) |
 
 ## 2. System

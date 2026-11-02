@@ -9,7 +9,7 @@ This file combines the project's mathematical specification (`docs/system_model.
 | (1) | Read-origin probability π_ij with shared g_i (LogNormal) and container-specific h_ij (Gamma) | `channel/surrogate.py` (`sample_T`), `channel/abundance.py` |
 | (2) | Recovery time T_ij = Γ(t_ij, 1)/π_ij | `channel/surrogate.py` (`sample_T`); empirical version in `realdata/empirical.py` (`empirical_T`) |
 | (3) | Q_j(μ): NB-mixed, Gauss–Hermite-averaged decodability | `retrieval/adaptive_policy.py` (`_QTable`) |
-| (4) | Objective: expected spend at 1−ε | `realdata/empirical.py`, `experiments/real_data.py` |
+| (4) | Objective: expected spend at 1−ε | `retrieval/fixed_policy.py` (`budget_for_target`), `evaluation/metrics.py` (`adaptive_summary`, `static_summary`) |
 | (5) | Discrete posterior over θ_j with a failure atom | `AdaptiveController.posterior` |
 | (6) | Hazard h_ij(Δ) | `AdaptiveController._hazard` |
 | (7) | Pivotal score S_j; coverage-greedy score | `AdaptiveController.scores` |

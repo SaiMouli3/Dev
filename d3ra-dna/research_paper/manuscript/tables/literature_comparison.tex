@@ -26,14 +26,14 @@ Leong et al.\ 2012 \cite{leong2012distributed}              & Y & Y & N & N & N 
 Weilguny et al.\ 2023 \cite{weilguny2023dynamic}            & N & N & -- & N & Y & -- & Y \\
 Bubeck et al.\ 2013 \cite{bubeck2013optimal}                & Y & N & Y & N & Y & N & N \\
 \midrule
-This work                                                   & Y & Y$^{a}$ & Y & Y & Y & Y & Y$^{b}$ \\
+This work                                                   & Y & Y$^{a}$ & Y & P$^{c}$ & Y & Y & Y$^{b}$ \\
 \bottomrule
 \end{tabular}
 
 \vspace{2pt}
 \parbox{\textwidth}{\scriptsize $^{a}$Failures injected on real read streams; real failure rates are not measured.
 $^{b}$ENA PRJEB65931 \cite{gimpel2023prjeb65931} (same-batch aliquots), Zenodo 17473983 \cite{technion2025dnaformerreads}
-and 14296588 \cite{barlev2024binned}. Gimpel et al.\ \cite{gimpel2023digital}: heterogeneity characterised across
+and 14296588 \cite{barlev2024binned}; real-data policy results are replays of real read orders (Sec.~VI). $^{c}$Correlated-error model validated, but enters the controller only through calibrated consensus curves. Gimpel et al.\ \cite{gimpel2023digital}: heterogeneity characterised across
 handling conditions of one pool. Cao \& Chen \cite{cao2025optimizing}: log-normal channel fitted to their own data.
 Weilguny et al.\ \cite{weilguny2023dynamic}: genomic loci, not storage containers.}
 \end{table*}

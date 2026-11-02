@@ -67,7 +67,10 @@ def download():
             url = f"https://ftp.sra.ebi.ac.uk/vol1/run/{run[:6]}/{run}/R1.fq.gz"
             subprocess.run(["curl", "-sSL", "-o", str(out), url], check=True)
     z = RAW / "zenodo"
-    for rec, f in [("12666365", "fml-ethz/dt4dds-v1.1.0.zip"), ("14296588", "Srinivasavaradhan.txt")]:
+    for rec, f in [("12666365", "fml-ethz/dt4dds-v1.1.0.zip"), ("14296588", "Srinivasavaradhan.txt"),
+                   # DNAformer binned nanopore reads (Q3 / Q3b correlated-error study)
+                   ("17473983", "BinnedNanoporeFirstFlowcell_Random.txt"),
+                   ("17473983", "BinnedNanoporeSecondFlowcell_Random.txt")]:
         out = z / Path(f).name
         if not out.exists():
             subprocess.run(["curl", "-sSL", "-o", str(out), f"https://zenodo.org/records/{rec}/files/{f}?download=1"], check=True)
@@ -427,7 +430,7 @@ def failure_injection(trials=60, n_stripes=250, k=32, parity=16, seed=0):
                          "adaptive_mean_cost_success": float(r.cost[r.success].mean()) if r.success.any() else np.inf,
                          "cap": cap})
             print(rows[-1], flush=True)
-        pd.DataFrame(rows).to_csv(RES / f"realdata{SUF}_failure_injection.csv", index=False)
+        pd.DataFrame(rows).to_csv(RES / f"realdata{SUF}_failure_injection{os.environ.get('D3RA_TAG', '')}.csv", index=False)
     return rows
 
 

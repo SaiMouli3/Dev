@@ -25,7 +25,7 @@ $h_{ij}(\Delta)$ & recovery hazard over $\Delta$ reads & \texttt{AdaptiveControl
 $\rho_i$, $\nu_s$, $W_s$ & horizon recovery prob., stripe need, stripe weight & \texttt{AdaptiveController} \\
 $b$, $H$ & batch size (reads), look-ahead (batches) & \texttt{AdaptiveConfig} \\
 $c_j$, $c_j^{\mathrm{setup}}$ & per-read and per-batch cost & \texttt{ChannelParams} \\
-$\varepsilon$, $B_\varepsilon$ & failure budget, spend cap & \texttt{realdata.empirical} \\
+$\varepsilon$, $B_\varepsilon$ & failure budget, spend cap & \texttt{fixed\_policy}, \texttt{metrics} \\
 $\mu_c$, $\rho$ & context error rate, error ICC & \texttt{correlated\_errors} \\
 \bottomrule
 \end{tabular}

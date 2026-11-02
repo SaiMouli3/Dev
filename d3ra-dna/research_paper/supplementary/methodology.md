@@ -25,7 +25,8 @@
 
 ## Train/test separation
 - **Twist and Genscript runs:**
-  - The first 300k reads of each run form the calibration split. Beliefs (yield, NB shape, dropout, φ) come only from this split.
+  - The first 300k reads of each run form the calibration split. Beliefs take yield, NB shape and dropout from this split.
+  - **Exception (leak):** the belief's consensus curve φ_j is pooled from per-strand curves estimated on evaluation-split reads. See S5 for the leak-free conditions.
   - The next 900k reads form the evaluation split. Recovery-time matrices come only from this split.
 - **E4:** the 1k–30k beliefs subsample the calibration split by binomial thinning.
 - **E10, "Twist prior" condition:** uses only Twist calibration data.

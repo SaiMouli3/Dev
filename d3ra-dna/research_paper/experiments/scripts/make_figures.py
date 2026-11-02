@@ -57,10 +57,14 @@ def fig_consensus():
     save(fig, "fig_consensus")
 
 
+# v2 = policy tables re-run on the current real-data caches (the v1 files are superseded, kept for transparency)
+TW_POL = RES / "realdata_policies_v2.csv"
+GS_POL = [RES / "realdata_genscript_policies_rr_v2.csv", RES / "realdata_genscript_policies_sb_v2.csv"]
+
+
 def fig_cost_real():
-    tw = pd.read_csv(RES / "realdata_policies.csv")
-    gs = pd.concat([pd.read_csv(RES / "realdata_genscript_policies_roundrobin.csv"),
-                    pd.read_csv(RES / "realdata_genscript_policies_part2.csv")])
+    tw = pd.read_csv(TW_POL)
+    gs = pd.concat([pd.read_csv(f) for f in GS_POL])
     pols = [("static_uniform", "fixed depth"), ("static_oracle_weights", "oracle-tuned static"),
             ("adaptive_uniform", "adaptive stop, round-robin"), ("adaptive_pivotal", "adaptive (proposed)")]
     fig, ax = plt.subplots(1, 2, figsize=(2 * COL, 2.05))
@@ -86,7 +90,7 @@ def fig_cost_real():
 
 
 def fig_failure():
-    fi = pd.read_csv(RES / "realdata_failure_injection.csv")
+    fi = pd.read_csv(RES / "realdata_failure_injection_v2.csv")
     fig, ax = plt.subplots(figsize=(COL, 1.9))
     names = list(dict.fromkeys(fi.lost_container))
     x = np.arange(len(names))
@@ -136,7 +140,7 @@ def fig_limited():
             labels.append(s.split()[2].replace(",", "")[:-3] + "k")
         else:
             labels.append("300k+$\\hat\\varphi$")
-    tw = pd.read_csv(RES / "realdata_policies.csv")
+    tw = pd.read_csv(TW_POL)
     ref_or = tw[(tw.placement == "round_robin") & (tw.policy == "static_oracle_weights")]["mean_spend@0.99"].iloc[0] / 1e3
     ref_fx = tw[(tw.placement == "round_robin") & (tw.policy == "static_uniform")]["mean_spend@0.99"].iloc[0] / 1e3
     fig, ax = plt.subplots(figsize=(COL, 1.9))

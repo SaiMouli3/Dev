@@ -77,19 +77,20 @@ DNA data storage, adaptive sequencing, Bayesian calibration, erasure coding, cov
 %=====================================================================
 \section{Introduction}
 %=====================================================================
-DNA has been demonstrated as an archival medium at megabyte to hundreds-of-megabyte
+DNA has been demonstrated as an archival medium at kilobyte to hundreds-of-megabyte
 scale~\cite{church2012next,goldman2013towards,grass2015robust,erlich2017fountain,organick2018random}.
 Retrieval requires sequencing, which samples molecules at random: some strands are read
-many times, others never, and every read carries substitution, insertion and deletion
+many times, others never, and reads carry substitution, insertion and deletion
 errors~\cite{heckel2019characterization,gimpel2023digital}.  Systems therefore protect each
 strand with an inner code, protect groups of strands with an outer erasure code, and sequence
 to a fixed depth that is expected to recover enough strands~\cite{grass2015robust,organick2018random}.
 The number of reads needed for decoding---the \emph{coverage depth}---has recently become an
 object of study in its own right~\cite{barlev2025cover,gruica2024combinatorial}.
 
-Practical archives will not be a single homogeneous pool.  Capacity, random access and risk
-management push towards many physical containers (vials, capsules, pools) that are written,
-stored and handled separately~\cite{bornholt2016dna,organick2018random}.  Recent theory
+We expect practical archives not to be a single homogeneous pool: capacity, random access and
+risk management argue for many physical containers (vials, capsules, pools) that are written,
+stored and handled separately.  This is our working assumption rather than established
+practice; random-access systems so far address files within a pool~\cite{bornholt2016dna,organick2018random}.  Recent theory
 considers erasure-coded data partitioned across containers with uniform
 sampling~\cite{kong2026coverage} and expected recovery time when containers
 fail~\cite{levy2026expected}.  Two operational questions remain open in this setting:
@@ -109,15 +110,15 @@ assessment is given in Section~\ref{sec:related}.
 \item A \emph{self-calibrating retrieval controller} that couples a discrete Bayesian posterior
 over container efficiency (including container failure) with a hierarchical strand-recovery
 hazard model, allocates reads greedily by expected progress per cost and stops on verified
-decodability (Section~\ref{sec:method}).  Stopping when decodable and checksum gating are
-known practice~\cite{lopez2019dna}; the container-selection component has no direct precedent
+decodability (Section~\ref{sec:method}).  Stopping when decodable is
+known practice~\cite{lopez2019dna}, and checksum-verified decoding is standard~\cite{erlich2017fountain}; the container-selection component has no direct precedent
 we could find in DNA storage, but has analogues in adaptive sampling and bandits
 (Section~\ref{sec:related}).
 \item An evaluation methodology that turns public sequencing runs into \emph{empirical
 recovery-time matrices}, so that placement and retrieval policies can be compared on real
-reads with common random numbers, including a strongest-possible static baseline tuned in
-hindsight (Section~\ref{sec:eval}).
-\item An empirical study on two independent real pools and on controlled simulations
+reads with common random numbers, including a static baseline whose read fractions are tuned
+on the evaluation data themselves (Section~\ref{sec:eval}).
+\item An empirical study on two real pools from different vendors (one public study) and on controlled simulations
 answering five research questions (generalisation to unfamiliar pools, calibration from
 limited observations, detection of efficiency changes, cost reduction, and exact recovery
 under failures), including negative results (Section~\ref{sec:results}).
@@ -156,9 +157,9 @@ in bandit problems~\cite{thompson1933likelihood,bubeck2013optimal}.
 
 \textbf{Placement across failure domains.}  Erasure-coded storage limits the number of fragments
 of a stripe per failure domain~\cite{weil2006crush,cidon2013copysets,ford2010availability};
-spreading can be worse than concentrating under correlated failures~\cite{nath2006subtleties},
-and the optimal allocation of coded storage across unreliable nodes was characterised by Leong
-\emph{et al.}~\cite{leong2012distributed}.  Our spreading rule (Section~\ref{sec:theory}) is a
+correlated failures complicate such placement~\cite{nath2006subtleties},
+and Leong \emph{et al.} studied the optimal allocation of coded storage across unreliable nodes
+and characterised it in several regimes~\cite{leong2012distributed}.  Our spreading rule (Section~\ref{sec:theory}) is a
 special case of their analysis and is stated only as a design rule.
 
 \textbf{Consensus and correlated errors.}  Strands are reconstructed from noisy reads by trace
@@ -232,7 +233,7 @@ A file (or bundle of files, optionally compressed) is split into $S$ stripes of 
 fragments of $P{=}32$ bytes.  A systematic Cauchy Reed--Solomon code~\cite{reed1960polynomial} over $\mathrm{GF}(2^8)$
 extends each stripe to $N$ fragments; any $K$ suffice (MDS).  Each fragment becomes a strand
 carrying a compact address, an address check byte, the payload and an inner Reed--Solomon code
-with four parity bytes plus a 16-bit CRC, mapped to DNA by a whitened 2-bit code (168--172\,nt).
+with four parity bytes plus a 16-bit CRC, mapped to DNA by a whitened 2-bit code.
 Logical metadata (code parameters, per-stripe CRC-32, SHA-256 of the blob and of every file)
 is kept in a manifest outside the DNA.  Placement $x_{ij}\in\{0,1\}$ assigns fragment $i$ to
 container $j$.  Our default geometry is $K{=}32$, $N{=}48$.
@@ -275,7 +276,11 @@ read costs $c_j$ and a failure budget $\varepsilon$ we seek
 where $C_\pi=\sum_j c_jR_j$ at stopping and the cap $B_\varepsilon$ is the
 $(1{-}\varepsilon)$-quantile of $C_\pi$.  For a static plan, which commits read fractions
 $w$ and a budget in advance, the expected spend equals its budget.  We report the
-\emph{expected spend at 0.99} ($\varepsilon{=}0.01$) throughout.
+\emph{expected spend at 0.99} ($\varepsilon{=}0.01$) throughout.  Two caveats apply.  Because
+$B_\varepsilon$ is each policy's own quantile, the constraint holds by construction and the
+objective rewards a low mean even when the tail is heavy; we therefore also report the
+0.99-quantile (the budget a user must provision).  With $n\le100$ trials the empirical
+0.99-quantile is essentially the sample maximum.
 
 %=====================================================================
 \section{Proposed Method}\label{sec:method}
@@ -330,12 +335,15 @@ within a look-ahead horizon $H$ ($6$ batches per container).  With
 $\mu_s=\sum_{i\in s}\rho_i$, $\sigma_s^2=\sum_{i\in s}\rho_i(1-\rho_i)+\tfrac14$ and
 $z_s=(\mu_s-\nu_s+\tfrac12)/\sigma_s$, the stripe weight is
 $W_s=\phi(z_s)/(\sigma_s\Phi(z_s))$, the normal approximation of
-$\partial\log\Prob(\textstyle\sum_{i\in s}X_i\ge\nu_s)/\partial\rho_i$ (a Birnbaum-type component importance).  The controller reads the container maximising
+$\partial\log\Prob(\textstyle\sum_{i\in s}X_i\ge\nu_s)/\partial\rho_i$ (a normal-approximation sensitivity weight).  The controller reads the container maximising
 \begin{equation}
 S_j=\frac{\sum_{(i,j)\ \text{open}}W_{s(i)}\,h_{ij}(b)\,\big(1-\rho_i+h_{ij}(b)\big)}{c_jb+c^{\mathrm{setup}}_j}.
 \label{eq:score}
 \end{equation}
-The simpler \emph{coverage-greedy} rule drops $W_s$ and $\rho_i$:
+The factor $(1-\rho_i+h_{ij})$ is a heuristic: the first-order effect of a batch on fragment
+$i$ is $h_{ij}(1-\rho_i)$, and the added $h_{ij}^2$ term keeps fragments that are already
+likely to be recovered from being scored at zero.  $\rho_i$ assumes every container receives
+$H$ further batches simultaneously.  The simpler \emph{coverage-greedy} rule drops $W_s$ and $\rho_i$:
 $S_j=\sum h_{ij}(b)/(c_jb+c_j^{\mathrm{setup}})$ over fragments of unfinished stripes.
 
 \subsection{Verified stopping and posterior predictive completion}
@@ -344,14 +352,16 @@ passed inner RS decoding, CRC-16 and the address check, (ii) every stripe matche
 per-stripe CRC-32, and (iii) the file matches its SHA-256.  If (ii) fails, the controller
 requests one more fragment for that stripe and localises the faulty fragment by leave-one-out
 decoding.  A wrong file is therefore output only on a SHA-256 collision; the risk of stopping
-is entirely moved into cost.  The controller also estimates the posterior predictive
+is entirely moved into cost.  This verification path runs in the FASTQ pipeline (simulated
+reads); in the real-data replay (Section~\ref{sec:eval}) a fragment counts as recovered when
+its consensus equals the designed strand, i.e.\ decodability is an oracle event.  The controller also estimates the posterior predictive
 probability of completing within the remaining budget,
 \begin{equation}
 \hat P_{\mathrm{complete}}=\prod_s\Phi\!\left(\frac{\sum_{i\in s}\rho^{\mathrm{rem}}_i-\nu_s+\frac12}{\sqrt{\sum_{i\in s}\rho^{\mathrm{rem}}_i(1-\rho^{\mathrm{rem}}_i)}}\right),
 \label{eq:pcomplete}
 \end{equation}
 with $\rho^{\mathrm{rem}}_i$ computed from \eqref{eq:hazard} with the remaining budget spread
-over containers.  We evaluate its calibration in Section~\ref{sec:results}.
+evenly over all $M$ containers (including any that hold no fragments of a stripe).  We evaluate its calibration in Section~\ref{sec:results}.
 
 \subsection{Correlated errors}\label{sec:channel}
 Consensus success $\varphi_j(n)$ depends on whether errors repeat across reads of a strand.
@@ -377,7 +387,9 @@ concentrating in one domain for every $q\in(0,1)$; if $t\ge1$, spreading is bett
 $q<q^\star(D,t)$, the unique root of $\Prob(\mathrm{Bin}(D,q)\ge t{+}1)=q$ (e.g.\ $q^\star=0.232$
 for $D{=}4,t{=}1$).  This follows from the allocation analysis of~\cite{leong2012distributed};
 a proof, a dropout-margin correction and a heterogeneous extension are given in the
-supplementary material; the sign prediction was correct in all 8{,}148 covered cases of an independent numerical reproduction.  We use it only to choose
+supplementary material.  A numerical check of the sign prediction is correct in all 8{,}148
+cases with $D\mid N$ (\texttt{experiments/reproduce.py}) and in 99.6\% of 1{,}344 cases without
+that restriction (\texttt{theory\_summary.json}).  We use it only to choose
 placements.
 
 %=====================================================================
@@ -388,8 +400,8 @@ and integration tests.  The full path store $\rightarrow$ FASTQ $\rightarrow$ re
 disk: \texttt{d3ra store} writes a manifest, the placement and per-container synthesis FASTA
 files; \texttt{d3ra simulate} writes one FASTQ per container (optionally with real error
 scripts transplanted from public reads); \texttt{d3ra retrieve} streams the FASTQ files in
-batches, clusters reads against the expected address prefixes (computable from the manifest),
-runs two-sided bitwise-majority-alignment consensus~\cite{batu2004reconstructing} (forward-only
+batches (168\,nt strands for a 3\,kB test archive in the default configuration; the address field grows with archive size), clusters reads against the expected address prefixes (computable from the manifest),
+runs bitwise-majority-alignment consensus~\cite{batu2004reconstructing}, in a two-sided variant of ours (forward-only
 for raw reads with untrimmed 3$'$ tails), inner decoding, outer decoding with per-stripe
 verification, and writes SHA-256-verified files.  The controller is vectorised over
 Monte-Carlo trials.  Code, configuration, seeds and result files are listed in
@@ -399,10 +411,13 @@ Section~\ref{sec:repro}.
 \section{Evaluation Methodology}\label{sec:eval}
 %=====================================================================
 \subsection{Empirical recovery-time matrices from real reads}
-Sequencing reads are independent draws from a sample.  A container that holds a subset of
-strands therefore produces exactly the sample's read stream restricted to that subset (plus a
-proportional share of unmappable reads).  For a real run $j$ and strand $i$ we (1) map reads to
-designed strands (k-mer voting, edit-distance verification; 99.5\% mapped), (2) estimate a
+Sequencing reads are, to a first approximation, independent draws from a sample.  A container
+that holds a subset of strands is therefore emulated by the sample's read stream restricted to
+that subset (plus a proportional share of unmappable reads).  The replay is
+\emph{semi-empirical}: read orders and per-strand read counts are real, consensus success is
+drawn from per-strand curves estimated from real reads, containers are emulated by subsetting
+runs of one pool, and only the read order varies between trials.  For a real run $j$ and strand $i$ we (1) map reads to
+designed strands (k-mer voting, edit-distance verification; 99.5--99.7\% of reads mapped for Twist, 98.2--99.4\% for Genscript), (2) estimate a
 strand-specific empirical consensus curve $\hat\varphi_{ij}(n)$ by repeatedly taking $n$ of the
 strand's real reads, computing the consensus and checking it against the design, and (3) for
 each trial draw a random permutation of the run's evaluation reads and set $T_{ij}$ to the
@@ -411,8 +426,14 @@ resulting matrix replaces \eqref{eq:T}; any static or adaptive policy is then re
 same matrices (common random numbers).  For a static plan with read fractions $w$ the minimal
 budget of a trial is closed-form,
 $B^\star(w)=\max_s\operatorname{ord}_{K}\{\min_jT_{ij}/w_j: i\in s\}$.
-Beliefs used by the controller are estimated from a disjoint \emph{calibration} split of reads
-(the first 300k reads of each run; evaluation uses the next 900k), except where stated.
+Beliefs used by the controller take yield, coverage shape and dropout from a disjoint
+\emph{calibration} split (the first 300k reads of each run; evaluation uses the next 900k).
+\textbf{Disclosure:} the per-container consensus curve $\varphi_j$ of these ``calibrated''
+beliefs is pooled from the per-strand curves of even-indexed strands, which are estimated from
+\emph{evaluation}-split reads; the same beliefs choose the single-best container.  This is a
+leak of evaluation information into the controller.  Results that are free of it are the
+generic-$\varphi$ and generic-prior conditions of Section~\ref{sec:results} (E4, E10), which we
+use to bound its effect.
 
 \begin{figure}[t]
 \centering
@@ -444,23 +465,27 @@ We place 12{,}000 strands in 250 stripes of $(K,N)=(32,48)$; each run acts as on
 \emph{Fixed depth}: uniform read fractions with the budget equal to the 0.99-quantile of its
 own per-trial requirement on the evaluation data (optimistic: the budget is known in
 hindsight).  \emph{Oracle-tuned static}: read fractions optimised by Nelder--Mead directly on
-the evaluation matrices---no deployable static plan can do better.  \emph{Adaptive stop,
+the evaluation matrices (a local optimum; it is not deployable, and static weights combined
+with verified stopping were not tested).  \emph{Adaptive stop,
 round-robin}: our stopping rule with uniform allocation.  \emph{Adaptive (proposed)}: pivotal
 and coverage-greedy scores.  The primary metric is expected spend at 0.99
 (\eqref{eq:objective}); differences are reported with paired bootstrap 95\% CIs over the same
-read permutations (2{,}000 resamples~\cite{efron1993introduction}; effect sizes as Cliff's $\delta$~\cite{cliff1993dominance}).  Experimental settings are summarised in
+read permutations (2{,}000 resamples~\cite{efron1993introduction}).  Experimental settings are summarised in
 Table~\ref{tab:config}.
 \input{tables/config}
 
 %=====================================================================
 \section{Results}\label{sec:results}
 %=====================================================================
-Unless marked \emph{simulated}, every number below is computed from real sequencing reads.
+Unless marked \emph{simulated}, every number below is computed from public sequencing reads,
+for policy costs through the semi-empirical replay of Section~\ref{sec:eval}.
 
 \subsection{Real channels are heterogeneous (RQ2/RQ4 context)}\label{sec:res-channel}
 Fig.~\ref{fig:consensus}(a) shows real consensus curves of the six Twist containers.  Errors
 are substitution-dominated (0.35--1.15\%/nt); three reads give exact consensus for 87--99\% of
-strands depending on handling, and over-amplified samples need about twice as many reads.  Of
+strands depending on handling (Fig.~\ref{fig:consensus}a): with one read, 52\% of strands give
+an exact consensus in the fresh sample but 27\% after 90 PCR cycles; with three reads, 98\%
+versus 87\%.  Of
 the coverage variance beyond sampling noise, 69\% is shared by a strand across the six
 containers (52\% in the Genscript pool), an upper bound for aliquots of one synthesis batch.
 The Genscript pool is harsher: deletion-dominated errors, coverage CV $\approx1.0$ (Twist
@@ -539,13 +564,15 @@ We set the budget to the median adaptive cost on the real Twist streams (55{,}60
 that about half of the retrievals complete within it, and record $\hat P_{\mathrm{complete}}$
 \eqref{eq:pcomplete} after 30, 50, 70 and 85\% of the budget (200 trials; beliefs from full
 calibration or the generic prior).  The estimate is strongly \emph{under}-confident
-(Fig.~\ref{fig:confidence}): its mean is 0.04--0.22 while 52\% (full calibration) and 60\%
+(Fig.~\ref{fig:confidence}): its mean is 0.001--0.22 while 52\% (full calibration) and 60\%
 (generic prior) of retrievals complete; the expected calibration error is 0.30--0.60 and the
 Brier score (0.31--0.60) is worse than that of a constant forecast (0.24--0.25).  It does rank
 retrievals late in the budget: the AUC for predicting completion rises from chance
 (0.49--0.56 at 30--50\% of the budget, CIs include 0.5) to 0.70--0.71 at 85\% (95\% CI
-0.63--0.77).  Thus the posterior predictive is usable for ranking but not as a probability; this
-explains why the futility rule built on it abandoned recoverable retrievals.  We have not isolated the cause; candidate explanations (untested) are the
+0.63--0.77).  Thus the posterior predictive is usable for ranking but not as a probability.  Its
+under-confidence is consistent with the behaviour of the futility rule built on it, which
+abandoned recoverable retrievals in simulation (Section~\ref{sec:limits}), but we did not
+test that link directly.  We have not isolated the cause; candidate explanations (untested) are the
 spread-evenly allocation assumed for the remaining budget, which is worse than the controller's
 actual allocation, and the normal approximation in \eqref{eq:pcomplete}.
 
@@ -565,9 +592,10 @@ every container behaves like the fresh pool; the 90-cycle sample has relative ef
 the strongly degraded containers are flagged ($\Prob(\theta<0.7)>0.9$) in 100\% of trials, and
 containers within 5\% of nominal efficiency are never flagged.  Posterior means track the true
 relative efficiency on the real streams (0.28--0.29 vs.\ 0.34; 1.06 vs.\ 1.00--1.03) but
-\emph{under}-estimate strongly degraded simulated containers (0.05--0.06 vs.\ 0.14).  Moderately
-degraded containers are flagged occasionally: 2-day aging (0.76) in 10\% of trials at $R^\star$,
-and 60 PCR cycles (0.75) in 73\% at $R^\star$ but 0\% at $2R^\star$.  However, nominal 90\% credible intervals cover the
+\emph{under}-estimate strongly degraded simulated containers (0.05--0.06 vs.\ 0.14).  Moderately reduced
+containers, which lie above the 0.7 threshold and are therefore \emph{not} degraded by our own
+definition, are falsely flagged: 2-day aging (0.76) in 10\% of trials at $R^\star$, and 60 PCR
+cycles (0.75) in 73\% at $R^\star$ (0\% at $2R^\star$).  However, nominal 90\% credible intervals cover the
 true efficiency in only 0--83\% of trials: the binomial likelihood \eqref{eq:posterior} treats
 strand recoveries as independent although coverage is correlated through $g_i$, so the
 posterior is over-confident.
@@ -577,11 +605,11 @@ posterior is over-confident.
 configuration option of the controller) widens the posterior.  We chose $\rho_U{=}0.01$ after
 inspecting the Twist and simulated runs (selection set; 200 trials, same seeds, binomial
 reference re-run in the same process): mean CI coverage rises from 0.08 to 1.00 on the real
-Twist streams and from 0.51 to 0.79 in simulation, strongly degraded containers are still
-flagged in 100\% of trials, the moderately degraded 60-cycle container is no longer flagged
+Twist streams (i.e.\ the intervals become too wide there) and from 0.51 to 0.79 in simulation, strongly degraded containers are still
+flagged in 100\% of trials, the false alarm on the 60-cycle container disappears
 (0.82$\to$0; the binomial re-run flags it in 82\% of trials versus 73\% in Table~\ref{tab:detect}, a run-to-run difference we have not fully traced; a candidate is process-dependent seeding, Section~\ref{sec:repro}), and mean absolute error of the posterior mean falls (0.060$\to$0.023 real,
 0.038$\to$0.027 simulated); $\rho_U{=}0.05$ gives 100\% coverage everywhere, i.e.\ intervals
-that are too wide.  On the \emph{held-out} Genscript pool with $\rho_U{=}0.01$ unchanged, mean
+that are too wide everywhere.  On the \emph{held-out} Genscript pool with $\rho_U{=}0.01$ unchanged, mean
 coverage over five containers rises from 0.01 to 0.85 (range 0.22--1.00), with no false flags
 before or after; the near-dead PCR\_30c container (54\% dropout) is flagged in all trials under
 both likelihoods (its relative efficiency, defined through finite recovery times, is not
@@ -603,7 +631,9 @@ calibration (528.9k; unpaired bootstrap CIs overlap), yet 10--11\% fewer than th
 oracle-tuned static plan (621.0k) and 30--31\% fewer than fixed depth (798.2k).  The price of
 an unfamiliar pool is paid mainly while the posterior learns which container is near-dead: it
 sends 5.3--5.9\% of its reads there, against 3.4\% with in-pool calibration.  Prior width
-($s=0.5$ vs.\ $1.0$) changes cost by less than 1\%.  Transfer across vendors thus costs a few percent rather than failing, but
+($s=0.5$ vs.\ $1.0$) changes cost by less than 1\%.  The in-pool belief carries the evaluation-split leak of Section~\ref{sec:eval}; the generic
+prior does not, so the 4--5\% gap is an upper bound on what in-pool calibration (including the
+leak) buys here.  Transfer across vendors thus costs a few percent rather than failing, but
 on this harsher pool in-pool calibration still saves about 5\% (not statistically resolved with 60 trials).
 
 \begin{table}[!t]
@@ -636,14 +666,15 @@ the file when that container fails.  A four-container tiered layout (46{,}530 re
 recoverable after any single loss, but losing one of its two main containers leaves few spare
 fragments per stripe: retrievals then need 127--137k reads and complete within 3$\times$ budget
 in only 45--48\% of permutations (losing a third container: 102k reads, always complete).  Round-robin
-over six containers (55{,}610 reads) degrades by $+5$ to $+32$\% and always completes,
-consistent with coupon-collector theory~\cite{barlev2025cover,levy2026expected}.
-In simulation (12 retrievals per configuration, heavy errors), verification-gated stopping
-produced no wrong output: with the default inner code (RS with four parity bytes, CRC-16) there
-were 0 false fragment accepts in 10{,}567 decode attempts (95\% upper bound
-$2.8\times10^{-4}$); with a deliberately weak code (two parity bytes, no CRC) 54--60 wrong
-fragments per retrieval passed the inner check, all were caught by the stripe CRC or SHA-256,
-and the retrievals ended \emph{partial} rather than wrong.
+over six containers (55{,}610 reads) degrades by $+5$ to $+32$\% and always completes.
+In simulation (12 end-to-end FASTQ retrievals of a 6\,kB file per configuration, heavy
+errors), verification-gated stopping produced no wrong output: with the default inner code (RS
+with four parity bytes, CRC-16) all 12 retrievals were exact with 0 false fragment accepts in
+10{,}557 decode attempts (95\% upper bound $2.8\times10^{-4}$ per attempt); with a deliberately
+weak code (two parity bytes, no CRC) 45--65 wrong fragments per retrieval (mean 54) passed the
+inner check, all were caught by the stripe CRC or SHA-256, and the retrievals ended
+\emph{partial} (11) or \emph{failed} (1), never wrong.  Twenty-four retrievals cannot establish
+a wrong-output rate; the guarantee rests on the SHA-256 check.
 
 \begin{figure}[t]
 \centering
@@ -656,13 +687,16 @@ annotations give the completion probability within $3\times$ the 0.95-budget whe
 
 \subsection{Ablation (simulated)}
 Fig.~\ref{fig:ablation} removes one component at a time in a simulated scenario with correlated
-failure domains (8 containers in 4 domains; 2{,}000 trials).  Removing adaptive allocation
-(round-robin with adaptive stopping) costs $+79$\%; static reads cost $+68$\%; uniform or
-independently optimised placement cost $+37$--$38$\% and lower reliability; ignoring correlated
-failures in placement drops the success probability to 0.953.  Perfect channel knowledge
-changes the cost by $<1$\% and coverage-greedy scoring is 1.5\% cheaper than pivotal scoring.
-A seed sweep (five seeds) showed that the full design is the most reliable in 3/5 seeds but
-does not reliably reach 0.99 in this scenario; we therefore do not claim that it does.
+failure domains (8 containers in 4 domains; 2{,}000 trials, 10{,}000 for the static
+variants).  In mean reads of successful retrievals (the quantity plotted), removing adaptive
+allocation (round-robin with adaptive stopping) costs $+70$\% ($+79$\% in expected spend at
+0.99); static reads cost $+67$\%; uniform or independently optimised placement cost
+$+37$--$38$\% with lower reliability; ignoring correlated failures in placement drops the
+success probability to 0.953.  Coverage-greedy scoring is 1.6\% cheaper than pivotal scoring.
+(The ``oracle channel'' variant is uninformative here because belief and truth coincide in this
+scenario.)  A five-seed sweep showed that the full design is the most reliable design in only
+2 of 5 seeds and reaches 0.99 in none of them (0.977--0.989); we do not claim that it meets
+the target.
 
 \begin{figure}[t]
 \centering
@@ -676,7 +710,7 @@ successful retrievals and success probability $P$ (green: $P\ge0.99$).}
 \section{Discussion}
 %=====================================================================
 \textbf{What drives the savings.}  Two mechanisms explain most of the gain: stopping as soon
-as the data are provably decodable (the fixed plan must pay for the 0.99-tail on every
+as the data are decodable (the fixed plan must pay for the 0.99-tail on every
 retrieval) and directing reads away from slow or dead containers once the posterior has seen a
 few batches.  The second matters only when data are spread over several containers and their
 efficiencies differ; it is irrelevant for a single container.  The more elaborate
@@ -689,12 +723,14 @@ gracefully cost degrades.  The choice between these layouts is governed by the f
 $\varepsilon$, for which real per-container failure statistics do not yet exist.
 
 \textbf{Model versus reality.}  Our analytical surrogate under-predicts real cost by 5--18\% on
-the Twist pool and over-predicts it 3.7$\times$ on the Genscript pool.  Budgets derived from a
-model should therefore be calibrated per pool; the self-calibrating controller is robust to
-this because it uses the model only to rank containers and stops on verified decodability.
+the Twist pool; on the Genscript pool it declares round-robin retrieval infeasible and
+over-predicts single-container cost 3.7$\times$.  Budgets derived from a model should therefore
+be calibrated per pool.  The controller uses the model only to rank containers and stops on
+observed decodability, which plausibly makes it less sensitive to such bias; our experiments
+are consistent with this but do not isolate it.
 
 %=====================================================================
-\section{Limitations and Threats to Validity}
+\section{Limitations and Threats to Validity}\label{sec:limits}
 %=====================================================================
 Table~\ref{tab:limits} lists assumptions and limitations.  The most important are: (i) the six
 ``containers'' of each pool are aliquots of one synthesis batch sequenced on two flowcells, not
@@ -704,11 +740,16 @@ data report vial-level failure rates; (iii) recovery on real data is measured as
 strand-level consensus against the design, a conservative proxy for inner decoding, because
 our own encoding has not been synthesised; (iv) read costs are abstract and per-run setup
 costs are zero, which favours many small adaptive batches (closer to streaming nanopore than
-to Illumina flowcells); (v) the posterior is over-confident and the early-abandonment rule
-based on \eqref{eq:pcomplete} abandoned 3.7--4.5\% of retrievals that would have succeeded, so
-it is disabled.  Internal validity: all policies are compared on identical read permutations;
-the fixed-depth and static baselines are given their best budgets in hindsight, which favours
-them.  External validity: two Illumina pools from one study and two nanopore datasets.
+to Illumina flowcells); (v) the posterior is over-confident and an early-abandonment rule
+based on \eqref{eq:pcomplete} abandoned 3.7--4.5\% of retrievals that would have succeeded in a
+simulated channel-change scenario (s7; not tested on real reads), so it is disabled; (vi) the
+real-data replay is semi-empirical (Section~\ref{sec:eval}) and treats decodability as an oracle
+event; (vii) the ``calibrated'' beliefs contain consensus-curve information from the evaluation
+split (Section~\ref{sec:eval}); (viii) the real-data cached inputs (per-strand consensus
+curves) were regenerated between experiment runs, and the policy tables were re-run so that all
+reported real-data policy numbers use the same inputs (Section~\ref{sec:repro}).  Internal
+validity: all policies are compared on identical read permutations; the fixed-depth and static
+baselines are given their best budgets in hindsight, which favours them.  External validity: two Illumina pools (two vendors) from one study and two nanopore datasets.
 \input{tables/limitations}
 
 %=====================================================================
@@ -719,9 +760,11 @@ every figure and table are in the project repository (Python $\ge3.11$; dependen
 \texttt{requirements.txt}).  Public data are fetched by
 \texttt{experiments/real\_data.py download} (ENA PRJEB65931; Zenodo 12666365, 17473983,
 14296588).  An independent clean-environment reproduction (fresh clone and virtual
-environment) passed all reproduction checks with byte-identical theory outputs.  Re-running an
+environment) at an earlier commit, before the RQ1--RQ3 and confidence experiments, passed
+all its reproduction checks with byte-identical theory outputs (report in the evidence
+directory).  Re-running an
 experiment reproduces its numbers closely but not bit-for-bit: per-run
-consensus-curve estimation is seeded through Python's process-randomised string hash, and we
+consensus-curve estimation (and the null permutation of the nanopore study) is seeded through Python's process-randomised string hash, and we
 observed small run-to-run differences (e.g.\ a flag rate of 73\% vs.\ 82\%) that we have not
 fully traced.  Fixing this requires a stable seed derivation and a full re-run.  A claim-to-evidence
 table mapping every reported number to its code and result file is provided with the

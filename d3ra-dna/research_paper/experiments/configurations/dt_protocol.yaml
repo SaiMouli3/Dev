@@ -62,3 +62,13 @@ secondary_evidence: real_read_replay
   caches: v3 (consensus curves of the belief from CALIBRATION reads only; crc32 seeds)
   primary belief: generic prior; leaky v1/v2 'calibrated' numbers only in an appendix as an upper bound
   decodability: oracle (exact consensus) -- labelled as such
+
+# ---------------------------------------------------------------- DEVIATIONS (recorded after freezing)
+deviations:
+  - when: during replicate generation, before any policy run
+    what: scenario 'customarray' replaced by 'photolitho' (DT4DDS photolithographic synthesis model)
+    why: DT4DDS's CustomArray settings carry a 117-nt deletion position-bias table; synthesising our 136-nt
+         strands raises a shape error, so that model cannot be used with this archive.
+  - when: rho_U selection
+    what: none -- rule applied as frozen; selected rho_U = 0.1 is the largest grid value and its calibration
+         coverage (0.87) is still below 0.90; reported as a limitation, grid not extended post hoc.

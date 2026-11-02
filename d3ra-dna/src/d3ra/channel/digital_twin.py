@@ -27,7 +27,7 @@ PRIMERS_2 = ("AATGATACGGCGACCACCGAGATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT",
 class ContainerCondition:
     """Handling history of one physically separate container."""
     name: str
-    synthesis: str = "twist"          # 'twist' | 'customarray'
+    synthesis: str = "twist"          # 'twist' | 'photolithographic' | 'customarray' (117-nt designs only)
     sigma: float = 0.30               # lognormal oligo-count spread of this synthesis batch
     halflives: float = 0.0            # aging (DT4DDS Aging, n_halflives)
     pcr_cycles: int = 15
@@ -53,8 +53,9 @@ def simulate_container(seqs: list[str], cond: ContainerCondition, n_reads: int, 
     dt4dds.helpers.config.set_random_seed(int(seed))
     dt4dds.properties.set_property_settings(dt4dds.settings.defaults.SequenceProperties(
         efficiency_distribution="normal", efficiency_params={"loc": 1.0, "scale": cond.eff_sd}))
-    syn_settings = (dt4dds.settings.defaults.ArraySynthesis_Twist() if cond.synthesis == "twist"
-                    else dt4dds.settings.defaults.ArraySynthesis_CustomArray())
+    syn_settings = {"twist": dt4dds.settings.defaults.ArraySynthesis_Twist,
+                    "photolithographic": dt4dds.settings.defaults.ArraySynthesis_Photolithographic,
+                    "customarray": dt4dds.settings.defaults.ArraySynthesis_CustomArray}[cond.synthesis]()
     syn = dt4dds.processes.ArraySynthesis(syn_settings(oligo_distribution_type="lognormal",
                                                        oligo_distribution_params={"mean": 0, "sigma": cond.sigma}))
     syn.process(list(seqs))

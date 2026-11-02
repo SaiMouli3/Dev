@@ -75,7 +75,9 @@ SCENARIOS = {
     "fail1": _with(BASE, c0={"failed": True, "name": "fresh(failed)"}),  # best container lost
     "fail2": _with(BASE, c0={"failed": True, "name": "fresh(failed)"}, c3={"failed": True, "name": "pcr_30c(failed)"}),
     "homog": [ContainerCondition(f"fresh{j}") for j in range(M)],     # homogeneous control
-    "customarray": [ContainerCondition(c.name + "_ca", synthesis="customarray", halflives=c.halflives,
+    # deviation from the frozen protocol: DT4DDS's CustomArray model has a 117-nt position-bias table and
+    # cannot synthesise 136-nt strands, so the alternative synthesis model is photolithographic
+    "photolitho": [ContainerCondition(c.name + "_pl", synthesis="photolithographic", halflives=c.halflives,
                                        pcr_cycles=c.pcr_cycles, pcr_eff=c.pcr_eff, eff_sd=c.eff_sd,
                                        sigma=c.sigma, coverage=c.coverage) for c in BASE],     # different synthesis vendor model
 }

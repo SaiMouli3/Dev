@@ -1,6 +1,6 @@
 """Independent reproduction of headline claims with explicit tolerances.
 
-  python experiments/reproduce.py            # simulation + theory claims (~15-25 min, CPU)
+  python experiments/reproduce.py            # simulation + theory claims (~2-5 min, CPU)
   python experiments/reproduce.py --real     # + real-data claims (needs `real_data.py download prep channel`)
 
 Each check prints PASS/FAIL with the measured value and the claimed value."""
@@ -60,7 +60,7 @@ def adaptive_vs_fixed():
     rows = baseline_experiment("s1_homogeneous", trials=600, static_trials=6000)
     d = {r["design"]: r for r in rows if not r["design"].startswith("cmp")}
     a, c = d["A_uniform_fixed"]["mean_spend@0.99"], d["C_uniform_adaptive"]["mean_spend@0.99"]
-    check("s1 adaptive stopping saving vs fixed depth", f"{1 - c / a:.3f}", 0.3 < 1 - c / a < 0.65, "~0.48")
+    check("s1 adaptive stopping saving vs fixed depth", f"{1 - c / a:.3f}", 0.3 < 1 - c / a < 0.65, "0.48 at full trial counts (0.44 at these reduced counts)")
 
 
 def threshold():

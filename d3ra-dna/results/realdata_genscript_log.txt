@@ -1,0 +1,13 @@
+prep ERR12033803 Aging_0d 227s
+prep ERR12033811 Aging_2d 233s
+prep ERR12033819 Aging_7d 238s
+prep ERR12033832 PCR_30c 153s
+prep ERR12033807 Aging_0d_repB 171s
+prep ERR12033824 PCR_15c 189s
+Aging_0d {'yield_mapped': 0.9937, 'rate_sub': 0.0077, 'rate_ins': 0.0005, 'rate_del': 0.011, 'cv': np.float64(1.0487), 'dropout_at_full_depth': 0.0088, 'phi_exact_n1': 0.1966, 'phi_exact_n3': 0.6941, 'phi_exact_n5': 0.9034}
+Aging_2d {'yield_mapped': 0.9913, 'rate_sub': 0.0092, 'rate_ins': 0.0005, 'rate_del': 0.0119, 'cv': np.float64(1.0597), 'dropout_at_full_depth': 0.009, 'phi_exact_n1': 0.1593, 'phi_exact_n3': 0.6364, 'phi_exact_n5': 0.8784}
+Aging_7d {'yield_mapped': 0.9868, 'rate_sub': 0.0101, 'rate_ins': 0.0005, 'rate_del': 0.0133, 'cv': np.float64(1.0519), 'dropout_at_full_depth': 0.0079, 'phi_exact_n1': 0.1393, 'phi_exact_n3': 0.6147, 'phi_exact_n5': 0.8749}
+PCR_15c {'yield_mapped': 0.9888, 'rate_sub': 0.0056, 'rate_ins': 0.0005, 'rate_del': 0.0151, 'cv': np.float64(0.9794), 'dropout_at_full_depth': 0.0046, 'phi_exact_n1': 0.22, 'phi_exact_n3': 0.6872, 'phi_exact_n5': 0.9107}
+PCR_30c {'yield_mapped': 0.9815, 'rate_sub': 0.0078, 'rate_ins': 0.0004, 'rate_del': 0.0144, 'cv': np.float64(1.9971), 'dropout_at_full_depth': 0.5377, 'phi_exact_n1': 0.0842, 'phi_exact_n3': 0.1483, 'phi_exact_n5': 0.1606}
+Aging_0d_repB {'yield_mapped': 0.9928, 'rate_sub': 0.0089, 'rate_ins': 0.0005, 'rate_del': 0.0117, 'cv': np.float64(1.0559), 'dropout_at_full_depth': 0.0107, 'phi_exact_n1': 0.1656, 'phi_exact_n3': 0.6414, 'phi_exact_n5': 0.8691}
+shared-variance: {'var_shared': np.float64(0.5428), 'var_container_specific': np.float64(0.5041), 'poisson_var': np.float64(0.0241), 'shared_fraction': np.float64(0.5185), 'mean_pairwise_log_corr': 0.6672, 'strands_used': 4940}

@@ -38,7 +38,7 @@ python -m pytest -q
 ```
 
 ```bash
-PYTHONPATH=src python -m d3ra.cli README.md --containers 6
+PYTHONPATH=src python -m d3ra.cli demo README.md --containers 4
 ```
 
 ```bash
@@ -62,8 +62,10 @@ PYTHONPATH=src python -m d3ra.cli store my.pdf --archive arch
 ```
 
 ```bash
-PYTHONPATH=src python -m d3ra.cli simulate --archive arch --out fq --transplant illumina
+PYTHONPATH=src python -m d3ra.cli simulate --archive arch --out fq
 ```
+
+Real-error transplant (`--transplant illumina` or `--transplant nanopore`) requires first running `python experiments/real_data.py download transplant` (nanopore: `nanodiag`).
 
 ```bash
 PYTHONPATH=src python -m d3ra.cli retrieve --archive arch --fastq fq --out recovered
@@ -76,7 +78,7 @@ python experiments/real_data.py download prep transplant nanopore nanodiag chann
 What each command does, in order:
 1. Installs dependencies.
 2. Runs the test suite.
-3. Stores and retrieves a real file end-to-end through simulated containers. Recovered files are written to `./recovered`.
+3. Stores and retrieves a real file end-to-end through simulated containers, in memory, and prints the status. To write recovered files to disk, use the `store` / `simulate` / `retrieve` workflow below.
 4. Smoke-runs every experiment, about 10–20 minutes.
 5. Runs the full programme, which writes `results/*.csv` (about 1–2 h on a laptop CPU).
 6. Renders the figures.
@@ -85,6 +87,18 @@ What each command does, in order:
 The last four commands are the on-disk workflow: store the archive, write FASTQ files with real error profiles, retrieve by streaming FASTQ adaptively, then run the real-data validation (downloads about 0.5 GB from ENA and Zenodo).
 
 Everything runs on a CPU. No GPU is needed.
+
+## Verifying the results
+
+```bash
+python experiments/reproduce.py
+```
+
+```bash
+python experiments/theory_checks.py
+```
+
+`reproduce.py` re-derives the headline claims with tolerances in about 2–5 minutes; add `--real` once the real data has been prepared. `theory_checks.py` regenerates `results/theory_*`, which should match the committed files exactly.
 
 ## Core idea in one paragraph
 

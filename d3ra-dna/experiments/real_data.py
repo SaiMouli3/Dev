@@ -36,14 +36,25 @@ from d3ra.realdata import empirical as EM  # noqa: E402
 from d3ra.realdata.channel_estimation import coverage_stats, error_profile, shared_variance_decomposition  # noqa: E402
 from d3ra.realdata.mapping import KmerMapper  # noqa: E402
 
+import os
+
 RAW = ROOT / "data" / "raw"
-CACHE = ROOT / "data" / "processed" / "realdata"
 RES = ROOT / "results"
-REF_FASTA = RAW / "zenodo/fml-ethz-dt4dds-21968d9/scripts/internal_validation/Twist_GCall/design_files.fasta"
-RUNS = {  # ENA run -> condition
-    "ERR12033805": "Aging_0d", "ERR12033813": "Aging_2d", "ERR12033821": "Aging_7d",
-    "ERR12033826": "PCR_15c", "ERR12033837": "PCR_60c", "ERR12033841": "PCR_90c",
-}
+POOL = os.environ.get("D3RA_POOL", "twist")      # twist (primary) | genscript (independent replication pool)
+if POOL == "genscript":
+    CACHE = ROOT / "data" / "processed" / "realdata_genscript"
+    REF_FASTA = RAW / "zenodo/fml-ethz-dt4dds-21968d9/scripts/internal_validation/Genscript_GCall/design_files.fasta"
+    RUNS = {"ERR12033803": "Aging_0d", "ERR12033811": "Aging_2d", "ERR12033819": "Aging_7d",
+            "ERR12033824": "PCR_15c", "ERR12033832": "PCR_30c", "ERR12033807": "Aging_0d_repB"}
+    SUF = "_genscript"
+else:
+    CACHE = ROOT / "data" / "processed" / "realdata"
+    REF_FASTA = RAW / "zenodo/fml-ethz-dt4dds-21968d9/scripts/internal_validation/Twist_GCall/design_files.fasta"
+    RUNS = {  # ENA run -> condition
+        "ERR12033805": "Aging_0d", "ERR12033813": "Aging_2d", "ERR12033821": "Aging_7d",
+        "ERR12033826": "PCR_15c", "ERR12033837": "PCR_60c", "ERR12033841": "PCR_90c",
+    }
+    SUF = ""
 N_CALIB, N_EVAL = 300_000, 900_000
 
 
@@ -190,12 +201,12 @@ def channel():
                           if k in ("yield_mapped", "rate_sub", "rate_ins", "rate_del", "cv", "dropout_at_full_depth",
                                    "phi_exact_n1", "phi_exact_n3", "phi_exact_n5")}, flush=True)
     df = pd.DataFrame(rows)
-    df.to_csv(RES / "realdata_channel.csv", index=False)
+    df.to_csv(RES / f"realdata{SUF}_channel.csv", index=False)
     M = np.stack([C[r]["run"].calib_counts for r in RUNS], 1)
     dec = shared_variance_decomposition(M)
     dec_fresh = shared_variance_decomposition(M[:, [0, 1, 3]])   # aging 0/2 d + PCR 15c (mild)
     out = {"all_runs": dec, "mild_runs": dec_fresh, "position_profiles": prof_out}
-    (RES / "realdata_shared_variance.json").write_text(json.dumps(out, indent=1, default=float))
+    (RES / f"realdata{SUF}_shared_variance.json").write_text(json.dumps(out, indent=1, default=float))
     print("shared-variance:", {k: round(v, 4) for k, v in dec.items()}, flush=True)
     return df, dec
 
@@ -219,6 +230,48 @@ def belief_from_calibration(C, refs):
     m = len(runs)
     return ChannelParams(np.array(yields), np.array(shapes), np.array(drops), np.ones(m), np.stack(phis),
                          FailureModel(np.full(m, 1e-3)), sigma_g=float(np.sqrt(max(dec["var_shared"], 1e-6))), d_syn=0.0), dec
+
+
+def _oracle_static_weights(L, T, target=0.99):
+    """Strongest static baseline: read fractions optimised directly on the
+    evaluation recovery-time matrix (oracle; not deployable)."""
+    from scipy.optimize import minimize
+    from d3ra.channel.surrogate import file_time, fragment_times
+    from d3ra.retrieval.fixed_policy import budget_for_target
+    used = L.stored_per_container() > 0
+    idx = np.flatnonzero(used)
+
+    def obj(z):
+        w = np.zeros(L.m)
+        e = np.exp(z - z.max())
+        w[idx] = e / e.sum()
+        b = budget_for_target(file_time(L, fragment_times(L, T, w)), target)
+        return b if np.isfinite(b) else 1e12
+    best = None
+    for z0 in (np.zeros(idx.size), np.log(L.placement.sum(0)[idx] + 1)):
+        r = minimize(obj, z0, method="Nelder-Mead", options={"maxiter": 300, "xatol": 1e-3, "fatol": 1.0})
+        if best is None or r.fun < best.fun:
+            best = r
+    w = np.zeros(L.m)
+    e = np.exp(best.x - best.x.max())
+    w[idx] = e / e.sum()
+    return w
+
+
+def _paired_spend_diff(adaptive_cost, static_samples, target=0.99, n_boot=2000, seed=0):
+    """Paired bootstrap over trials of [adaptive expected spend at target] -
+    [static committed budget at target] (same recovery-time matrices)."""
+    from d3ra.retrieval.fixed_policy import budget_for_target
+    rng = np.random.default_rng(seed)
+    a, s_ = np.asarray(adaptive_cost), np.asarray(static_samples)
+
+    def stat(ix):
+        cap = budget_for_target(a[ix], target)
+        sp = np.minimum(np.where(np.isfinite(a[ix]), a[ix], cap), cap).mean()
+        return sp - budget_for_target(s_[ix], target)
+    full = stat(np.arange(len(a)))
+    bs = np.array([stat(rng.integers(0, len(a), len(a))) for _ in range(n_boot)])
+    return float(full), float(np.quantile(bs, 0.025)), float(np.quantile(bs, 0.975))
 
 
 def policies(trials=200, n_stripes=250, k=32, parity=16, seed=0):
@@ -270,10 +323,15 @@ def policies(trials=200, n_stripes=250, k=32, parity=16, seed=0):
         t0 = time.time()
         T = EM.empirical_T(L, runs_v, phi_v, trials, np.random.default_rng(seed + 7))
         t_T = time.time() - t0
-        for pol in ["static_uniform", "static_coverage_eq", "adaptive_uniform", "adaptive_coverage", "adaptive_pivotal"]:
+        per_trial = {}
+        for pol in ["static_uniform", "static_coverage_eq", "static_oracle_weights", "adaptive_uniform", "adaptive_coverage", "adaptive_pivotal"]:
             if pol.startswith("static"):
-                w = uniform_weights(L) if pol == "static_uniform" else coverage_equalising_weights(L, belief)
+                if pol == "static_oracle_weights":
+                    w = _oracle_static_weights(L, T)
+                else:
+                    w = uniform_weights(L) if pol == "static_uniform" else coverage_equalising_weights(L, belief)
                 cost = file_time(L, fragment_times(L, T, w))
+                per_trial[pol] = cost
                 summ = static_summary(cost, (0.95, 0.99))
                 # model prediction of the same quantity on the believed channel
                 Ts = sample_T(L, belief, 2000, np.random.default_rng(seed + 9))
@@ -284,6 +342,7 @@ def policies(trials=200, n_stripes=250, k=32, parity=16, seed=0):
                 ctl = AdaptiveController(L, belief, AdaptiveConfig(pol.split("_")[1], cap=np.inf, batch=200))
                 r = ctl.run(trials, np.random.default_rng(seed + 11), T=T, failed=np.zeros((trials, belief.m), bool))
                 c = np.where(r.success, r.cost, np.inf)
+                per_trial[pol] = c
                 summ = adaptive_summary(c, r.success, (0.95, 0.99), rounds=r.rounds, containers_used=r.containers_used)
                 Ts, fs = sample_T(L, belief, trials, np.random.default_rng(seed + 9), return_state=True)
                 rp = ctl.run(trials, np.random.default_rng(seed + 12), T=Ts, failed=fs)
@@ -294,12 +353,15 @@ def policies(trials=200, n_stripes=250, k=32, parity=16, seed=0):
                     flat[kk2 + "_lo"], flat[kk2 + "_hi"] = vv
                 else:
                     flat[kk2] = vv
+            if pol.startswith("adaptive") and "static_oracle_weights" in per_trial:
+                d, lo, hi = _paired_spend_diff(per_trial[pol], per_trial["static_oracle_weights"])
+                flat.update({"diff_vs_static_oracle": d, "diff_vs_static_oracle_lo": lo, "diff_vs_static_oracle_hi": hi})
             rows.append({"placement": v, "counts": " ".join(map(str, counts)), "policy": pol, "trials": trials,
                          "T_build_s": t_T, **flat})
             print(v, pol, {x: round(flat.get(x, np.nan), 1) for x in ("mean_cost_success", "cap@0.99", "mean_spend@0.99",
                                                                         "pred_mean", "pred_mean_cost", "p_success_uncapped")}, flush=True)
-        pd.DataFrame(rows).to_csv(RES / "realdata_policies.csv", index=False)
-    (RES / "realdata_belief.json").write_text(json.dumps({"yield": belief.yield_.tolist(), "shape": belief.shape.tolist(),
+        pd.DataFrame(rows).to_csv(RES / f"realdata{SUF}_policies.csv", index=False)
+    (RES / f"realdata{SUF}_belief.json").write_text(json.dumps({"yield": belief.yield_.tolist(), "shape": belief.shape.tolist(),
         "dropout": belief.dropout.tolist(), "sigma_g": belief.sigma_g, "runs": [RUNS[r] for r in RUNS],
         "joint_choice": js.variant, "joint_history": js.history, "shared_variance": dec}, indent=1, default=float))
     return rows
@@ -362,7 +424,7 @@ def failure_injection(trials=60, n_stripes=250, k=32, parity=16, seed=0):
                          "adaptive_mean_cost_success": float(r.cost[r.success].mean()) if r.success.any() else np.inf,
                          "cap": cap})
             print(rows[-1], flush=True)
-        pd.DataFrame(rows).to_csv(RES / "realdata_failure_injection.csv", index=False)
+        pd.DataFrame(rows).to_csv(RES / f"realdata{SUF}_failure_injection.csv", index=False)
     return rows
 
 
@@ -375,7 +437,7 @@ def plots():
     out.mkdir(parents=True, exist_ok=True)
     okabe = ["#0072B2", "#E69F00", "#009E73", "#D55E00", "#CC79A7", "#56B4E9", "#000000"]
     # 1) Illumina real phi per container vs simulated grid
-    ch = pd.read_csv(RES / "realdata_channel.csv")
+    ch = pd.read_csv(RES / f"realdata{SUF}_channel.csv")
     fig, ax = plt.subplots(1, 2, figsize=(11, 4))
     for i, row in ch.iterrows():
         ax[0].plot(EM.N_GRID, [row[f"phi_exact_n{n}"] for n in EM.N_GRID], "o-", color=okabe[i % 7], label=row["condition"])
@@ -398,7 +460,7 @@ def plots():
     fig.savefig(out / "realdata_consensus_curves.png", dpi=150)
     plt.close(fig)
     # 2) policies on real recovery-time matrices
-    d = pd.read_csv(RES / "realdata_policies.csv")
+    d = pd.read_csv(RES / f"realdata{SUF}_policies.csv")
     d = d[d.placement.isin(["round_robin", "reliability", "tiered2", "single_best"])]
     pols = ["static_uniform", "adaptive_uniform", "adaptive_coverage", "adaptive_pivotal"]
     fig, ax = plt.subplots(figsize=(9, 4.2))
@@ -420,7 +482,7 @@ def plots():
     fig.savefig(out / "realdata_policies.png", dpi=150)
     plt.close(fig)
     # 3) failure injection
-    f = RES / "realdata_failure_injection.csv"
+    f = RES / f"realdata{SUF}_failure_injection.csv"
     if f.exists():
         fi = pd.read_csv(f)
         fig, ax = plt.subplots(figsize=(9, 4))

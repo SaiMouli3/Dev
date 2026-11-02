@@ -19,7 +19,8 @@ from ..retrieval.consensus import consensus
 from .sequencer import ReadErrorModel, noisy_reads
 from .surrogate import NMAX
 
-CACHE = Path(__file__).resolve().parents[3] / "data" / "processed" / "phi_calibration.json"
+CACHE = Path(__file__).resolve().parents[3] / "data" / "processed" / "phi_calibration.json"          # committed (read)
+LOCAL_CACHE = CACHE.with_name("phi_calibration_local.json")                                           # gitignored (write)
 
 
 def _key(err: ReadErrorModel, fmt_desc: dict, n_list, trials) -> str:
@@ -33,10 +34,14 @@ def measure_phi(err: ReadErrorModel, fmt: StrandFormat | None = None, n_list=(1,
     desc = {"payload": fmt.payload_bytes, "nsym": fmt.inner.nsym, "codec": fmt.codec.name}
     key = _key(err, desc, n_list, trials)
     cache = {}
-    if use_cache and CACHE.exists():
-        cache = json.loads(CACHE.read_text())
-        if key in cache:
-            return cache[key]
+    if use_cache:
+        for f in (CACHE, LOCAL_CACHE):
+            if f.exists():
+                c = json.loads(f.read_text())
+                if key in c:
+                    return c[key]
+        if LOCAL_CACHE.exists():
+            cache = json.loads(LOCAL_CACHE.read_text())
     rng = np.random.default_rng(seed)
     L = fmt.strand_nt
     succ = []
@@ -52,9 +57,9 @@ def measure_phi(err: ReadErrorModel, fmt: StrandFormat | None = None, n_list=(1,
         succ.append(ok / trials)
     res = {"n": list(n_list), "success": succ, "strand_nt": L, "error": err.__dict__, "format": desc}
     if use_cache:
-        CACHE.parent.mkdir(parents=True, exist_ok=True)
+        LOCAL_CACHE.parent.mkdir(parents=True, exist_ok=True)
         cache[key] = res
-        CACHE.write_text(json.dumps(cache, indent=1))
+        LOCAL_CACHE.write_text(json.dumps(cache, indent=1))
     return res
 
 

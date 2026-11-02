@@ -1,0 +1,33 @@
+design == FC2 all-read consensus for 0.860 of 2393 strands
+{'n': 5, 'strands': 2057, 'real': 0.7287311618862421, 'iid': 0.8804083616917842, 'transplant_independent': 0.8556149732620321}
+{'n': 10, 'strands': 2057, 'real': 0.9372873116188625, 'iid': 0.9970831307729704, 'transplant_independent': 0.9956246961594555}
+{
+ "dnaformer": {
+  "strands_audited": 2393,
+  "design_matches_independent_consensus": 0.8595904722106142,
+  "positions_rate_gt_0.5_share": 0.000988095238095238,
+  "fc1_fc2_rate_corr_all": 0.4655007496842821,
+  "fc1_fc2_rate_corr_excluding_gt_0.5": 0.4486145292398699,
+  "error_rate": 0.03959523809523809,
+  "curves_on_verified_strands": [
+   {
+    "n": 5,
+    "strands": 2057,
+    "real": 0.7287311618862421,
+    "iid": 0.8804083616917842,
+    "transplant_independent": 0.8556149732620321
+   },
+   {
+    "n": 10,
+    "strands": 2057,
+    "real": 0.9372873116188625,
+    "iid": 0.9970831307729704,
+    "transplant_independent": 0.9956246961594555
+   }
+  ]
+ },
+ "srinivasavaradhan": {
+  "clusters_audited": 400,
+  "design_matches_consensus_of_20_40_reads": 0.91
+ }
+}

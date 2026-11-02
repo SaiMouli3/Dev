@@ -1,6 +1,6 @@
 # Retrieval-in-the-Loop Placement and Adaptive Sequencing for Multi-Container DNA Archives
 
-*Draft. Simulation study; not peer reviewed. Author list TBD.*
+*Draft. Simulation study with real-data validation on two independent pools; not peer reviewed. Author list TBD. See `reports/critical_questions.md` for the validation programme and corrected claims.*
 
 ## Abstract
 
@@ -171,6 +171,18 @@ The data are six Illumina runs of one 12,000-strand pool after different handlin
   - Adaptive stopping alone is −17%.
   - The surrogate is 5–18% optimistic.
 - **Container loss.** Removing one container's real stream leaves round-robin placement +5–32% more costly. The 4-container tiered placement becomes +120–190% more costly and frequently stalls, and the single-container placement loses everything. The post-failure margin governs the degradation.
+
+## 6.7 Robustness checks
+
+- **Independent pool replication** (Genscript; deletion-dominated; coverage CV ≈ 1.0; one container at 54% dropout):
+  - Adaptive retrieval beats the oracle-tuned static allocation by 11% (Twist: 11–17%).
+  - Adaptive stopping beats fixed depth by 23–31%.
+  - Best placement plus adaptive stopping is −63%.
+  - Pivotal and coverage-greedy scoring tie.
+  - The surrogate fails on this pool (3.7× pessimistic).
+- **Seed sensitivity.** Cost rankings are stable. The correlated-failure "only design reaching 0.99" claim was not robust and has been withdrawn.
+- **Stopping safety.** Verification gating gives P(wrong output) ≤ 2⁻²⁵⁶. Zero false accepts in 10,567 decode attempts with the default inner code. A futility (give-up) rule was harmful in testing.
+- **Clean-environment reproduction.** 4/4 headline checks pass and the theory outputs are byte-identical.
 
 ## 7. Negative results
 

@@ -126,6 +126,12 @@ All results are in simulation, under the documented assumptions. Full tables, CI
   - On real read streams, placement plus adaptive stopping saves 34% (stopping alone 15–17%).
   - After a container loss, cost is governed by the post-failure margin, consistent with coupon-collector theory.
   - Real files are recovered byte-exact from FASTQ with real error profiles.
+- **Independent replication** (Genscript pool: different vendor and design, deletion-heavy, one near-dead container):
+  - Adaptive retrieval beats an oracle-tuned static allocation by 11%.
+  - Best placement plus adaptive stopping is −63% vs fixed depth.
+  - The surrogate fails on this pool (3.7× pessimistic).
+
+  Details: `reports/critical_questions.md`.
 - **Negative results.** Thompson sampling; stripe-importance weighting vs plain hazard-greedy allocation; risk-adaptive parity (predictor tail too optimistic); shared-bias vs replication; no design meets 0.99 under the compound-stress scenario.
 
 ## Limitations

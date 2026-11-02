@@ -6,6 +6,14 @@ Status: computational study, version 0.1 (2026-11-01). Everything here is simula
 
 ---
 
+> **Update.** Several claims below were tested further and corrected in `reports/critical_questions.md`:
+> - the spreading threshold is a known allocation-theory result;
+> - the s4 "only design to reach 0.99" claim was not robust across seeds;
+> - the nanopore gap is 6–15 points on verified references;
+> - the shared coverage variance is batch-inherited, an upper bound.
+>
+> That document takes precedence.
+
 ## 0. Executive summary
 
 We built a complete simulation pipeline. It takes files through ingestion and DNA encoding, places the strands in multiple containers, sequences them through a noisy channel, retrieves them adaptively and checks the result byte-for-byte. We then evaluated placement, redundancy and sequencing policies across 9 scenarios, with 2,000 adaptive trials and 20,000 static trials per design.

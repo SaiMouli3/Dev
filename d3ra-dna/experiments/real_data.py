@@ -304,10 +304,12 @@ def policies(trials=200, n_stripes=250, k=32, parity=16, seed=0):
     kk = np.full(n_stripes, k)
     variants = ["round_robin", "reliability", "failure1", "tiered2", "single_best"]
     best = int(np.argmax(belief.yield_ * belief.phi[:, 3] * (1 - belief.dropout)))
-    js = joint_optimise_adaptive(n_stripes, k, belief, 0.99, None, parities=[parity], trials=200)
-    print("joint (belief) chose", js.variant, js.history, flush=True)
+    skip_joint = os.environ.get("D3RA_SKIP_JOINT") == "1"
+    js = None if skip_joint else joint_optimise_adaptive(n_stripes, k, belief, 0.99, None, parities=[parity], trials=200)
+    if js is not None:
+        print("joint (belief) chose", js.variant, js.history, flush=True)
     rows = []
-    for v in variants + ["joint"]:
+    for v in variants + ([] if js is None else ["joint"]):
         if v == "round_robin":
             from d3ra.storage.placement import round_robin
             L = Layout(stripe_of, kk, round_robin(stripe_of, belief.m))
@@ -363,7 +365,8 @@ def policies(trials=200, n_stripes=250, k=32, parity=16, seed=0):
         pd.DataFrame(rows).to_csv(RES / f"realdata{SUF}_policies.csv", index=False)
     (RES / f"realdata{SUF}_belief.json").write_text(json.dumps({"yield": belief.yield_.tolist(), "shape": belief.shape.tolist(),
         "dropout": belief.dropout.tolist(), "sigma_g": belief.sigma_g, "runs": [RUNS[r] for r in RUNS],
-        "joint_choice": js.variant, "joint_history": js.history, "shared_variance": dec}, indent=1, default=float))
+        "joint_choice": None if js is None else js.variant, "joint_history": None if js is None else js.history,
+        "shared_variance": dec}, indent=1, default=float))
     return rows
 
 

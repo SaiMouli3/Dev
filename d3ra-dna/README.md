@@ -26,6 +26,9 @@ Documents:
 - `docs/channel_calibration.md`: parameter provenance and public datasets.
 - `reports/technical_report.md`: the technical report.
 - `reports/paper_draft.md`: a paper draft.
+- `reports/critical_questions.md`: answers to six critical research questions (container validity, spreading-threshold proof, correlated nanopore errors, stopping safety, reproducibility, novelty), with corrections to earlier claims.
+- `docs/theory_spreading.md`: formal statements and proofs for spreading vs concentration.
+- `docs/novelty_assessment.md`: verified prior-art comparison.
 
 ## Quick start
 

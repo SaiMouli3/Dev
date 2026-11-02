@@ -4,3 +4,6 @@ __pycache__/
 .hypothesis/
 recovered/
 *.egg-info/
+# large raw downloads (re-fetch with experiments/real_data.py --download)
+data/raw/ena/
+data/raw/zenodo/

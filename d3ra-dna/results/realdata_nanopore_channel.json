@@ -1,0 +1,19 @@
+{
+ "clusters": 9954,
+ "reads": 166296,
+ "median_cluster_size": 13.0,
+ "cluster_size_cv": 0.741480924714867,
+ "empty_or_singleton_clusters": 85,
+ "strand_length": 110,
+ "rate_sub": 0.015254545454545455,
+ "rate_ins": 0.014893181818181818,
+ "rate_del": 0.020225,
+ "rate_total": 0.05037272727272727,
+ "reads_aligned": 4000,
+ "hp_ratio_sub": 1.1164236102657563,
+ "hp_ratio_ins": 0.6601405103210249,
+ "hp_ratio_del": 1.5738838979563845,
+ "errors_per_read_mean": 5.541,
+ "errors_per_read_var": 10.760318999999999,
+ "frac_error_free_reads": 0.0315
+}

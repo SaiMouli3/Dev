@@ -17,6 +17,7 @@ Stages:
 from __future__ import annotations
 
 import argparse
+import zlib
 import json
 import pickle
 import subprocess
@@ -42,13 +43,13 @@ RAW = ROOT / "data" / "raw"
 RES = ROOT / "results"
 POOL = os.environ.get("D3RA_POOL", "twist")      # twist (primary) | genscript (independent replication pool)
 if POOL == "genscript":
-    CACHE = ROOT / "data" / "processed" / "realdata_genscript"
+    CACHE = ROOT / "data" / "processed" / "realdata_genscript_v3"   # v3: leak-free phi_calib, crc32 seeds
     REF_FASTA = RAW / "zenodo/fml-ethz-dt4dds-21968d9/scripts/internal_validation/Genscript_GCall/design_files.fasta"
     RUNS = {"ERR12033803": "Aging_0d", "ERR12033811": "Aging_2d", "ERR12033819": "Aging_7d",
             "ERR12033824": "PCR_15c", "ERR12033832": "PCR_30c", "ERR12033807": "Aging_0d_repB"}
     SUF = "_genscript"
 else:
-    CACHE = ROOT / "data" / "processed" / "realdata"
+    CACHE = ROOT / "data" / "processed" / "realdata_v3"   # v3: leak-free phi_calib, crc32 seeds
     REF_FASTA = RAW / "zenodo/fml-ethz-dt4dds-21968d9/scripts/internal_validation/Twist_GCall/design_files.fasta"
     RUNS = {  # ENA run -> condition
         "ERR12033805": "Aging_0d", "ERR12033813": "Aging_2d", "ERR12033821": "Aging_7d",
@@ -88,9 +89,10 @@ def _prep_one(run):
     t = time.time()
     rd = EM.load_run(RUNS[run], RAW / "ena" / f"{run}_R1.fq.gz", mapper, N_CALIB, N_EVAL, len(refs[0]))
     t_map = time.time() - t
-    EM.estimate_phi(rd, refs, seed=hash(run) % 2**32)
+    EM.estimate_phi(rd, refs, seed=zlib.crc32(run.encode()))   # stable across processes (was hash())
     prof = error_profile(rd.pairs_sample)
     rd.reads_by_ref = {}
+    rd.calib_by_ref = {}
     rd.pairs_sample = []
     with open(out, "wb") as fh:
         pickle.dump({"run": rd, "error_profile": prof, "t_map": t_map, "t_total": time.time() - t}, fh)
@@ -215,8 +217,9 @@ def channel():
 
 
 def belief_from_calibration(C, refs):
-    """ChannelParams estimated ONLY from calibration-split reads (+ pooled phi from
-    even-indexed strands of the evaluation split; T uses all strands)."""
+    """ChannelParams estimated ONLY from calibration-split reads (leak-free since v3 caches:
+    phi is pooled from consensus of calibration reads; earlier caches pooled evaluation-split
+    curves of even-indexed strands, which leaked evaluation information)."""
     from d3ra.channel.failures import FailureModel
     from d3ra.channel.surrogate import ChannelParams
     runs = [C[r]["run"] for r in RUNS]
@@ -229,7 +232,9 @@ def belief_from_calibration(C, refs):
         shapes.append(float(np.clip(mu ** 2 / max(var - mu, 1e-9), 0.5, 200)))
         yields.append(rd.calib_yield)
         drops.append(float(max((c == 0).mean() - np.mean(np.exp(-c.mean())), 1e-4)))
-        phis.append(EM.grid_to_full(rd.phi_strand[::2].mean(0)))
+        if getattr(rd, "phi_calib", None) is None:
+            raise RuntimeError("cache lacks leak-free phi_calib; re-run `prep` (v3 caches)")
+        phis.append(EM.grid_to_full(rd.phi_calib))
     m = len(runs)
     return ChannelParams(np.array(yields), np.array(shapes), np.array(drops), np.ones(m), np.stack(phis),
                          FailureModel(np.full(m, 1e-3)), sigma_g=float(np.sqrt(max(dec["var_shared"], 1e-6))), d_syn=0.0), dec

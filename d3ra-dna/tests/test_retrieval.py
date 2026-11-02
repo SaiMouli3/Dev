@@ -234,3 +234,22 @@ def test_overdispersed_posterior_is_wider(surrogate_setup):
         p = post[0, 0, 1:] / post[0, 0, 1:].sum()
         sd.append(np.sqrt(p @ lt ** 2 - (p @ lt) ** 2))
     assert sd[1] > sd[0]                                   # beta-binomial spreads the posterior
+
+
+@pytest.mark.parametrize("ctl_name", ["ts", "ucb", "ltc", "info", "tail", "tail_lcb"])
+def test_new_controllers_complete(surrogate_setup, ctl_name):
+    L, ch = surrogate_setup
+    ctl = AdaptiveController(L, ch, AdaptiveConfig(controller=ctl_name, explore_rounds=2))
+    r = ctl.run(20, np.random.default_rng(1))
+    assert r.success.mean() > 0.8
+    assert np.all(np.isfinite(r.cost[r.success]))
+
+
+def test_mc_forecast_is_probability(surrogate_setup):
+    L, ch = surrogate_setup
+    base = AdaptiveController(L, ch, AdaptiveConfig(controller="coverage")).run(10, np.random.default_rng(2))
+    cap = float(np.median(base.cost))
+    ctl = AdaptiveController(L, ch, AdaptiveConfig(controller="coverage", cap=cap, forecast="mc", forecast_draws=50))
+    r = ctl.run(10, np.random.default_rng(2), checkpoints=[0.6 * cap])
+    vals = [v for _, _, v in r.meta["checkpoints"]]
+    assert vals and all(0.0 <= v <= 1.0 for v in vals)

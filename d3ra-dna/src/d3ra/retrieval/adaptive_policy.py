@@ -41,6 +41,12 @@ from .stopping_rule import completion_probability
 THETA = np.concatenate([[0.0], np.exp(np.linspace(np.log(0.01), np.log(5.0), 25))])
 
 
+# controller name -> base score / theta selection
+_BASE_SCORE = {"thompson": "pivotal", "ts": "coverage", "ucb": "coverage", "ltc": "coverage",
+               "info": "coverage", "tail": "tail", "tail_lcb": "tail"}
+_THETA_MODE = {"thompson": "sample", "ts": "sample", "ucb": "upper", "tail_lcb": "lower"}
+
+
 @dataclass
 class AdaptiveConfig:
     controller: str = "pivotal"
@@ -52,6 +58,11 @@ class AdaptiveConfig:
     futility_eps: float = 0.0
     seed: int = 0
     overdispersion: float = 0.0    # beta-binomial ICC of recoveries in the posterior (0 -> binomial)
+    explore_rounds: int = 5        # learn-then-commit: round-robin batches per container before committing
+    quantile: float = 0.9          # UCB uses this upper posterior quantile, tail/LCB the lower (1-q)
+    tail_frac: float = 0.1         # tail-aware: fraction of unfinished stripes treated as bottlenecks
+    forecast: str = "normal"       # p_complete: 'normal' (analytic) or 'mc' (posterior simulation)
+    forecast_draws: int = 200
 
 
 @dataclass
@@ -149,7 +160,21 @@ class AdaptiveController:
         q0, q1 = self.q(c, mu0), self.q(c, mu1)
         return np.clip((q1 - q0) / np.maximum(1 - q0, 1e-12), 0, 1)
 
-    def scores(self, R, rec_pair, rec_frag, by_stripe, theta, rng) -> np.ndarray:
+    def theta_from_post(self, post: np.ndarray, rng) -> np.ndarray:
+        """Point value of theta per (trial, container) used for planning."""
+        mode = _THETA_MODE.get(self.cfg.controller, "mean")
+        if mode == "mean":
+            return post @ THETA
+        cdf = post.cumsum(axis=2)
+        if mode == "sample":
+            u = rng.random(cdf.shape[:2] + (1,))
+        elif mode == "upper":
+            u = np.full(cdf.shape[:2] + (1,), self.cfg.quantile)
+        else:  # lower
+            u = np.full(cdf.shape[:2] + (1,), 1 - self.cfg.quantile)
+        return THETA[(u > cdf).sum(axis=2).clip(max=len(THETA) - 1)]
+
+    def scores(self, R, rec_pair, rec_frag, by_stripe, theta, rng, base: str | None = None) -> np.ndarray:
         L, cfg = self.L, self.cfg
         trials, M = R.shape
         b = np.full((trials, M), float(self.batch))
@@ -158,7 +183,8 @@ class AdaptiveController:
         frag_open = (~rec_frag) & (need[:, L.stripe_of] > 0)     # useful fragments
         pair_open = frag_open[:, L.pair_frag] & (~rec_pair)
         h1 = self._hazard(theta, R, b) * pair_open
-        if cfg.controller == "coverage":
+        base = base or _BASE_SCORE.get(cfg.controller, cfg.controller)
+        if base == "coverage":
             return L.pair_to_cont_sum(h1) / cost
         # pivotal: horizon recovery probabilities per fragment
         H = np.full((trials, M), cfg.horizon * self.batch)
@@ -174,12 +200,26 @@ class AdaptiveController:
         z = (mu - (need - 0.5)) / np.sqrt(var)
         logpdf = -0.5 * z ** 2 - 0.5 * np.log(2 * np.pi * var)
         wlog = np.exp(logpdf - log_ndtr(z)) * (need > 0)           # (trials, S)
+        if base == "tail":
+            # risk-aware: concentrate on the bottleneck stripes (lowest standardized slack z),
+            # which determine the upper tail of the completion time
+            zz = np.where(need > 0, z, np.inf)
+            k_b = np.maximum(1, np.ceil(cfg.tail_frac * (need > 0).sum(1))).astype(int)
+            thr = np.take_along_axis(np.sort(zz, axis=1), (k_b - 1)[:, None], axis=1)
+            Wt = ((zz <= thr) & (need > 0)).astype(float)[:, L.stripe_of]
+            contrib = Wt[:, L.pair_frag] * h1
+            sc = L.pair_to_cont_sum(contrib)
+            # fall back to coverage when no bottleneck pair can be advanced
+            sc = np.where(sc.max(1, keepdims=True) > 0, sc, L.pair_to_cont_sum(h1))
+            return sc / cost
         W = wlog[:, L.stripe_of]                                   # (trials, n)
         # marginal effect of one batch on pair (i,j): d rho_i = (1-rho_i^{-j}) * h1_ij ~ h1 * (1-rho_i)
         contrib = W[:, L.pair_frag] * h1 * (1 - rho[:, L.pair_frag] + h1)
         return L.pair_to_cont_sum(contrib) / cost
 
-    def p_complete(self, R, rec_pair, rec_frag, by_stripe, theta) -> np.ndarray:
+    def p_complete(self, R, rec_pair, rec_frag, by_stripe, theta, U=None, rng=None) -> np.ndarray:
+        if self.cfg.forecast == "mc" and U is not None:
+            return self.p_complete_mc(R, rec_pair, rec_frag, by_stripe, U, rng or np.random.default_rng(0))
         L = self.L
         rem = np.maximum(self.cfg.cap - (R * self.ch.cost[None, :]).sum(1), 0)
         H = np.repeat((rem / self.ch.cost.sum())[:, None], L.m, 1)  # spread remaining evenly
@@ -189,6 +229,33 @@ class AdaptiveController:
         rho = 1 - np.exp(L.pair_to_frag_sum(np.log1p(-np.clip(hH, 0, 1 - 1e-12))))
         idx = L.stripe_index
         return completion_probability(rho[:, np.maximum(idx, 0)], need, (idx >= 0)[None])
+
+    def p_complete_mc(self, R, rec_pair, rec_frag, by_stripe, U, rng) -> np.ndarray:
+        """Posterior-simulation forecast of completing within the remaining cap.
+        Draws theta from the posterior, spreads the remaining budget in proportion to the
+        reads spent so far (the controller's revealed allocation), draws fragment recoveries
+        from the hazards and counts stripes that reach K."""
+        L, cfg = self.L, self.cfg
+        trials = R.shape[0]
+        post = self.posterior(R, U)
+        rem = np.maximum(cfg.cap - (R * self.ch.cost[None, :]).sum(1), 0)
+        share = R / np.maximum(R.sum(1, keepdims=True), 1)
+        H = share * (rem / np.maximum((share * self.ch.cost[None, :]).sum(1), 1e-12))[:, None]
+        need = np.maximum(L.k[None, :] - by_stripe, 0)
+        open_ = (~rec_frag)[:, L.pair_frag] & ~rec_pair
+        cdf = post.cumsum(axis=2)
+        out = np.zeros(trials)
+        D = cfg.forecast_draws
+        for _ in range(D):
+            u = rng.random(cdf.shape[:2] + (1,))
+            th = THETA[(u > cdf).sum(axis=2).clip(max=len(THETA) - 1)]
+            hH = self._hazard(th, R, H) * open_
+            miss = L.pair_to_frag_sum(np.log1p(-np.clip(hH, 0, 1 - 1e-12)))
+            rho = (1 - np.exp(miss)) * (~rec_frag)
+            got = rng.random(rho.shape) < rho
+            gain = np.rint(L.frag_to_stripe_sum(got.astype(np.float32))).astype(int)
+            out += (gain >= need).all(1)
+        return out / D
 
     # ------------------------------------------------------------------ run
     def run(self, trials: int, rng: np.random.Generator, T: np.ndarray | None = None,
@@ -236,6 +303,8 @@ class AdaptiveController:
             cost[infeasible] = cfg.cap
         active &= feasible
         gave_up = np.zeros(trials, dtype=bool)
+        explore_end = int(used.sum()) * (1 + cfg.explore_rounds)
+        committed = np.zeros((trials, M, len(THETA))) if cfg.controller == "ltc" else None
         cps = sorted(checkpoints) if checkpoints is not None else []
         next_cp = np.zeros(trials, dtype=int)
         cp_rows = []
@@ -254,17 +323,35 @@ class AdaptiveController:
                     theta = np.where(failed[a], 0.0, 1.0)
                 else:
                     post = self.posterior(R[a], U[a])
-                    if cfg.controller == "thompson":
-                        cdf = post.cumsum(axis=2)
-                        u = rng.random(cdf.shape[:2] + (1,))
-                        theta = THETA[(u > cdf).sum(axis=2).clip(max=len(THETA) - 1)]
-                    else:
-                        theta = post @ THETA
-                sc = self.scores(R[a], rec_pair[a], rec_frag[a], by_stripe[a], theta, rng)
+                    if cfg.controller == "ltc":
+                        # learn-then-commit: keep updating during exploration, then freeze the belief
+                        learning = rounds[a] <= explore_end
+                        committed[a[learning]] = post[learning]
+                        post = committed[a]
+                    theta = self.theta_from_post(post, rng)
+                if cfg.controller == "ltc":
+                    explore = rounds[a] < explore_end
+                    cand = np.flatnonzero(used)
+                    rr_choice = cand[rr[a] % len(cand)]
+                if cfg.controller == "info":
+                    # Bayesian design / pure information: container whose efficiency is most uncertain
+                    lt = np.log(np.maximum(THETA, 1e-3))
+                    post_i = self.posterior(R[a], U[a])
+                    v = (post_i * lt ** 2).sum(2) - ((post_i * lt).sum(2)) ** 2
+                    n_open = L.pair_to_cont_sum((~rec_pair[a]).astype(np.float32))
+                    sc = v * (n_open > 0) / (ch.cost[None, :] * self.batch + ch.setup_cost[None, :])
+                    # once uncertainty is resolved everywhere, behave like coverage-greedy
+                    sc_cov = self.scores(R[a], rec_pair[a], rec_frag[a], by_stripe[a], theta, rng, base="coverage")
+                    sc = np.where(sc.max(1, keepdims=True) > 1e-3, sc, sc_cov)
+                else:
+                    sc = self.scores(R[a], rec_pair[a], rec_frag[a], by_stripe[a], theta, rng)
                 sc[:, ~used] = -np.inf
                 choice = sc.argmax(axis=1)
+                if cfg.controller == "ltc":
+                    choice = np.where(explore, rr_choice, choice)
+                    rr[a[explore]] += 1
                 if cfg.futility_eps > 0 and np.isfinite(cfg.cap) and it % 5 == 0:
-                    pc = self.p_complete(R[a], rec_pair[a], rec_frag[a], by_stripe[a], theta)
+                    pc = self.p_complete(R[a], rec_pair[a], rec_frag[a], by_stripe[a], theta, U[a], rng)
                     quit_ = pc < cfg.futility_eps
                     gave_up[a[quit_]] = True
                     active[a[quit_]] = False
@@ -274,7 +361,7 @@ class AdaptiveController:
                 if due.size:
                     th = theta if cfg.controller != "oracle" else np.where(failed[a], 0.0, 1.0)
                     sub = a[due]
-                    pc = self.p_complete(R[sub], rec_pair[sub], rec_frag[sub], by_stripe[sub], th[due])
+                    pc = self.p_complete(R[sub], rec_pair[sub], rec_frag[sub], by_stripe[sub], th[due], U[sub], rng)
                     for tr, v in zip(sub, pc):
                         cp_rows.append((int(tr), cps[next_cp[tr]], float(v)))
                         next_cp[tr] += 1

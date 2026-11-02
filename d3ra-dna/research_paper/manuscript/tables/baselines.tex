@@ -1,21 +1,29 @@
 \begin{table*}[!t]
 \centering
-\caption{Expected reads to reach exact recovery with probability $\ge0.99$ on real read streams (thousands; bootstrap 95\% CI).
-$\Delta$: adaptive (pivotal) minus oracle-tuned static, paired over the same read permutations.
-With a single container, allocation is trivial and the adaptive gain is due to stopping only.}
+\caption{Expected reads to reach exact recovery with probability $\ge0.99$ on replayed real read streams
+(thousands; bootstrap 95\% CI in Fig.~\ref{fig:cost}).  Static plans pay their budget on every retrieval, so their
+expected spend equals their 0.99-quantile; for adaptive policies the 0.99-quantile (``q99'', the budget a user must
+provision) is shown separately.  $\Delta$: adaptive (pivotal) minus oracle-tuned static, paired over the same read
+permutations (95\% CI).  With a single container, allocation is trivial and the gain is due to stopping only.}
 \label{tab:baselines}
 \footnotesize
-\begin{tabular}{@{}llrrrrrr@{}}
+\begin{tabular}{@{}llrrrrrrr@{}}
 \toprule
-Pool & Placement & Fixed & Oracle-tuned & Adaptive stop, & Adaptive, & Adaptive, & $\Delta$ (95\% CI) \\
- & & depth & static & round-robin & cov.-greedy & pivotal & \\
+Pool & Placement & Fixed & Oracle-tuned & Adaptive stop, & Adaptive, & Adaptive, & q99 of & $\Delta$ (95\% CI) \\
+ & & depth & static & round-robin & cov.-greedy & pivotal & pivotal & \\
 \midrule
-Twist & round-robin (6) & 67.9 & 63.1 & 57.8 & 55.7 & 55.8 & $-7.3$ ($-12.1$, $-7.0$) \\
-Twist & reliability-weighted & 65.4 & 61.9 & 56.0 & 54.2 & 54.1 & $-7.9$ ($-13.3$, $-7.6$) \\
-Twist & tiered (4) & 61.9 & 53.1 & 51.3 & 46.4 & 46.2 & $-6.9$ ($-19.1$, $-6.2$) \\
-Twist & single best & 53.9 & 53.9 & 44.8 & 44.8 & 44.8 & $-9.1$ ($-11.0$, $-6.7$) \\
-Genscript & round-robin (6) & 831.2 & 650.7 & 641.7 & 577.7 & 577.7 & $-73.1$ ($-125.7$, $-56.5$) \\
-Genscript & single best & 409.3 & 409.3 & 306.2 & 306.2 & 306.2 & $-103.1$ ($-114.1$, $-65.0$) \\
+Twist & round-robin (6) & 67.9 & 63.1 & 57.8 & 55.7 & 55.8 & 63.2 & $-7.3$ ($-12.1$, $-7.0$) \\
+Twist & reliability-weighted & 65.4 & 61.9 & 56.0 & 54.2 & 54.1 & 61.8 & $-7.9$ ($-13.3$, $-7.6$) \\
+Twist & tiered (4) & 61.9 & 53.1 & 51.3 & 46.4 & 46.2 & 53.0 & $-6.9$ ($-19.1$, $-6.2$) \\
+Twist & single best & 53.9 & 53.9 & 44.8 & 44.8 & 44.8 & 54.0 & $-9.1$ ($-11.0$, $-6.7$) \\
+Genscript & round-robin (6) & 810.4 & 617.9 & 639.9 & 532.1 & 531.9 & 694.2 & $-86.0$ ($-127.1$, $-78.8$) \\
+Genscript & single best$^{\dagger}$ & 279.4 & 279.4 & 219.0 & 219.0 & 219.0 & 279.6 & $-60.4$ ($-70.5$, $-54.2$) \\
 \bottomrule
 \end{tabular}
+
+\vspace{2pt}
+\parbox{\textwidth}{\scriptsize 200 read permutations, except $^{\dagger}$100.  All policies completed in every trial.
+The single-best container is chosen with the calibrated belief, which contains the evaluation-split leak of
+Section~\ref{sec:eval}.  Superseded first-run Genscript numbers (computed before the per-strand consensus cache was
+regenerated) are kept in \texttt{results/realdata\_genscript\_policies\_\{roundrobin,part2\}.csv}.}
 \end{table*}

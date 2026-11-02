@@ -44,5 +44,6 @@
 | Posterior predictive P_complete is under-confident (ECE 0.30–0.60) and discriminates only late (AUC ≈0.70 at 85% of budget) | `paper_ec_*.csv` |
 | Futility rule abandoned 3.7–4.5% of recoverable retrievals in simulated scenario s7 (not tested on real reads), so it is disabled | `q4_futility.csv` |
 | Pivotal (Birnbaum-weighted) score gives no gain over coverage-greedy | `realdata_policies.csv`, `ablations.csv` |
-| Analytical surrogate: 5–18% optimistic (Twist), 3.7× pessimistic (Genscript) | `reports/real_data_validation.md` |
+| Analytical surrogate budget error −16 to +6% (Twist); Genscript: round-robin declared infeasible, single-container budget 5.0× too high | `realdata_*policies*_v2.csv` (`pred_cap@0.99`) |
+| Adaptive gain is in the mean only: the q99 budget is not lower (Twist) and is 12% higher (Genscript round-robin) | `realdata_*policies*_v2.csv` (`cap@0.99`) |
 | Correlated-error model not used in the controller's likelihood | code inspection |

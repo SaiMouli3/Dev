@@ -281,3 +281,76 @@
 14. **l. 693–694:** drop or soften the causal "robust … because it uses the model only to rank".
 15. **l. 679:** "provably decodable" → "verified decodable" (in the real-data replay, decodability is an oracle check against the design).
 16. **l. 583–584 / abstract l. 65:** acknowledge that ρ_U = 0.01 also gives 100% coverage (too wide) on Twist, so "largely fixes" holds on Genscript only.
+
+---
+
+## Author response and corrections applied (after the audit)
+
+**MISMATCH**
+- **1–3 (decode attempts, weak-code counts, partial/failed).** Corrected to 10,557 attempts, 45–65 wrong fragments per retrieval (mean 54), and 11 partial / 1 failed. Fixed in `main.tex`, `tables/evidence.tex`, the traceability CSV, README and reports.
+- **4 (ablation).** Now reported as +70% in mean cost of successful retrievals (+79% in expected spend) and +67% for static reads. Coverage-greedy is −1.6%.
+- **5 (seed sweep).** Corrected to "most reliable in 2 of 5 seeds; reaches 0.99 in none". Fixed in the manuscript, README, `paper_draft.md`, `technical_report.md` and `critical_questions.md`.
+- **6 (forecast mean).** Corrected to 0.001–0.22.
+- **7 (mapping rate).** Corrected to 99.5–99.7% (Twist) and 98.2–99.4% (Genscript).
+- **8 (evaluation leak).** Confirmed in `belief_from_calibration`.
+  - Now disclosed in Section VI, the limitations, the literature-table footnote, S4/S5 and the traceability CSV (C32).
+  - Its effect is bounded by the leak-free E4 generic-φ rows (≤0.9%) and the E10 generic/transfer priors (4–5%).
+  - The code was not changed, so all reported numbers are reproducible as they stand.
+- **9 (Genscript inconsistency).** Root cause confirmed: the Genscript φ̂ cache was regenerated (15:10–15:15) after the first policy run.
+  - All real-data policy tables and the failure injection were re-run on the current caches (`*_v2.csv`).
+  - Twist v2 is identical to v1. Genscript changed: round-robin oracle-static 617.9k, adaptive 531.9k; single best 279.4k → 219.0k.
+  - E10 now agrees with Table II. The superseded files are kept and labelled.
+- **10 (Cliff's δ).** The mention was removed.
+- **11 (config table).** Corrected: prior sd 1.0 in change detection; 2,000 adaptive / 20,000 static trials, and 10,000 for the static ablation variants.
+- **12 (DNAformer download).** `real_data.py download` now fetches Zenodo 17473983 (both flowcell files).
+- **13 (notation).** ε and B_ε now map to `fixed_policy` / `metrics`, in both the notation table and S3.
+
+**UNSUPPORTED**
+- "statistically indistinguishable" → "differ by at most 0.4% with overlapping CIs (no paired test was run)".
+- The coupon-collector remark was removed.
+- "twice as many reads" → concrete values: 52% vs 27% at 1 read, 98% vs 87% at 3 reads.
+- The clean-environment reproduction is now stated as covering an earlier commit, before the RQ1–RQ3 and confidence experiments. Its report is copied to `evidence/verification_reports/independent_reproduction_f8fb9a9.md`.
+- 8,148: the D|N restriction is now stated, with the unrestricted figure (99.6% of 1,344 cases).
+- Strand length: replaced by a measured value (168 nt for a 3 kB test archive). The 168–172 nt range was removed.
+
+**OVERCLAIM**
+- **Abstract and conclusion.** Rewritten:
+  - The gain is now reported as a gain in mean cost on multi-container placements (11.6–13.9%), with single-container cases attributed to stopping only.
+  - The stopping-versus-allocation decomposition is reported per pool.
+  - The q99 budget is reported: not lower on Twist, +12% on Genscript round-robin. A q99 column was added to Table II.
+- **Placement savings (34% / 63%).** Removed as headline numbers. The single-container layout is described as offering no failure protection and as chosen with the leaky belief.
+- **False alarms.** PCR_60c (0.75) is now explicitly called a false alarm under our own 0.7 threshold.
+- **Futility rule.** Now marked "simulated s7; not tested on real reads", and the causal "this explains why" was removed.
+- **"Real reads".** Now "replayed / semi-empirical", with a paragraph on what is real and what is modelled. Decodability in the replay is stated to be an oracle event, and the CRC/SHA path to run only in the FASTQ simulation.
+- **Oracle-static baseline.** Now "a local optimum; not deployable; static weights + verified stopping not tested".
+- **"Never produced a wrong file".** Now "24 simulated retrievals of a 6 kB file; guarantee rests on SHA-256".
+- **"Oracle channel <1%".** Now described as uninformative, because belief equals truth in s4.
+- **Literature table.** The correlated-errors cell for this work is now P, with a footnote.
+- **Surrogate.** Recomputed from `pred_cap@0.99` vs `cap@0.99`: −16 to +6% on Twist. On Genscript, round-robin is declared infeasible and the single-container budget is 5.0× too high.
+- **ρ_U = 0.01.** Now states that the intervals become too wide on Twist (coverage 1.00).
+- **Other wording.**
+  - "kilobyte to hundreds-of-megabyte".
+  - "reads carry errors".
+  - "two pools from different vendors (one study)".
+  - "decodable" instead of "provably decodable".
+  - "plausibly less sensitive … consistent with but not isolated" instead of "robust".
+
+**Math vs code**
+- **Eq. 4.** The vacuous constraint and the sample-maximum caveat are stated, and q99 is reported.
+- **Eq. 7.** The (1−ρ+h) factor is described as a heuristic, with its first-order form given. The ρ_i horizon assumption is stated.
+- **Eq. 8.** It is now stated that the remaining budget is spread over all M containers.
+- **Stopping path.** Verified stopping runs in the FASTQ pipeline; the replay uses the oracle event T ≤ R.
+- **Seeding.** The hash-based seeding of the q3 null permutation is now mentioned in the reproducibility section.
+
+**Citation usage**
+- Bornholt/Organick: the containers motivation is now stated as our assumption.
+- Checksum gating is now cited to Erlich.
+- Nath and Leong wording softened.
+- The "Birnbaum-type" name was removed.
+- Cliff's δ was removed.
+- The two-sided BMA variant is attributed to us.
+- The Cauchy-RS citation to Reed–Solomon (1960) is kept as the RS origin. No Cauchy-specific reference was verified, so it remains a known gap.
+
+**Not changed (and why)**
+- The leak and hash seeding were disclosed rather than fixed. Fixing them requires regenerating all caches and re-running every real-data experiment, which was not done in this revision. This is listed in `missing_evidence.md`.
+- Eq. 3's per-pair synthesis dropout and the π̄ approximation are documented in S3 rather than in the paper.

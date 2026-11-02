@@ -36,38 +36,33 @@
 \maketitle
 
 \begin{abstract}
-DNA archives are expected to be split across many physical containers whose
-sequencing efficiency, error profile and failure risk differ, yet retrieval is
-usually planned with a fixed sequencing depth chosen for the worst case.  We
-study how to read an erasure-coded file back \emph{exactly} from such a
-heterogeneous, possibly failing set of containers with as few sequencing reads
-as possible, when the containers' properties are unknown in advance.  We
-present a self-calibrating controller that maintains a Bayesian posterior over
-each container's efficiency (with an explicit failure atom), converts it into
-per-strand recovery hazards through a hierarchical coverage model, allocates the
-next batch of reads to the container with the largest expected progress per
-cost, and stops only when every stripe holds $K$ verified fragments and the
-file's SHA-256 matches.  To evaluate policies on \emph{real} reads rather than
-simulated ones, we convert public sequencing runs into empirical recovery-time
-matrices, which allow any policy to be replayed over hundreds of read orderings
-with common random numbers.  On six real Illumina runs of one 12{,}000-strand
-pool (ENA PRJEB65931) the controller needs 11--17\% fewer reads than a static
-allocation tuned \emph{in hindsight} on the evaluation data (paired bootstrap
-95\% CIs exclude zero) and, combined with placement, 34\% fewer than uniform
-fixed-depth retrieval; on an independent 12{,}472-strand pool from a different
-vendor the corresponding figures are 11\% and 63\%.  Starting from a generic
-literature prior with no calibration reads, the controller matches full calibration
-on the first pool and costs 4--5\% more than in-pool calibration on the second, still
-10\% below the hindsight-tuned static plan.  It flags strongly degraded containers
-after about one to two reads per stored strand with no false alarms on near-nominal
-containers.  We also report negative results: the stripe-importance scoring rule
-is no better than a simpler hazard-greedy rule; the posterior's credible intervals
-are over-confident (an exploratory overdispersed likelihood largely fixes this on a
-held-out pool); its predicted completion probability is under-confident and
-an early-abandonment rule built on it is harmful; and our analytical surrogate is
-5--18\% optimistic on one pool and 3.7$\times$ pessimistic on the other.  All
-results are computational; no new synthesis or sequencing was
-performed.
+DNA archives may be split across many physical containers whose sequencing
+efficiency and failure risk differ and are unknown when retrieval starts.  We
+study how to read an erasure-coded file back exactly from such containers with
+few sequencing reads.  We present a self-calibrating controller that keeps a
+discrete Bayesian posterior over each container's efficiency (with a failure
+atom), converts it into strand-recovery hazards through a hierarchical coverage
+model, sends the next batch of reads to the container with the largest expected
+progress per cost, and stops once every stripe holds $K$ verified fragments.  We
+evaluate it by replaying public Illumina read streams (ENA PRJEB65931; two pools
+from different vendors, six runs each, emulating containers) as empirical
+recovery-time matrices with common random numbers.  Against a static allocation
+tuned in hindsight on the evaluation data, the controller lowers the expected
+reads to reach 99\% exact recovery by 11.6--13.0\% on the first pool and 13.9\%
+on the second (multi-container placements; paired bootstrap CIs exclude zero).
+On the first pool the gain comes mostly from stopping early; on the second,
+where one container is nearly dead, it comes from learning to avoid that
+container.  The gain is in the mean: the budget needed for the 99th percentile
+is not smaller, and on the second pool it is 12\% larger.  Starting from a
+generic prior with no calibration reads costs $\le$0.9\% on the first pool and
+4--5\% on the second.  Strongly degraded containers are flagged after one to two
+reads per stored strand.  Negative results: stripe-importance weighting adds
+nothing; efficiency posteriors are over-confident (an exploratory overdispersed
+likelihood improves coverage on a held-out pool); the completion forecast is
+under-confident; and a model-based budget is off by $-$16 to $+$6\% on one pool and
+up to 5$\times$ on the other.  We disclose that our calibrated beliefs used
+evaluation-split consensus statistics and bound the effect with leak-free
+priors.  All work is computational; nothing was synthesised or sequenced.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -508,20 +503,39 @@ the other flowcell.}
 \label{fig:consensus}
 \end{figure*}
 
-\subsection{Adaptive retrieval reduces sequencing cost (RQ4)}
-Fig.~\ref{fig:cost} and Table~\ref{tab:baselines} compare policies on real recovery-time
-matrices.  On the Twist pool the controller needs 6{,}902--9{,}114 fewer reads than the
-oracle-tuned static plan (11--17\%; paired 95\% CIs exclude zero for every placement).  Because
-the statistic involves a 0.99-quantile, the bootstrap intervals are asymmetric.  Combined with
-placement, adaptive retrieval needs 44{,}753 reads against 67{,}938 for uniform placement with
-fixed depth ($-34$\%).  On the independent Genscript pool, adaptive retrieval needs 577{,}653
-reads against 650{,}709 for the oracle-tuned static plan ($-11$\%) and, with the best
-container, 306{,}210 against 831{,}222 for uniform fixed depth ($-63$\%).  The pivotal score
-\eqref{eq:score} and the coverage-greedy score are statistically indistinguishable in all
-cases; the gain comes from hazard-based allocation and stopping, not from stripe-importance
-weighting.  A heuristic static allocator that equalises expected coverage is
-2.3$\times$ \emph{worse} than uniform on the Genscript pool because it over-reads the
-near-dead container; the adaptive controller learns to avoid it.
+\subsection{Cost of adaptive retrieval (RQ4)}
+Fig.~\ref{fig:cost} and Table~\ref{tab:baselines} compare policies on the replayed matrices.
+\textbf{Expected spend.}  On the Twist pool the adaptive controller needs 6{,}902--9{,}114 fewer
+reads than the oracle-tuned static plan (11.6--13.0\% for the multi-container placements,
+16.9\% for a single container; paired 95\% CIs exclude zero for every placement).  On the
+Genscript pool it needs 86.0k fewer reads with round-robin placement ($-13.9$\%, CI $-127.1$k
+to $-78.8$k) and 60.4k fewer with a single container ($-21.6$\%).  Because the statistic
+involves a 0.99-quantile, the bootstrap intervals are asymmetric.
+
+\textbf{Where the saving comes from.}  The ``adaptive stop, round-robin'' column separates
+stopping from allocation.  On Twist (round-robin), stopping alone saves 5.4k reads relative to
+the oracle-tuned static plan and adaptive allocation a further 2.0k: stopping dominates, and
+for a single container it is the only mechanism.  On Genscript the picture reverses: stopping
+with round-robin reading is \emph{not} better than the oracle-tuned static plan ($+22.1$k, CI
+$-19.7$k to $+30.1$k), because the static oracle already avoids the near-dead container,
+whereas adaptive allocation saves 108k reads by learning to avoid it.  Allocation therefore
+matters when containers differ strongly.  The pivotal score \eqref{eq:score} and the
+coverage-greedy score differ by at most 0.4\% with overlapping CIs (no paired test was run);
+stripe-importance weighting adds nothing measurable.
+
+\textbf{Tail.}  The adaptive gain is a gain in the \emph{mean}.  The budget that must be
+provisioned to succeed in 99\% of retrievals (q99) is no smaller than the oracle-tuned static
+budget on Twist (63.2k vs.\ 63.1k for round-robin) and is 12\% \emph{larger} on Genscript
+round-robin (694.2k vs.\ 617.9k).  A user who pays for reads as they are used benefits; a user
+who must reserve sequencing capacity for the worst case does not.
+
+\textbf{Placement.}  Placing all data in the most efficient container and reading it
+adaptively needs 44.8k reads on Twist and 219.0k on Genscript, against 67.9k and 810.4k for
+round-robin placement with fixed depth.  This layout offers no protection against losing that
+container (Section~\ref{sec:res-fail}) and its choice uses the leaky calibrated belief, so we
+do not present it as a like-for-like saving.  A heuristic static allocator that equalises
+expected coverage is 1.9$\times$ \emph{worse} than uniform on Genscript (1{,}523k vs.\ 810k)
+because it over-reads the near-dead container.
 
 \begin{figure*}[t]
 \centering
@@ -624,7 +638,8 @@ We run the controller on the Genscript pool---a different vendor, deletion-domin
 coverage CV $\approx1.0$ and one near-dead container---with three beliefs: in-pool calibration,
 a belief transferred from the Twist pool (mean Twist yield, NB shape, dropout and consensus
 curve, identical for every container), and the generic literature prior (60 read permutations,
-round-robin placement; static references recomputed on the same 60 matrices).
+round-robin placement; static references recomputed on the same 60 matrices; the in-pool and
+static numbers agree with Table~\ref{tab:baselines}, which uses 200 permutations).
 Table~\ref{tab:transfer} shows that every configuration completes in all trials.  Without any
 in-pool calibration the controller needs 551.7--557.1k reads, 4--5\% more than with in-pool
 calibration (528.9k; unpaired bootstrap CIs overlap), yet 10--11\% fewer than the
@@ -659,7 +674,7 @@ Adaptive, generic prior (0 reads) & 1.0 & 551.7 (532.7--571.7) & 5.3\% \\
 \end{tabular}
 \end{table}
 
-\subsection{Exact recovery under container failures (RQ5)}
+\subsection{Exact recovery under container failures (RQ5)}\label{sec:res-fail}
 Removing one container's real read stream (Fig.~\ref{fig:failure}) shows how placement governs
 degradation.  The single-container layout, cheapest without failures (44{,}473 reads), loses
 the file when that container fails.  A four-container tiered layout (46{,}530 reads) remains
@@ -709,12 +724,13 @@ successful retrievals and success probability $P$ (green: $P\ge0.99$).}
 %=====================================================================
 \section{Discussion}
 %=====================================================================
-\textbf{What drives the savings.}  Two mechanisms explain most of the gain: stopping as soon
-as the data are decodable (the fixed plan must pay for the 0.99-tail on every
-retrieval) and directing reads away from slow or dead containers once the posterior has seen a
-few batches.  The second matters only when data are spread over several containers and their
-efficiencies differ; it is irrelevant for a single container.  The more elaborate
-stripe-importance weighting adds nothing measurable.
+\textbf{What drives the savings.}  Two mechanisms explain the gain in mean cost: stopping as
+soon as the data are decodable (a fixed plan must pay for the 0.99-tail on every retrieval)
+and directing reads away from slow or dead containers once the posterior has seen a few
+batches.  Their weights depend on the pool: stopping dominates when containers are similar
+(Twist), allocation when one is nearly dead (Genscript).  Neither shortens the tail, so the
+benefit is to users who pay per read used rather than per reserved run.  Stripe-importance
+weighting adds nothing measurable.
 
 \textbf{Distribution is not free.}  When one container is reliable enough for the failure
 budget, concentrating the data there is cheapest; spreading pays only if container loss must be
@@ -722,12 +738,13 @@ survived, and the post-failure margin $N-K$ minus the largest per-container load
 gracefully cost degrades.  The choice between these layouts is governed by the failure budget
 $\varepsilon$, for which real per-container failure statistics do not yet exist.
 
-\textbf{Model versus reality.}  Our analytical surrogate under-predicts real cost by 5--18\% on
-the Twist pool; on the Genscript pool it declares round-robin retrieval infeasible and
-over-predicts single-container cost 3.7$\times$.  Budgets derived from a model should therefore
-be calibrated per pool.  The controller uses the model only to rank containers and stops on
-observed decodability, which plausibly makes it less sensitive to such bias; our experiments
-are consistent with this but do not isolate it.
+\textbf{Model versus reality.}  Budgets predicted by our analytical surrogate for the static
+plans are off by $-16$ to $+6$\% on the Twist pool; on the Genscript pool the surrogate
+declares round-robin retrieval infeasible and over-predicts the single-container budget
+5.0$\times$ (1{,}397k vs.\ 279k).  Model-based budgets should therefore be calibrated per pool.
+The controller uses the model only to rank containers and stops on observed decodability,
+which plausibly makes it less sensitive to such bias; our experiments are consistent with this
+but do not isolate it.
 
 %=====================================================================
 \section{Limitations and Threats to Validity}\label{sec:limits}
@@ -774,20 +791,23 @@ supplementary material (Table~\ref{tab:evidence} summarises it).
 %=====================================================================
 \section{Conclusion and Future Work}
 %=====================================================================
-On real read streams from two independent pools, a self-calibrating controller that learns
-container efficiency online, allocates reads by expected progress and stops on verified
-decodability needs 11--17\% fewer reads for exact retrieval than a static plan tuned in
-hindsight, and 34--63\% fewer when combined with placement; in simulation, verification-gated
-stopping never produced a wrong file.  It works from a generic prior (cost unchanged on one
-pool, $+$4--5\% on the other) and detects strongly degraded containers within one to two reads
-per stored strand.  Its weaknesses are measured rather than assumed: over-confident efficiency
-posteriors (largely corrected, in an exploratory held-out test, by an overdispersed
-likelihood), an under-confident completion forecast, no benefit from stripe-importance
-weighting, and a pool-dependent model bias.  The next steps are a wet-lab split-pool experiment
-with independently synthesised, deliberately degraded and failed containers; choosing the
-overdispersion from calibration data and recomputing the completion forecast by posterior
-simulation; coupling the correlated-error model into the controller; and regret or optimality
-guarantees for adaptive container selection.
+On replayed real read streams from two pools, a self-calibrating controller that learns
+container efficiency online, allocates reads by expected progress and stops on decodability
+lowers the \emph{mean} number of reads needed for exact retrieval by 11.6--13.9\% relative to a
+static plan tuned in hindsight on multi-container placements (17--22\% for a single
+container, where only stopping helps), but does not lower the budget needed for the
+99th-percentile retrieval.  Stopping provides most of the gain when containers are alike;
+learning to avoid a near-dead container provides it when they are not.  The controller works
+from a generic prior at a cost of at most 5\% and flags strongly degraded containers within one
+to two reads per stored strand.  Its weaknesses are measured: over-confident efficiency
+posteriors (improved, in an exploratory held-out test, by an overdispersed likelihood), an
+under-confident completion forecast, no benefit from stripe-importance weighting, a
+pool-dependent model bias, an evaluation leak in the calibrated beliefs (bounded by leak-free
+priors) and only semi-empirical, not wet-lab, evidence.  Next steps are a wet-lab split-pool
+experiment with independently synthesised, deliberately degraded and failed containers;
+estimating the overdispersion from calibration data and recomputing the completion forecast by
+posterior simulation; tail-aware allocation; coupling the correlated-error model into the
+controller; and regret guarantees for adaptive container selection.
 
 \section*{Acknowledgment}
 We thank the authors of the public datasets used here (ENA PRJEB65931, DT4DDS; DNAformer;

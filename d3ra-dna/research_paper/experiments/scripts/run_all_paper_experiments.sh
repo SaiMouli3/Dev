@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 # Re-runs every experiment behind the manuscript (several hours on 4 cores). Run from d3ra-dna/.
 set -euo pipefail
-python experiments/real_data.py download prep channel policies failures
+python experiments/real_data.py download prep channel
+D3RA_TAG=_v2 python experiments/real_data.py policies failures
 D3RA_POOL=genscript python experiments/real_data.py prep channel
-D3RA_POOL=genscript D3RA_SKIP_JOINT=1 D3RA_VARIANTS=round_robin python experiments/real_data.py policies
-D3RA_POOL=genscript D3RA_SKIP_JOINT=1 D3RA_VARIANTS=single_best D3RA_TRIALS=100 python experiments/real_data.py policies
+D3RA_POOL=genscript D3RA_SKIP_JOINT=1 D3RA_VARIANTS=round_robin D3RA_TAG=_rr_v2 python experiments/real_data.py policies
+D3RA_POOL=genscript D3RA_SKIP_JOINT=1 D3RA_VARIANTS=single_best D3RA_TRIALS=100 D3RA_TAG=_sb_v2 python experiments/real_data.py policies
 python experiments/run_all.py
 python experiments/theory_checks.py
 python experiments/q3_correlated_errors.py

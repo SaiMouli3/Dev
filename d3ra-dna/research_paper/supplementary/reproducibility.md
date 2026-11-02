@@ -64,7 +64,8 @@ python experiments/q3b_reference_audit.py
 
 Real-data pipeline, Twist pool:
 ```bash
-python experiments/real_data.py download prep channel policies failures
+python experiments/real_data.py download prep channel
+D3RA_TAG=_v2 python experiments/real_data.py policies failures
 ```
 
 Real-data pipeline, Genscript pool:
@@ -72,10 +73,10 @@ Real-data pipeline, Genscript pool:
 D3RA_POOL=genscript python experiments/real_data.py download prep channel
 ```
 ```bash
-D3RA_POOL=genscript D3RA_SKIP_JOINT=1 D3RA_VARIANTS=round_robin python experiments/real_data.py policies
+D3RA_POOL=genscript D3RA_SKIP_JOINT=1 D3RA_VARIANTS=round_robin D3RA_TAG=_rr_v2 python experiments/real_data.py policies
 ```
 ```bash
-D3RA_POOL=genscript D3RA_SKIP_JOINT=1 D3RA_VARIANTS=single_best D3RA_TRIALS=100 python experiments/real_data.py policies
+D3RA_POOL=genscript D3RA_SKIP_JOINT=1 D3RA_VARIANTS=single_best D3RA_TRIALS=100 D3RA_TAG=_sb_v2 python experiments/real_data.py policies
 ```
 
 Paper experiments (E4 limited calibration, EC confidence, ED change detection; then E10 cross-pool):
@@ -129,3 +130,7 @@ python experiments/reproduce.py --real
 ## Verifying file integrity
 - Run `sha256sum results/*.csv results/*.json > evidence/verification_reports/results_sha256.txt`.
 - The checksums at submission time are in `evidence/verification_reports/results_sha256.txt`.
+
+## Superseded result files
+- `results/realdata_genscript_policies_roundrobin.csv` and `results/realdata_genscript_policies_part2.csv` were computed before the Genscript per-strand consensus cache was regenerated. The manuscript uses the `_v2` re-runs. On Genscript, mean costs moved by up to ~30% (e.g. single best 306k → 219k).
+- The Twist `_v2` re-runs are identical to the originals (`realdata_policies.csv`, `realdata_failure_injection.csv`).

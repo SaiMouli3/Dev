@@ -138,9 +138,37 @@ replacement followed by noise~\cite{shomorony2021dna,weinberger2022dna,lenz2020c
 \textbf{Coverage depth.}  For a sampler that cannot be controlled, MDS codes and uniform
 sampling minimise the expected number of reads~\cite{barlev2025cover}.  Follow-ups study random
 access~\cite{gruica2024combinatorial}, real-data sampling distributions~\cite{cao2025optimizing},
-partitioning over containers~\cite{kong2026coverage}, container failures~\cite{levy2026expected}
-and the reliability of MDS-coded retrieval~\cite{kashanna2026reliability}.  These works analyse
-\emph{fixed} sampling laws; we study a \emph{controllable} sampler.
+single-container coverage depth of structured codes~\cite{bertuzzo2025coverage}, and the
+reliability of MDS-coded retrieval~\cite{kashanna2026reliability}.
+
+\emph{Distributed coverage depth.}  Two 2026 papers are closest to our setting and we state the
+relation precisely.  Kong \emph{et al.}~\cite{kong2026coverage} define the distributed coverage-depth
+problem: the $n$ columns of a rank-$k$ generator matrix are split over $M$ containers by an ordered
+partition, and in every round \emph{one} column is drawn uniformly at random, with replacement and
+\emph{noiselessly}, from \emph{each} container; $\tau(G,\mathcal P)$ is the first round at which the
+drawn columns span $\mathbb F_q^k$.  They derive an exact formula for $\E[\tau(G,\mathcal P)]$ for
+arbitrary linear codes and partitions by $q$-binomial M\"obius inversion, prove that an $[n,k]_q$ MDS
+code is optimal for every fixed partition (in rounds and in total reads), give the lower bound
+$M\,\E[\tau]\ge M\lceil k/M\rceil$ with $\min_{M,\mathcal P}M\,\E[\tau]=k$ attained by a staircase
+$k$-partition, characterise one-round-perfect layouts, separate the regimes in which distribution
+genuinely lowers total reads (constant-size containers) from those in which it only buys parallelism
+(containers of size $k^\varepsilon$), and prove that the $q$-ary simplex code uniquely minimises
+single-container coverage depth, resolving a conjecture of Bertuzzo \emph{et al.}~\cite{bertuzzo2025coverage}.
+Their model is deliberately idealised: sampling is uniform within and across containers, containers are
+homogeneous and never fail, reads are noiseless, every round costs $M$ reads whether or not they are
+needed (their Remark II.1), and the allocation is fixed in advance.  Their Section~V lists
+``nonuniform, asynchronous, adaptive, and noisy sampling'' as open problem~4 and an asynchronous
+variant with a total read budget as an open problem.  Our work is an empirical study inside exactly
+that gap --- heterogeneous, noisy, possibly failed containers, reads allocated one batch at a time, and
+stopping decided by verification rather than by an oracle span condition --- and it is complementary,
+not competing: we prove nothing about optimal codes or layouts, and we use their regime distinction
+(parallelism versus genuine read saving) to interpret our results.  Levy
+\emph{et al.}~\cite{levy2026expected} study a different objective: reconstructing the contents of one
+\emph{failed} container from the surviving ones, with scalar MDS and MDS array codes.  Full-message
+retrieval, which we study, is still required after such a repair, and the two stopping rules differ
+(a prescribed missing block versus the whole message).  Neither work allocates reads adaptively, uses
+noisy reads, or decodes to bytes.  These works analyse \emph{fixed} sampling laws; we study a
+\emph{controllable} sampler empirically.
 
 \textbf{Adaptive sequencing and sequential decisions.}  Nanopore adaptive sampling selects
 molecules in real time~\cite{loose2016real,payne2021readfish,weilguny2023dynamic}, and
@@ -149,7 +177,8 @@ Choosing a container resembles a multi-armed bandit with a combinatorial ($K$-of
 reward; we use Thompson sampling~\cite{thompson1933likelihood,russo2018tutorial}, upper
 confidence bounds~\cite{auer2002finite}, explore-then-commit~\cite{garivier2016explore} and an
 information-greedy rule from Bayesian experimental design~\cite{chaloner1995bayesian} as
-baselines (see~\cite{lattimore2020bandit}).  We prove no regret bound.
+baselines (see~\cite{lattimore2020bandit}).  We prove no regret bound and no optimality result: this
+is an experimental paper, and its claims are empirical claims about the configurations we tested.
 
 \textbf{Placement and consensus.}  Erasure-coded storage limits the fragments of a stripe per
 failure domain~\cite{weil2006crush,cidon2013copysets,ford2010availability,nath2006subtleties,leong2012distributed}.
@@ -158,6 +187,19 @@ reconstruction~\cite{batu2004reconstructing,srinivasavaradhan2021trellis,sabary2
 after clustering~\cite{rashtchian2017clustering} or learned models~\cite{barlev2025deep};
 systematic nanopore errors are documented~\cite{delahaye2021sequencing,wick2019performance}.
 Table~\ref{tab:literature_comparison} positions this work.
+
+\textbf{What is and is not new here.}  (i) Prior DNA-storage work already stops sequencing when the
+decoder has enough information~\cite{lopez2019dna} and already verifies decoded data with
+checksums~\cite{erlich2017fountain}; the coverage-depth literature already analyses the expected
+number of reads until decodability, including across
+containers~\cite{barlev2025cover,kong2026coverage,levy2026expected}.  We do not claim to introduce
+stopping, verification, or distributed DNA read allocation.  (ii) What we did not find in that
+literature is a measurement, on an end-to-end pipeline that decodes to verified bytes, of how much a
+verification-gated stop is worth relative to the capacity a static plan must reserve when containers
+are heterogeneous and may have failed, and of whether choosing \emph{which} container to read next
+with a learned container model helps or hurts under those conditions.  (iii) Our contribution is that
+measurement, the mechanism behind the negative allocation result, and an artifact from which every
+number can be regenerated.
 \input{tables/literature_comparison}
 
 %=====================================================================
@@ -220,14 +262,29 @@ from the same generic literature prior (yield 0.9, NB shape $k{=}10$, dropout 0.
 consensus curve, failure probability $10^{-3}$); no calibration data of the evaluated system is
 used in the primary experiments.
 
-\subsection{Objective and who benefits}
-A policy chooses, after each batch of $b$ reads, a container and whether to stop.  We report two
-costs because they serve different users.  A \emph{pay-per-read} user (e.g.\ streaming nanopore
-sequencing, or a service that bills reads) pays the reads actually used: the relevant metric is
-the \emph{mean} reads per retrieval.  A user who must \emph{reserve} capacity in advance (e.g.\ a
-fixed flowcell) pays for the 0.99-quantile (q99) on every retrieval.  A static plan, which
-commits read proportions and a budget in advance, pays its q99 every time; its mean cost
-\emph{is} its q99.  Adaptive stopping helps the first user even when it does not reduce q99.
+\subsection{Objective and metrics}
+A policy chooses, after each batch of $b$ reads, a container and whether to stop.  Several distinct
+quantities are easy to conflate, so we define and report all of them separately, and we never compare
+two of them as if they were one:
+\begin{enumerate}
+\item \textbf{Mean reads over all attempts} $\bar r_{\text{all}}$: the average reads consumed per
+retrieval \emph{attempt}, counting attempts that end in failure (which consume the whole stream).
+This is what a pay-per-read user pays on average.
+\item \textbf{Mean reads conditional on success} $\bar r_{\text{ok}}$: the average over attempts that
+returned the verified file.  It is the right metric only when the success probability is the same for
+the policies compared, and it says nothing about the cost of failures.
+\item \textbf{Success probability} $p_{\text{ok}}$: the fraction of attempts that returned the
+verified file within the stream.
+\item \textbf{Tail quantiles} q95 and q99 of the consumed reads, with cluster-bootstrap intervals.
+\item \textbf{Reserved capacity} $B_{0.99}$: the budget a plan must commit \emph{in advance} to
+succeed on 99\% of retrievals, i.e.\ the q99 of its read requirement.  A user who reserves a flowcell
+pays this on every retrieval, whether or not the retrieval needed it.
+\end{enumerate}
+Verified stopping converts the reserved capacity $B_{0.99}$ into the consumed mean $\bar r_{\text{all}}$:
+that is the saving it offers, and it is a comparison between a policy that stops and a plan that does
+not.  Comparing two policies that both stop is a separate, allocation-only question, and we report it
+separately (Section~\ref{sec:res-actual}).  No metric here is a monetary cost; a cost model with
+per-run and per-container charges is in Section~\ref{sec:res-cost}.
 
 %=====================================================================
 \section{Online-Adaptive Retrieval}\label{sec:method}
@@ -297,8 +354,14 @@ recoveries and reports the fraction of draws in which every stripe completes.
 \section{Evaluation Methodology}\label{sec:eval}
 %=====================================================================
 \subsection{Digital-twin end-to-end pipeline (primary evidence)}
-We store a fixed 18{,}432-byte random file with $P{=}24$-byte payloads, $(K,N)=(32,48)$, 25
-stripes and 1{,}200 strands of 136\,nt over $M{=}6$ containers.  For each container we run
+We store a fixed 18{,}432-byte random file with $P{=}24$-byte payloads, $(K,N)=(32,48)$, over
+$M{=}6$ containers.  The stripe count follows from what is actually encoded: the library bundles the
+file with a 162-byte header (name, length, hash) into an 18{,}594-byte blob, and
+$\lceil 18{,}594/(32\times24)\rceil=25$ stripes of 32 data fragments cover it, the last one
+zero-padded (24 stripes would hold only 18{,}432 bytes, which is the payload alone).  This gives
+$25\times48=1{,}200$ strands of 136\,nt, 200 per container, 8 fragments of every stripe per container,
+and, at 60 simulated reads per stored strand, a maximum stream of $60\times1{,}200=72{,}000$ reads.
+Every count in this paper is the one the code produces, not a rounded design target.  For each container we run
 DT4DDS~1.1.0~\cite{gimpel2023digital} with its published default parameters: array synthesis
 (Twist model; log-normal oligo counts, $\sigma{=}0.3$), sampling of a given number of copies
 per strand, aging, high-fidelity PCR and Illumina iSeq100 single-end 150\,nt sequencing,
@@ -345,9 +408,15 @@ score against a constant (climatology) forecast~\cite{gneiting2007strictly} and 
 
 \subsection{Real read streams (secondary evidence)}
 We replay public Illumina iSeq runs of two pools from ENA PRJEB65931~\cite{gimpel2023digital,gimpel2023prjeb65931}:
-a 12{,}000-strand Twist pool after 0/2/7 days of aging or 15/60/90 PCR cycles, and a
-12{,}472-strand Genscript pool (aging 0\,d A/B, 2\,d, 7\,d; PCR 15/30 cycles).  Each run emulates
-one container holding 250 stripes of $(32,48)$.  A fragment counts as recovered when the
+a Twist pool after 0/2/7 days of aging or 15/60/90 PCR cycles, and a Genscript pool (aging 0\,d A/B,
+2\,d, 7\,d; PCR 15/30 cycles).  Each run emulates one container holding 250 stripes of $(32,48)$,
+i.e.\ $250\times48=12{,}000$ designed strands.  The Twist design file contains exactly 12{,}000
+strands (108\,nt), all of which are used.  The Genscript design file contains 12{,}472 strands
+(102\,nt); we draw a seeded random subset of 12{,}000 and \emph{exclude} the remaining 472 designs
+entirely, discarding the reads that map to them: of the $6\times900{,}000$ evaluation reads, 86.3\%
+map to a design and 4.23\% of those mapped reads are discarded as excluded designs, leaving
+4{,}461{,}804 usable reads.  The excluded strands serve no other purpose, and the subset is the same
+in every condition and policy, so all Genscript comparisons use identical read material.  A fragment counts as recovered when the
 consensus of its first $t$ reads in a random permutation of the run equals the designed strand,
 with $t$ drawn from per-strand consensus curves estimated from real reads; decodability is
 therefore an \emph{oracle} event and the replay is semi-empirical (read orders and counts real,

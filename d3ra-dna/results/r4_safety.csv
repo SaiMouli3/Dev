@@ -1,0 +1,2 @@
+retrievals,wrong_outputs,wrong_ub_retrieval,decode_attempts,false_accepts,fa_ub_attempt,synthesis_units,units_with_wrong_output,wrong_ub_synthesis,units_with_false_accept,fa_ub_synthesis,retrievals_per_unit,attempts_per_unit
+23160,0,0.00015926535798628635,30164044,0,1.2229392148314606e-07,280,0,0.013088164703296644,0,0.013088164703296644,82.71428571428571,107728.72857142857

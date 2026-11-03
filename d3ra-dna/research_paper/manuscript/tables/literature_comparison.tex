@@ -1,5 +1,5 @@
 % literature_comparison.tex -- positioning against the closest prior work (supplementary/literature_review.md, Sec. 13).
-% Entries reflect only what each paper does (Kong et al.: abstract only). Cell values are plain letters (no
+% Entries reflect only what each paper does (every entry read in full). Cell values are plain letters (no
 % superscripts inside cells); notes are given below the table.
 \begin{table*}[!t]
 \centering
@@ -21,7 +21,7 @@ Gruica et al.\ 2024 \cite{gruica2024combinatorial} & N & N & N & N  & N & I & N 
 Cao \& Chen 2025 \cite{cao2025optimizing}          & N & N & N & N  & N & I & P & N \\
 Kas Hanna 2026 \cite{kashanna2026reliability}      & N & N & N & N  & N & N & N & N \\
 Levy et al.\ 2026 \cite{levy2026expected}          & Y & Y & N & N  & N & I & N & N \\
-Kong et al.\ 2026 \cite{kong2026coverage}          & Y & N & P & N  & N & I & N & N \\
+Kong et al.\ 2026 \cite{kong2026coverage}          & Y & N & N & N  & N & I & N & N \\
 Leong et al.\ 2012 \cite{leong2012distributed}     & Y & Y & N & N  & N & N & N & N \\
 Weilguny et al.\ 2023 \cite{weilguny2023dynamic}   & N & N & -- & N & Y & -- & Y & N \\
 Bubeck et al.\ 2013 \cite{bubeck2013optimal}       & Y & N & Y & N  & Y & N & N & N \\
@@ -37,6 +37,10 @@ consensus curves; real reads (ENA PRJEB65931 \cite{gimpel2023prjeb65931}, same-b
 semi-empirical replay with oracle decodability, so they are marked partial; the end-to-end digital twin is DT4DDS
 \cite{gimpel2023digital}.  Gimpel et al.\ \cite{gimpel2023digital}: heterogeneity characterised across handling conditions
 of one pool, and the digital twin itself.  Cao \& Chen \cite{cao2025optimizing}: log-normal channel fitted to their own
-data.  Weilguny et al.\ \cite{weilguny2023dynamic}: genomic loci, not storage containers.  Kong et al.\ \cite{kong2026coverage}: cells based on
-the abstract only.}
+data.  Weilguny et al.\ \cite{weilguny2023dynamic}: genomic loci, not storage containers.  Kong et al.\
+\cite{kong2026coverage} (full paper, 33\,pp.): containers are homogeneous, never fail and are sampled noiselessly and
+uniformly, one read per container per round, with the allocation fixed in advance; adaptive, nonuniform, asynchronous
+and noisy sampling are listed there as open problems.  Levy et al.\ \cite{levy2026expected}: objective is repairing one
+failed container from the survivors, not full-message retrieval.  Neither derives an operational stopping rule, so both
+are marked I.}
 \end{table*}

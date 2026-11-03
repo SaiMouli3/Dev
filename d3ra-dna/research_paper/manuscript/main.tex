@@ -447,9 +447,22 @@ in every condition and policy, so all Genscript comparisons use identical read m
 consensus of its first $t$ reads in a random permutation of the run equals the designed strand,
 with $t$ drawn from per-strand consensus curves estimated from real reads; decodability is
 therefore an \emph{oracle} event and the replay is semi-empirical (read orders and counts real,
-containers emulated by subsetting runs of one synthesis batch).  The primary belief is the
-generic prior; the optional ``calibrated'' belief now uses only the calibration split (the first
-300k reads of each run; evaluation uses the next 900k).  200 read permutations, paired bootstrap.
+containers emulated by subsetting runs of one synthesis batch).  200 read permutations, paired bootstrap.
+
+\textbf{Leakage audit of the replay.}  Each run is read once and split by position: the first
+300{,}000 reads are the calibration split and the next 900{,}000 the evaluation split, so no read is in
+both.  Everything that generates a recovery event in the evaluation comes from the evaluation split
+alone: the read order is a permutation of the evaluation reads, and the number of reads a strand needs
+is drawn against per-strand consensus curves.  Two beliefs are used, and they differ exactly in which
+split they may see.  The \emph{generic} prior (all primary replay results) sees no data from these pools
+at all: yield 0.9, NB shape 10, dropout 0.5\%, a generic consensus curve.  The \emph{leak-free
+calibrated} belief sees only the calibration split --- per-container read counts and pooled consensus
+statistics estimated from calibration reads --- and never the evaluation split.  The one place where
+evaluation data is used deliberately is the hindsight-tuned static plan, which is labelled as an oracle
+baseline wherever it appears and exists to be an upper bound on what a static allocation could achieve.
+Our first analysis of these pools violated this discipline (per-strand consensus curves estimated on
+the evaluation reads and static weights tuned on them); it is superseded, kept only as an upper bound in
+Appendix~\ref{app:leak}, and no claim in this paper rests on it.
 
 %=====================================================================
 \section{Results}\label{sec:results}
@@ -672,7 +685,7 @@ probabilities.
 \label{fig:calib}
 \end{figure*}
 
-\subsection{Secondary evidence: real read streams}
+\subsection{Secondary evidence: real read streams}\label{sec:res-replay}
 \input{tables/replay}
 Table~\ref{tab:replay} gives the leak-free replay with the generic prior.  On the Twist pool,
 round-robin with verified stopping used 58.6k reads on average against the 65.7k budget of the
@@ -754,7 +767,7 @@ of six, or a noisier synthesis, made the file unrecoverable whatever the policy.
 \textbf{Practical recommendation.}  The box in Fig.~\ref{fig:recommend} summarises what our
 results support for archives like ours.
 
-\textbf{What we would test with wet-lab containers.}  With physically separate containers we
+\textbf{What we would test with wet-lab containers.}\label{sec:wetlab}  With physically separate containers we
 would test (X) whether real containers show the near-dead, dropout-dominated behaviour that made
 adaptive allocation lose here, by synthesising one design in several independent batches, aging
 and amplifying them differently, and sequencing each container to saturation to measure its
@@ -763,7 +776,12 @@ real sequencing runs with our own inner code, by streaming reads from a nanopore
 Illumina run through the same decoder and counting wrong outputs and inner-code false accepts
 against the known file; and (Z) what real container failures look like and how often they occur,
 by tracking a set of containers over accelerated aging, which would calibrate the failure prior and
-the redundancy needed per container.
+the redundancy needed per container.  The decisive experiment, which we could not run, is the full
+chain on physical material: encode a known file with these codes, synthesise it, split it into
+independently synthesised and separately handled containers, sequence each one, feed the FASTQ reads
+into this decoder, and compare the returned bytes with the original.  Until that is done, the replay in
+Section~\ref{sec:res-replay} remains semi-empirical --- real read streams, oracle decodability --- and
+the end-to-end evidence remains simulated.
 
 %=====================================================================
 \section{Limitations and Threats to Validity}\label{sec:limits}

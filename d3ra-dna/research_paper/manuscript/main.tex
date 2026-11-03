@@ -43,13 +43,13 @@ container to read next is a far smaller and more fragile effect.  Under our pre-
 model, a single efficiency multiplier, every model-based rule --- Thompson sampling, UCB,
 learn-then-commit, information-greedy --- read \emph{more} than round-robin when one container was
 near-dead ($+$7\% to $+$441\%), because one multiplier cannot express dropout, while \emph{fixed} read
-proportions with the same stopping rule were 4.6\% cheaper than round-robin when tuned in hindsight and
-4.4\% cheaper when estimated from ten disjoint calibration replicates --- so the useful allocation
-knowledge is obtainable offline.  A $2\times2\times2$ ablation shows that this
-penalty is not caused by one modelling choice: the frozen configuration is the one corner in which it is
-large, and relaxing the container model (adding a dropout parameter), the likelihood, or the prior width
-individually all bring every rule into a narrow band 0 to 4.5\% below round-robin --- the same band that
-fixed proportions already occupy.  So adaptive allocation is worth a few percent at best, against stopping's
+proportions with the same stopping rule were 4.2\% cheaper than round-robin (the pre-specified plan,
+95\% CI 3.5--4.9\%), and a plan whose proportions came from ten disjoint calibration replicates rather
+than from hindsight did just as well --- so the useful allocation knowledge is obtainable offline.  A $2\times2\times2$ ablation shows that the penalty requires the frozen
+\emph{combination} of container model, likelihood and prior width: relaxing any one of the three brings
+every rule into a narrow band 0 to 4.5\% below round-robin, the band fixed proportions already occupy.
+Adding a dropout parameter is the physically meaningful change of the three and helps most where loss
+dominates.  So adaptive allocation is worth a few percent at best, against stopping's
 27--32\%.  No \emph{adaptive} rule lowered the 0.99-quantile in any configuration, including with the better
 model, so online learning does not reduce reserved capacity; fixed proportions chosen with hindsight
 knowledge of the containers do lower it, by about 9\%.  Over \SafeN{} end-to-end retrievals --- every scenario, policy, container model, prior setting, failure
@@ -103,8 +103,9 @@ consumed-versus-reserved saving.}  It needs no model, never returned a wrong fil
 model.}  Under the frozen configuration every model-based rule read more than round-robin when a container was
 near-dead, by 7--441\%; an ablation attributes that to the controller being slow to recognise a bad
 container, with three independent modelling choices each sufficient to cause it, and each sufficient to
-remove it.  Once any of them is relaxed, every rule lands 0--4.5\% below round-robin, where a
-hindsight static plan already sits ($-$4.2\%).  The one substantially larger allocation effect requires
+remove it.  Once any one of them is relaxed, every rule lands 0--4.5\% below round-robin, where fixed proportions
+already sit ($-$4.2\% for the pre-specified plan, and the same within noise when its proportions are
+estimated from disjoint calibration replicates instead of hindsight).  The one substantially larger allocation effect requires
 knowing the weak container \emph{before} retrieval, from calibration reads ($-$16\% per retrieval on one
 real-read pool, repaid after about 17 retrievals).  (iii) \emph{No adaptive rule lowered the 0.99-quantile}, so online learning does not reduce the
 capacity a user must reserve, although fixed proportions chosen in hindsight lower it by about 9\%.
@@ -529,12 +530,28 @@ reserve 4.80k.  Stopping converts a 4.80--5.15k reservation into a 3.49k average
 reduction, depending on which plan the reservation is taken from, and it needs no model of the
 containers.
 
-Allocation is a separate and much smaller effect.  When the static plans run \emph{with} the same
-verified stopping --- the only fair policy-versus-policy comparison --- the hindsight-tuned proportions
-$\alpha{=}1$ consume 3.34k reads, 4.2\% \emph{less} than round-robin's 3.49k, and the model-based rules
-consume 3.75--18.87k, 7--441\% \emph{more}.  In the baseline the ranking is therefore: a hindsight
-static plan with stopping is best by a few percent, round-robin with stopping next, and every online
-rule we tried worse.  Our earlier revision quoted the 27\% figure in a way that could be read as an
+Allocation is a separate and much smaller effect.  Three static numbers appear in this paper and they
+are easy to confuse, so we define them once.  All three read fixed proportions $w_j\propto e_j^{\alpha}$
+\emph{with} the same verified stopping --- the only fair policy-versus-policy comparison --- and all
+three are paired against round-robin on the same 300 syntheses and read orders.
+\begin{enumerate}
+\item \emph{Pre-specified plan} (primary).  $\alpha\in\{0,0.5,1,2\}$ was the frozen grid and $\alpha{=}1$,
+which equalises expected coverage, is its best member: 3.343k reads, $-$4.21\% against round-robin's
+3.490k (95\% CI $-$4.9 to $-$3.5\%).  This is the result.
+\item \emph{Extended grid} (revision-4 sensitivity check).  Adding $\alpha\in\{0.25,0.75,1.25,1.5,3\}$
+moves the point estimate to $-$4.57\% at $\alpha{=}1.5$ (CI $-$5.5 to $-$3.5\%).  That interval overlaps
+$\alpha{=}1$'s almost entirely, so the finer grid does \emph{not} establish a better plan; it shows the
+family is flat near its optimum ($-$3.7\% to $-$4.6\% for $\alpha\in[0.75,2]$, decaying to $-$0.70\% at
+$\alpha{=}3$).  We report it as a sensitivity check, not an improved result.
+\item \emph{Calibration-estimated plan} (revision-4, practical variant).  The same $\alpha{=}1$ form with
+the per-container efficiencies $e_j$ measured on the ten \emph{disjoint} calibration replicates, so the
+plan sees no evaluation data at all: 3.338k reads, $-$4.35\% (CI $-$5.1 to $-$3.6\%), statistically
+indistinguishable from the pre-specified hindsight plan.  This matters because it shows the static
+advantage is not an artefact of hindsight.
+\end{enumerate}
+Against that band of roughly $-$4\%, the model-based rules consume 3.75--18.87k reads, 7--441\%
+\emph{more} than round-robin.  The baseline ranking is therefore: fixed proportions measured once, plus
+verified stopping, best by about 4\%; round-robin with stopping next; every online rule we tried worse.  Our earlier revision quoted the 27\% figure in a way that could be read as an
 allocation result; it is not one, and the comparison it does make (consumed versus reserved) is the one
 that carries the recommendation of Section~\ref{sec:disc}.
 
@@ -616,8 +633,8 @@ $+$0.7\%).  The common mechanism is how fast the controller can conclude that a 
 over-dispersed likelihood widens the posterior, a tight prior holds it near $\theta{=}1$, and a
 single-multiplier model keeps extrapolating the surviving fragments' rate to the absent ones.  Any one
 of those three being relaxed lets the evidence arrive fast enough, and once it does, every rule lands in
-the same narrow band a few percent below round-robin --- the same band as the hindsight static plan
-($-$4.2\%).  That band, not the $+$15\%, is the honest estimate of what allocation is worth here.
+the same narrow band a few percent below round-robin --- the band fixed proportions already occupy
+($-$4.21\% for the pre-specified plan, Section~\ref{sec:res-actual}).  That band, not the $+$15\%, is the honest estimate of what allocation is worth here.
 
 \subsection{An efficiency-and-dropout container model}\label{sec:res-dropout}
 \input{tables/r4_ablation}
@@ -655,7 +672,8 @@ is therefore not ``adaptive allocation does not work'' but \emph{``a controller 
 recognise a bad container makes allocation actively harmful, several independent modelling choices cause
 that slowness, and fixing any of them buys a few percent --- not the bulk of the saving''}.
 
-\subsection{Failed containers and severity sweep}\subsection{Failed containers and severity sweep}\subsection{Failed containers and severity sweep}
+
+\subsection{Failed containers and severity sweep}
 With one failed container (the fresh one, which returns only non-informative reads), 34\% of
 retrievals succeeded under every policy, and success was identical for all policies on every
 synthesis and read order: whether the file can be recovered is set by which fragments the
@@ -711,11 +729,9 @@ statistic at this sample size.
 
 The static family deserves the same caution.  Its members are $w_j\propto e_j^{\alpha}$, and the frozen
 protocol tested only $\alpha\in\{0,0.5,1,2\}$, so ``best static plan'' means the best of those four,
-not the optimal fixed allocation.  Revision~4 adds $\alpha\in\{0.25,0.75,1.25,1.5,3\}$ on the same
-replicates so that the family is sampled finely around its optimum, and, because the hindsight weights
-are measured on the evaluated syntheses and are therefore optimistic, a \emph{calibration-estimated}
-static plan whose $e_j$ come from the ten disjoint calibration replicates and which sees no evaluation
-data at all (Table~\ref{tab:actual}).  A user who must reserve capacity gains nothing from stopping
+not the optimal fixed allocation; the extended grid and the calibration-estimated variant, and what
+each of the three numbers means, are defined in Section~\ref{sec:res-actual} and listed in
+Table~\ref{tab:actual}.  A user who must reserve capacity gains nothing from stopping
 unless unused capacity is refunded; for that user the relevant comparison is between reservations, and
 a tuned static plan is the better choice.  In the homogeneous control the static plans must reserve
 2.85k against a round-robin consumed mean of 2.26k.  With a failed container no static plan can be
@@ -895,9 +911,9 @@ every stripe, its CRC-32 and the file hash verify, and then stopping.  It needs 
 containers, never returned a wrong file, and converts the capacity a static plan must reserve into a
 bill 27--32\% smaller for a user who pays per read.  It does \emph{not} reduce the capacity a user must
 reserve, because the q99 is unchanged.  Choosing \emph{which} container to read next is a second-order
-effect in every configuration we tested: at best 3.5\% (UCB with a dropout-aware container model, or
-4.2\% for a hindsight static plan that already knows the answer), and strongly negative when the
-container model cannot express what is wrong with a container.  If one sentence has to carry the
+effect in every configuration we tested: at best 3.5\% (UCB with a dropout-aware container model) or 4.2\% (fixed proportions, which need no
+controller and can be estimated offline), and strongly negative when the container model cannot express
+what is wrong with a container.  If one sentence has to carry the
 paper's practical content, it is that the decision worth engineering is \emph{when to stop}, and the
 decision worth engineering next is the \emph{container model}, not the allocation rule on top of it.
 
@@ -938,7 +954,7 @@ represent dropout: every such rule we tried read more than round-robin, by 7--44
 \emph{and} dropout, the best rule gained 3.5\%; decide whether that is worth the complexity.
 \item If calibration reads of the same containers are available, spend them: a prior fitted on
 held-out reads identified the weak container in advance and saved 16\% on one real-read pool, which is
-the largest allocation effect we measured.
+the largest allocation effect we measured, though it is repaid only over repeated retrievals.
 \item \textbf{Size redundancy for the failures you must survive.}  With $(32,48)$ over six containers,
 two lost containers leave exactly $K$ fragments per stripe and no margin; and a noisier synthesis model
 made the file unrecoverable in our design whatever the policy.

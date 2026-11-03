@@ -13,9 +13,9 @@ Claim & Command (\texttt{dt\_experiments.py} unless noted) & Result file (\textt
 \midrule
 No wrong output, no false accept; cluster-aware bounds (Table~\ref{tab:safety}) & all DT runs & \texttt{dt\_*.csv} $\to$ \texttt{r4\_safety.csv} & DT \\
 Stopping converts a 4.80--5.15k reservation into a 3.49k bill (Table~\ref{tab:actual}) & \texttt{run}/\texttt{static baseline} & \texttt{dt\_baseline\{,\_static\}.csv} $\to$ \texttt{r4\_actual\_vs\_reserved.csv} & DT \\
-Hindsight static with stopping beats round-robin by 4.2\% & \texttt{static baseline} (+\,\texttt{\_r4fine}, \texttt{\_r4cal}) & \texttt{dt\_baseline\_static}\allowbreak\texttt{\{,\_r4fine,\_r4cal\}.csv} & DT \\
+Fixed proportions with stopping beat round-robin: $-$4.2\% (pre-specified $\alpha{=}1$), $-$4.6\% (extended grid optimum $\alpha{=}1.5$), $-$4.4\% (calibration-estimated) --- all mutually indistinguishable & \texttt{static baseline} (+\,\texttt{\_r4fine}, \texttt{\_r4cal}) & \texttt{dt\_baseline\_static}\allowbreak\texttt{\{,\_r4fine,\_r4cal\}.csv} & DT \\
 Model-based rules costlier than round-robin under the frozen model & \texttt{run baseline} & \texttt{dt\_summary.csv} & DT, negative \\
-Cause is the one-parameter model: adding dropout removes most of the penalty (Table~\ref{tab:r4abl}) & \texttt{runx SCEN \_r4drop} & \texttt{dt\_*\_r4drop.csv} $\to$\allowbreak{} \texttt{r4\_ablation.csv} & DT \\
+The penalty needs the frozen \emph{combination} of container model, likelihood and prior width; relaxing any one of the three substantially reduces it.  Adding dropout is the physically meaningful change and helps most where loss dominates (Table~\ref{tab:r4abl}) & \texttt{runx SCEN \_r4drop} & \texttt{dt\_*\_r4drop.csv} $\to$\allowbreak{} \texttt{r4\_ablation.csv} & DT \\
 Likelihood, prior and model separated by ablation & \texttt{runx baseline \_r4abl\_*} & \texttt{dt\_*\_r4abl\_*.csv} & DT \\
 After an outright failure: $-$24\% on successes, $-$3\% per attempt, success unchanged (Table~\ref{tab:uncond}) & \texttt{run fail1} & \texttt{dt\_fail1\{,\_static\}.csv} & DT, simulated failure \\
 Crossover with severity of the worst container & \texttt{run sweep\_cov*} & \texttt{dt\_sweep\_cov*.csv} & DT \\
@@ -29,7 +29,7 @@ Consensus cap 12/24/48 (Table~\ref{tab:r4cap}) & \texttt{runx ... \_r4cap\{12,48
 Homogeneous control; photolithographic boundary & \texttt{run homog}, \texttt{run photolitho} & \texttt{dt\_\{homog,}\allowbreak\texttt{photolitho\}\{,\_static\}.csv} & DT \\
 Cost model with per-batch and per-container charges (Table~\ref{tab:r4cost}) & from committed per-retrieval rows & \texttt{r4\_cost\_model.csv} & DT, assumed prices \\
 Leak-free real-read replay, both pools & \texttt{paper\_experiments.py replay\_v3} & \texttt{replay\_v3\{,\_genscript\}.csv} & Replay \\
-Calibrated prior pays for itself after $\sim$1 retrieval (Table~\ref{tab:r4calcost}) & \texttt{paper\_experiments.py replay\_calcost} & \texttt{r4\_replay\_calcost.csv} & Replay \\
+Calibrated prior: $-$16\% per retrieval, but 1.8M calibration reads, so $\approx$17 retrievals to break even ($\approx$10 at 100k reads per container; lower levels save nothing) (Table~\ref{tab:r4calcost}) & \texttt{paper\_experiments.py replay\_calcost} & \texttt{r4\_replay\_calcost.csv} & Replay \\
 Leaky first analysis (upper bound only) & \texttt{real\_data.py policies} & \texttt{realdata\_*policies*\_v2.csv} & superseded \\
 Correlated nanopore errors (MAE 0.083 vs.\ 0.181) & \texttt{q3\_correlated\_errors.py} & \texttt{q3\_summary.json} & real nanopore reads \\
 Regret bounds; wet-lab containers; real failure rates; independently synthesised physical containers & -- & -- & not attempted \\

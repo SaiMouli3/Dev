@@ -112,44 +112,42 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-C}}Policy comparison on the digital twin}{8}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-D}}What the gain after a container failure buys}{8}{}\protected@file@percent }
 \newlabel{sec:res-uncond}{{\mbox  {VI-D}}{8}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-E}}Why adaptive allocation loses, and what fixes it}{8}{}\protected@file@percent }
-\newlabel{sec:res-misspec}{{\mbox  {VI-E}}{8}{}{}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {V}{\ignorespaces Reads \emph  {consumed} with verified stopping versus capacity that must be \emph  {reserved} without it (digital twin, 300 retrievals per row). All rows stop on verification, so the comparison between rows is allocation only; the last column is the budget the same read proportions would need without stopping. Thousands of reads; mean over all attempts with a cluster-bootstrap 95\% interval.}}{9}{}\protected@file@percent }
 \newlabel{tab:actual}{{V}{9}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-F}}An efficiency-and-dropout container model}{9}{}\protected@file@percent }
-\newlabel{sec:res-dropout}{{\mbox  {VI-F}}{9}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-E}}Why adaptive allocation loses, and what fixes it}{9}{}\protected@file@percent }
+\newlabel{sec:res-misspec}{{\mbox  {VI-E}}{9}{}{}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {VI}{\ignorespaces Digital-twin end-to-end retrieval (DT4DDS; primary evidence). Per scenario and policy: share of retrievals whose output file is byte-identical to the stored file (no retrieval returned a wrong file), mean reads per retrieval (thousands; cluster-bootstrap 95\% CI over syntheses), the 0.99-quantile q99 (the budget to reserve), and the paired relative difference in mean reads against round-robin with verified stopping on retrievals where both succeeded (95\% CI). Static plans read fixed proportions until decodable and must reserve their q99 on every retrieval, so their mean cost equals q99; their proportions use per-container efficiencies measured in hindsight on the same scenario.}}{10}{}\protected@file@percent }
 \newlabel{tab:dt}{{VI}{10}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-F}}An efficiency-and-dropout container model}{10}{}\protected@file@percent }
+\newlabel{sec:res-dropout}{{\mbox  {VI-F}}{10}{}{}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Digital-twin end-to-end retrieval. (a) Baseline scenario: mean reads (95\% cluster-bootstrap CI) and q99 per policy; vertical lines: static plans (whose cost equals their q99). (b) Paired relative cost against round-robin with verified stopping on retrievals where both succeeded (95\% CI); negative is cheaper.}}{11}{}\protected@file@percent }
 \newlabel{fig:dt}{{2}{11}{}{}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {VII}{\ignorespaces One failed container: cost conditional on success and over all attempts (300 retrievals per row, 72k-read stream). Every policy has the same success probability, so the conditional saving does not buy a better chance of recovery, and failures dominate the unconditional mean. Thousands of reads.}}{11}{}\protected@file@percent }
 \newlabel{tab:uncond}{{VII}{11}{}{}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-G}}Failed containers and severity sweep}{11}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-H}}Failed containers and severity sweep}{11}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-I}}Failed containers and severity sweep}{11}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Severity sweep: the near-dead container's copy number varied from 200 to 1 (300 retrievals per point and policy).}}{11}{}\protected@file@percent }
-\newlabel{fig:sweep}{{3}{11}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-J}}Tail metrics and the static family}{11}{}\protected@file@percent }
-\newlabel{sec:res-tail}{{\mbox  {VI-J}}{11}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-K}}Calibration of the posterior, and a negative forecast result}{12}{}\protected@file@percent }
-\newlabel{sec:res-calib}{{\mbox  {VI-K}}{12}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-L}}Secondary evidence: real read streams}{12}{}\protected@file@percent }
-\newlabel{sec:res-replay}{{\mbox  {VI-L}}{12}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Severity sweep: the near-dead container's copy number varied from 200 to 1 (300 retrievals per point and policy).}}{12}{}\protected@file@percent }
+\newlabel{fig:sweep}{{3}{12}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-H}}Tail metrics and the static family}{12}{}\protected@file@percent }
+\newlabel{sec:res-tail}{{\mbox  {VI-H}}{12}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-I}}Calibration of the posterior, and a negative forecast result}{12}{}\protected@file@percent }
+\newlabel{sec:res-calib}{{\mbox  {VI-I}}{12}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-J}}Secondary evidence: real read streams}{12}{}\protected@file@percent }
+\newlabel{sec:res-replay}{{\mbox  {VI-J}}{12}{}{}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Calibration on the digital twin. Left: 90\% credible-interval coverage of $\theta ^\ast $ per container on the selection replicates for each $\rho _U$, and on held-out replicates at the selected $\rho _U$. Right: reliability of the completion forecast (analytic vs.\ posterior simulation).}}{13}{}\protected@file@percent }
 \newlabel{fig:calib}{{4}{13}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-M}}Robustness: what does and does not change the conclusions}{13}{}\protected@file@percent }
-\newlabel{sec:res-robust}{{\mbox  {VI-M}}{13}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-K}}Robustness: what does and does not change the conclusions}{13}{}\protected@file@percent }
+\newlabel{sec:res-robust}{{\mbox  {VI-K}}{13}{}{}{}}
 \citation{barlev2025deep,technion2025dnaformerreads}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-N}}Reads are not the only cost}{14}{}\protected@file@percent }
-\newlabel{sec:res-cost}{{\mbox  {VI-N}}{14}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-O}}Supporting channel result (real nanopore reads)}{14}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-L}}Reads are not the only cost}{14}{}\protected@file@percent }
+\newlabel{sec:res-cost}{{\mbox  {VI-L}}{14}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-M}}Supporting channel result (real nanopore reads)}{14}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {VII}Discussion}{14}{}\protected@file@percent }
 \newlabel{sec:disc}{{VII}{14}{}{}{}}
-\newlabel{sec:wetlab}{{VII}{14}{}{}{}}
 \citation{gimpel2023prjeb65931}
 \citation{technion2025dnaformerreads,barlev2024binned}
 \@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Practical recommendation derived from Section~\ref {sec:results}.}}{15}{}\protected@file@percent }
 \newlabel{fig:recommend}{{5}{15}{}{}{}}
+\newlabel{sec:wetlab}{{VII}{15}{}{}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {VIII}Limitations and Threats to Validity}{15}{}\protected@file@percent }
 \newlabel{sec:limits}{{VIII}{15}{}{}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {IX}Reproducibility and Availability}{15}{}\protected@file@percent }
@@ -189,13 +187,13 @@
 \bibcite{kashanna2026reliability}{26}
 \bibcite{loose2016real}{27}
 \bibcite{payne2021readfish}{28}
+\@writefile{toc}{\contentsline {section}{References}{17}{}\protected@file@percent }
 \bibcite{weilguny2023dynamic}{29}
 \bibcite{russo2018tutorial}{30}
 \bibcite{lattimore2020bandit}{31}
 \bibcite{weil2006crush}{32}
 \bibcite{cidon2013copysets}{33}
 \bibcite{ford2010availability}{34}
-\@writefile{toc}{\contentsline {section}{References}{17}{}\protected@file@percent }
 \bibcite{nath2006subtleties}{35}
 \bibcite{leong2012distributed}{36}
 \bibcite{batu2004reconstructing}{37}

@@ -309,8 +309,13 @@ def replay_v3(trials=200):
         rows.append({"policy": name, "belief": "--", **_flat(s), "mean_reads": float(budget_for_target(c, 0.99)),
                      "q99_reads": float(budget_for_target(c, 0.99)), "weights": json.dumps(np.round(w, 4).tolist())})
         print(RD.POOL, name, round(rows[-1]["q99_reads"]), flush=True)
+    # Optional subset (D3RA_REPLAY_POLICIES=a,b,...; D3RA_REPLAY_CAL=0|1) so that conditions can run in
+    # parallel processes; every condition uses its own fresh rng, so a subset reproduces the full run.
+    sub = os.environ.get("D3RA_REPLAY_POLICIES")
+    gen_pols = sub.split(",") if sub else REPLAY_POLICIES
+    cal_pols = ["coverage"] if os.environ.get("D3RA_REPLAY_CAL", "1") == "1" else []
     for belief_name, b in [("generic", gen), ("calibrated_leakfree", belief_cal)]:
-        for pol in (REPLAY_POLICIES if belief_name == "generic" else ["coverage"]):
+        for pol in (gen_pols if belief_name == "generic" else cal_pols):
             ctl = AdaptiveController(L, b, AdaptiveConfig(pol, batch=200))
             r = ctl.run(trials, np.random.default_rng(SEED + 11), T=T, failed=np.zeros((trials, L.m), bool))
             c = np.where(r.success, r.cost, np.inf)
@@ -322,7 +327,7 @@ def replay_v3(trials=200):
                          "diff_vs_hindsight_static": d[0], "diff_lo": d[1], "diff_hi": d[2],
                          "read_share": json.dumps((r.reads_per_container.mean(0) / r.reads_per_container.mean(0).sum()).round(4).tolist())})
             print(RD.POOL, pol, belief_name, round(rows[-1]["mean_reads"]), round(rows[-1]["q99_reads"]), flush=True)
-    suf = "" if RD.POOL == "twist" else "_genscript"
+    suf = ("" if RD.POOL == "twist" else "_genscript") + os.environ.get("D3RA_REPLAY_TAG", "")
     pd.DataFrame(rows).to_csv(RES / f"replay_v3{suf}.csv", index=False)
     pd.DataFrame({k: v for k, v in per_trial.items()}).to_csv(RES / f"replay_v3{suf}_per_trial.csv", index=False)
 

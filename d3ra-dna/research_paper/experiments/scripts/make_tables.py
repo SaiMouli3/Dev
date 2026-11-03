@@ -88,7 +88,7 @@ def safety():
         tot_att += int(d.decode_attempts.sum())
         rows.append((f.name, len(d)))
     body = [r"\begin{table}[!t]", r"\centering",
-            r"\caption{Safety of verification-gated stopping over every digital-twin retrieval run for this paper (all scenarios, policies, static plans and ablations; the forecast-evaluation runs are excluded).  Exact 95\% upper bounds (Clopper--Pearson).}",
+            r"\caption{Safety of verification-gated stopping over every digital-twin retrieval run for this paper (all scenarios, policies, static plans and ablations; the forecast-evaluation runs are excluded).  Upper limits of exact two-sided 95\% Clopper--Pearson intervals.}",
             r"\label{tab:safety}", r"\footnotesize", r"\begin{tabular}{@{}lr@{}}", r"\toprule",
             f"End-to-end retrievals & {tot_n:,} \\\\".replace(",", "{,}"),
             f"\\quad output byte-identical to stored file & {tot_ok:,} \\\\".replace(",", "{,}"),

@@ -27,10 +27,14 @@ if pdftotext main.pdf - | grep -q "TBD"; then echo "TBD markers remain in the PD
 mkdir -p "$F"
 cp main.pdf "$F/IEEE_Research_Paper.pdf"
 cp main.tex "$F/IEEE_Research_Paper.tex"
+# The paper's content commit. finalize.sh runs before the bundle is committed, so record the commit
+# that the build came from and note that the bundle itself is committed on top of it.
 git -C "$ROOT" rev-parse HEAD > "$F/COMMIT.txt"
 { echo "Repository: https://github.com/SaiMouli3/Dev (directory d3ra-dna)"
   echo "Built: $(date -u '+%Y-%m-%d %H:%M UTC')"
   echo "Environment: $(python3 -V 2>&1), DT4DDS $(pip show dt4dds 2>/dev/null | awk '/^Version/{print $2}')"
+  echo "Note: this is the commit the PDF was built from; the built bundle is committed immediately after,"
+  echo "so the repository tip is normally one commit ahead and differs only by these files."
 } >> "$F/COMMIT.txt"
 
 rm -f "$F/IEEE_Research_Paper_Source.zip"

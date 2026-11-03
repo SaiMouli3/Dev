@@ -19,6 +19,18 @@ Twist & Static, uniform (hindsight budget) & 68.1 & 68.1 &  \\
  & Info-greedy & 56.7 & 66.0 & -9.0 [-19.3, -8.5] \\
  & Tail-aware (LCB) & 56.7 & 65.6 & -9.0 [-19.3, -8.5] \\
  & Coverage-greedy, leak-free calibrated & 56.6 & 67.6 & -9.1 [-19.4, -8.6] \\
+\midrule
+Genscript & Static, uniform (hindsight budget) & 852 & 852 &  \\
+ & Static, hindsight-tuned & 631 & 631 &  \\
+ & Round-robin + verified stop & 637 & 853 & +6.0 [-57.4, +15.1] \\
+ & Coverage-greedy & 639 & 820 & +8.2 [-54.9, +17.2] \\
+ & Pivotal & 639 & 820 & +8.2 [-54.9, +17.2] \\
+ & Thompson sampling & 654 & 831 & +23.4 [-39.4, +31.9] \\
+ & UCB & 637 & 830 & +6.0 [-57.8, +14.9] \\
+ & Learn-then-commit & 651 & 843 & +19.7 [-42.8, +29.2] \\
+ & Info-greedy & \multicolumn{3}{l}{not completed (Appendix~\ref{app:dev})} \\
+ & Tail-aware (LCB) & 644 & 827 & +12.9 [-51.0, +21.6] \\
+ & Coverage-greedy, leak-free calibrated & 533 & 676 & -97.9 [-161.6, -90.0] \\
 \bottomrule
 \end{tabular}
 \end{table}

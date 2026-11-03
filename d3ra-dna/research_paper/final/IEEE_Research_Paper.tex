@@ -15,41 +15,40 @@
 \usetikzlibrary{arrows.meta,positioning,fit,shapes.geometric,calc}
 \newcommand{\E}{\mathbb{E}}
 \newcommand{\Prob}{\mathbb{P}}
-\newcommand{\TBD}[1]{\textcolor{red}{[TBD: #1]}}
 \graphicspath{{figures/}}
+\input{tables/macros}
 
 \begin{document}
 
-\title{Online-Adaptive Sequencing with Verified Stopping for Multi-Container DNA Storage: A Computational Evaluation on a Digital Twin and Real Read Streams}
+\title{Verified Stopping, Not Adaptive Allocation, Saves Reads in Multi-Container DNA Storage: A Leak-Free Computational Study on a Digital Twin and Real Read Streams}
 
 \author{\IEEEauthorblockN{Sai Mouli}
-\IEEEauthorblockA{\textit{\relax[Affiliation to be completed by the author]}\\
-\relax[City, Country]\\
-\relax[e-mail to be completed by the author]}
+\IEEEauthorblockA{saimouli12345678@gmail.com}
 }
 
 \maketitle
 
 \begin{abstract}
-We study retrieval from DNA archives whose erasure-coded strands are spread over several
-separately synthesised and handled containers of unknown quality.  A streaming decoder reads in
-batches and stops only when every stripe, its CRC-32 and the file's SHA-256 verify; an
-online-adaptive controller with a discrete posterior over each container's efficiency chooses
-which container to read next.  All work is computational: nothing was synthesised or sequenced.
-On the DT4DDS digital twin, with six independently synthesised, aged and amplified containers,
-the full chain from simulated reads to bytes ran without any oracle in 23{,}040 retrievals with
-no wrong output (95\% upper bound $1.6\times10^{-4}$) and no false accept in 28.1 million fragment
-decodes (bound $1.3\times10^{-7}$).  Verified stopping is what saves reads: round-robin reading with
-verified stopping needs 3.49k reads on average in the baseline scenario, against 4.80k that the
-best hindsight-tuned static plan must reserve.  Adaptive container selection does not add to
-this.  With the calibrated beta-binomial posterior, every model-based rule costs more than
-round-robin (Thompson sampling $+$7\%, coverage-greedy $+$15\%, information-greedy $+$441\%),
-because one efficiency multiplier cannot represent a near-dead container's dropout; adaptive
-rules pay off only when a container has failed outright (UCB $-$24\%) or degradation is mild
-($-$2 to $-$3\%).  No rule lowers the 0.99-quantile, so the gain is for pay-per-read users only.
-The posterior's 90\% intervals cover 87\% of held-out targets but 20\% for the near-dead
-container, and completion forecasts score worse than a constant forecast.  On replayed real
-Illumina read streams (secondary, oracle decodability), verified stopping again supplies most of the saving (Twist: $-$11\% against the hindsight static budget) and adaptive allocation adds 2--3\%.
+When an erasure-coded DNA archive is spread over several separately synthesised and handled
+containers of unknown quality, two retrieval decisions arise: when to stop sequencing and which
+container to read next.  We find that the first matters and the second, as usually modelled, does
+not.  All work is computational; nothing was synthesised or sequenced.  On the DT4DDS digital twin
+with six independently synthesised, aged and amplified containers, a streaming decoder that stops
+only when every stripe, its CRC-32 and the file's SHA-256 verify used on average 27\% fewer reads
+than the best hindsight-tuned static plan must reserve (3.49k vs.\ 4.80k), with no model at all.
+Model-based container selection, including Thompson sampling, UCB, learn-then-commit and
+information-greedy rules, was a measured negative when one container was near-dead ($+$7\% to
+$+$441\% reads against round-robin), because one efficiency multiplier cannot represent dropout; it
+helped only after an outright container failure (up to $-$24\%) or under mild heterogeneity
+($-$2 to $-$4\%).  No rule lowered the 0.99-quantile.  Over \SafeN{} end-to-end retrievals with no
+oracle, no output file was wrong (exact 95\% upper limit \SafeWUB{}) and no wrong payload passed the inner
+checks in \SafeAtt{} decodes (bound \SafeFUB{}).  A leak-free replay of real Illumina read streams
+from two vendors (secondary, oracle decodability) agrees: stopping cut reads against fixed depth by
+14\% and 25\%, and allocation with a generic prior changed them by at most 3\%; only a prior
+calibrated on held-out reads of the same containers, which identified a near-dead container in
+advance, saved more (16\% on one pool).
+Every number is regenerated from committed result files under a frozen protocol with logged
+deviations, and sampled retrievals re-run bit for bit.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -83,6 +82,18 @@ heterogeneous quality, some of which may have failed, sequence in batches and de
 each batch which container to read and whether to stop, so that the output file is
 byte-identical to the stored one with high probability while the number of reads is small.
 
+\textbf{Findings.}  (i) \emph{Verified stopping is the robust saving}: it needs no model, never
+returned a wrong file, and lowered the mean reads per retrieval against fixed-depth sequencing in
+every setting (digital twin and both real-read pools) and against the hindsight-tuned static plan
+on the digital twin and the Twist replay; on the Genscript replay the hindsight plan, which knows
+in advance to avoid a near-dead container, was 1\% cheaper.  (ii) \emph{Adaptive allocation is a measured negative} when
+a container is near-dead: every model-based rule we tried read more than round-robin; it helps only
+after an outright failure, under mild heterogeneity, or when calibration data identify the weak
+container before retrieval.  (iii) No rule lowers the 0.99-quantile, so
+the gains serve pay-per-read users, not users who reserve capacity.  (iv) Two results mark the
+\emph{design boundaries} of the archive rather than of the policies: with two failed containers or
+with a noisier (photolithographic) synthesis model, the file is unrecoverable by any policy.
+
 \textbf{Scope.}  All work is computational.  Nothing was synthesised or sequenced for this
 paper, and no result should be read as a wet-lab demonstration.  We use the term \emph{exact
 retrieval} only for our digital-twin pipeline, where the output file is checked byte for byte
@@ -91,27 +102,25 @@ of \emph{recovery}.
 
 \textbf{Contributions.}
 \begin{enumerate}
-\item A verification-gated streaming retrieval pipeline and an \emph{online-adaptive} controller
-family for multi-container DNA storage: a discrete posterior over each container's efficiency
-with a failure atom and a beta-binomial likelihood, eight allocation rules (round-robin,
-coverage-greedy, pivotal, Thompson sampling, UCB, learn-then-commit, information-greedy and a
-tail-aware rule), and stopping only when every stripe, its CRC-32 and the file's SHA-256 verify
-(Section~\ref{sec:method}).  Stopping when decodable~\cite{lopez2019dna}, checksum-verified
-decoding~\cite{erlich2017fountain} and the bandit rules
-themselves~\cite{thompson1933likelihood,auer2002finite,garivier2016explore,chaloner1995bayesian}
-are known; their combination for container selection is, to our knowledge, not studied in DNA
-storage.
-\item An end-to-end computational evaluation on the DT4DDS digital twin~\cite{gimpel2023digital}:
-independently synthesised, aged and amplified containers produce reads that pass through the
-full decoding chain with no oracle, under an evaluation protocol frozen before the final runs,
-with exact bounds on wrong outputs and false accepts (Sections~\ref{sec:eval}--\ref{sec:results}).
-\item A leak-free re-analysis on real Illumina read streams from two vendors as secondary
-evidence, with our earlier leaky analysis retained in an appendix as an upper bound
-(Appendix~\ref{app:leak}).
-\item Measured negative results: Measured negative results: on the digital twin, no model-based allocation rule beats round-robin
-with verified stopping when one container is near-dead, the better-calibrated posterior makes
-allocation costlier, no rule (including a tail-aware one) lowers the 0.99-quantile, and the
-completion forecast is worse than a constant forecast (Section~\ref{sec:results}).
+\item \emph{Evidence that verified stopping is the robust saving.}  A verification-gated streaming
+retrieval pipeline that stops only when every stripe, its CRC-32 and the file's SHA-256 verify
+(Section~\ref{sec:method}), evaluated against a static family that includes a hindsight-tuned plan.
+Stopping when decodable~\cite{lopez2019dna} and checksum-verified decoding~\cite{erlich2017fountain}
+are known; quantifying their value for multi-container retrieval is, to our knowledge, new.
+\item \emph{A measured negative for adaptive allocation.}  An online-adaptive controller family (a
+discrete posterior over container efficiency with a failure atom and a beta-binomial likelihood,
+and eight rules including Thompson sampling, UCB, learn-then-commit and information-greedy
+design~\cite{thompson1933likelihood,auer2002finite,garivier2016explore,chaloner1995bayesian})
+loses to round-robin under a near-dead container; we identify the cause (a single efficiency
+multiplier cannot represent dropout), map where allocation helps (outright failure, mild
+heterogeneity) with a severity sweep, and show that the better-calibrated likelihood allocates
+worse.
+\item \emph{Leak-free, end-to-end reproducibility and safety bounds.}  The full chain from DT4DDS
+reads~\cite{gimpel2023digital} of independently synthesised containers to bytes, with no oracle,
+under a protocol frozen before the final runs; exact bounds on wrong outputs and false accepts; a
+leak-free re-analysis of real Illumina streams, with our earlier leaky analysis kept as an upper
+bound (Appendix~\ref{app:leak}); bit-for-bit re-runs and a claim-to-evidence map
+(Section~\ref{sec:repro}).
 \end{enumerate}
 
 %=====================================================================
@@ -379,10 +388,10 @@ In the homogeneous control (six fresh, independently synthesised containers), wh
 no allocation effect, most model-based rules were 2--4\% cheaper than round-robin (coverage-greedy
 2.18k vs.\ 2.26k; information-greedy even at 2.26k): independent syntheses differ enough for mild
 adaptive gains, consistent with the low-severity end of the sweep below.  With DT4DDS's photolithographic synthesis model (reduced design, 30 retrievals per policy) no
-policy recovered the file: every retrieval read the whole 72k-read stream and reported failure,
-with no wrong output.  The higher synthesis error rate of this model exceeds what the inner code
-and 60 reads per strand can correct for this archive; we did not test deeper streams or a
-stronger inner code.
+policy and none of the four static plans recovered the file: every retrieval read the whole 72k-read stream and reported failure,
+with no wrong output.  Like the two-failure case, this is a boundary of the archive design (inner
+code strength, redundancy and the 60-reads-per-strand stream) under that synthesis model, not a
+policy result; we did not test deeper streams or a stronger inner code.
 
 \subsection{Why adaptive allocation loses under dropout}\label{sec:res-misspec}
 The controller models a container by one efficiency multiplier $\theta_j$ that scales every
@@ -413,7 +422,14 @@ easy to identify and stops being read: UCB used 24\% (17--28\%) fewer reads than
 coverage-greedy 17\% (8--23\%), pivotal 15\% (6--21\%) and Thompson sampling 9\% (2--15\%);
 tail-aware was even ($+$2\%, $-$8 to $+$14\%), learn-then-commit 8\% (2--14\%) and information-greedy
 81\% (49--133\%) costlier.  With two failed containers no policy recovered the file; every
-retrieval read all 72{,}000 reads and reported failure.
+retrieval read all 72{,}000 reads and reported failure.  We read both results as boundaries of the
+\emph{archive design}, not of the policies: with round-robin placement of $(32,48)$ stripes over six
+containers, each failed container removes 8 of a stripe's 48 fragments, half of its redundancy of 16.
+After one failure a stripe tolerates only 8 further lost strands: 18 of the 30 syntheses were
+unrecoverable under every read order, 7 always recoverable, and 5 depended on the read order
+(consensus uses at most 24 reads per cluster); after two failures exactly $K{=}32$ fragments remain, so a single strand lost by
+synthesis, aging or PCR in any stripe makes the file unrecoverable.  Surviving more failures requires more redundancy or a different placement;
+no read-allocation policy can compensate.
 
 The severity sweep (Fig.~\ref{fig:sweep}) varies only the near-dead container's copies per
 strand.  At 200 and 30 copies, coverage-greedy and Thompson sampling are 2--3\% cheaper than
@@ -484,7 +500,20 @@ Information-greedy reduced to coverage-greedy after the first probes (identical 
 the leak-free calibrated belief changed coverage-greedy by $-$0.2\%.  As on the digital twin, no rule
 lowered q99 materially: 65.6--67.2k for the model-based rules against the 65.7k static budget.  Stopping supplies most of the gain
 (about 7.1k of 9.0k reads).
-\TBD{Genscript replay still running at the time of this build}
+On the Genscript pool, whose PCR-30-cycle container is near-dead, verified stopping with
+round-robin used 637k reads against 852k for fixed depth ($-$25\%), but 1\% more than the 631k of
+the hindsight-tuned static plan, which knows in advance to give that container 2.7\% of its reads
+(paired difference $+$6.0k, 95\% CI $-$57.4 to $+$15.1k).  Every model-based rule with the generic
+prior was 0--3\% costlier than round-robin (UCB 637k, coverage-greedy and pivotal 639k, tail-aware
+644k, learn-then-commit 651k, Thompson sampling 654k), and, as on the digital twin, each gave the
+near-dead container more reads than round-robin did (19--20\% against 17\%).  The exception is the
+leak-free calibrated belief, fitted on calibration reads of the same containers that are disjoint
+from the evaluation reads: coverage-greedy with it gave the near-dead container 3.4\% of its reads and
+used 533k ($-$16\% vs.\ round-robin; $-$97.9k, 95\% CI $-$161.6 to $-$90.0k, vs.\ the hindsight static
+budget).  Allocation therefore pays when the weak container is identified \emph{before} retrieval,
+not when the controller must learn it online.  q99 was 820--853k for the generic-prior rules and 676k
+with the calibrated belief, against the 631k static budget.  The information-greedy run on this pool
+did not complete in time (Appendix~\ref{app:dev}).
 
 \subsection{Supporting channel result (real nanopore reads)}
 On two independent nanopore flowcells of DNAformer reads~\cite{barlev2025deep,technion2025dnaformerreads},
@@ -512,17 +541,47 @@ not make its decisions better; the misspecification (one multiplier for a contai
 dropout) is the problem to fix.  We therefore present the controller as online-adaptive, not
 self-calibrating, and do not recommend its forecasts as probabilities.
 
-\textbf{Digital twin versus replay.}  The two settings agree that stopping is the main saving and that no rule lowers q99; they
-disagree on allocation, which helps slightly on the replay (2--3\%) but hurts on the digital twin
-with a near-dead container.  The replay's containers are runs of one synthesis batch with no
-near-dead member, which resembles the mild-heterogeneity end of the sweep; the digital twin's
-independent syntheses include the harder case.
+\textbf{Digital twin versus replay.}  The two settings agree that stopping is the main saving and that no rule lowers q99; on
+allocation with the generic prior they agree where the conditions match.  On the Twist pool, whose
+containers are runs of one synthesis batch with no near-dead member (the mild-heterogeneity end of
+the sweep), allocation saved 2--3\%; on the Genscript pool, which has a near-dead container, it cost
+0--3\% and over-read that container, as on the digital twin.  Only prior knowledge of the weak
+container, through calibration reads, turned allocation into a large saving.
 
-\textbf{Practical recommendation.}  For multi-container archives like ours, read the containers in
-turn and stop on verification; switch a container off once it is clearly failed (the setting in
-which coverage-greedy, pivotal, Thompson sampling and UCB helped).  Use model-based
-allocation only with a container model that represents dropout, and check it against round-robin
-on a digital twin before relying on it.
+\begin{figure}[t]
+\centering
+\fbox{\parbox{0.94\columnwidth}{\small
+\textbf{Practical recommendation (multi-container retrieval).}
+\begin{enumerate}
+\setlength{\itemsep}{1pt}
+\item Read the containers in turn and \textbf{stop on verification} (every stripe, its CRC-32 and the
+file hash).  This is the robust saving and needs no model.
+\item \textbf{Switch a container off} once it is clearly failed (no verified fragment after a probe);
+here posterior rules helped (up to $-$24\%).
+\item Do \textbf{not} rely on model-based allocation when a container may be near-dead: every rule we
+tried read more than round-robin.  Use it only with a container model that represents dropout,
+or when calibration reads already identify the weak container ($-$16\% on the Genscript replay),
+and check it against round-robin on a digital twin first.
+\item If capacity must be \textbf{reserved}, budget the q99 of round-robin; no rule lowered it.
+\item Size the archive's redundancy for the failures you must survive: two failed containers out
+of six, or a noisier synthesis, made the file unrecoverable whatever the policy.
+\end{enumerate}}}
+\caption{Practical recommendation derived from Section~\ref{sec:results}.}
+\label{fig:recommend}
+\end{figure}
+\textbf{Practical recommendation.}  The box in Fig.~\ref{fig:recommend} summarises what our
+results support for archives like ours.
+
+\textbf{What we would test with wet-lab containers.}  With physically separate containers we
+would test (X) whether real containers show the near-dead, dropout-dominated behaviour that made
+adaptive allocation lose here, by synthesising one design in several independent batches, aging
+and amplifying them differently, and sequencing each container to saturation to measure its
+fraction of absent strands; (Y) whether verified stopping keeps its saving and its safety on
+real sequencing runs with our own inner code, by streaming reads from a nanopore or a split
+Illumina run through the same decoder and counting wrong outputs and inner-code false accepts
+against the known file; and (Z) what real container failures look like and how often they occur,
+by tracking a set of containers over accelerated aging, which would calibrate the failure prior and
+the redundancy needed per container.
 
 %=====================================================================
 \section{Limitations and Threats to Validity}\label{sec:limits}
@@ -600,7 +659,14 @@ re-run in full.  (iv) The photolithographic scenario was run with 10 syntheses $
 orders for compute reasons; the first 50 retrievals of the full run were discarded unseen.
 (v) The static allocator crashed when only zero-weight (failed) containers remained; it now reads
 them out, which can only affect failed retrievals of the failure scenarios.  The $\rho_U$ rule was
-applied as frozen even though the selected value lies at the edge of the grid.
+applied as frozen even though the selected value lies at the edge of the grid.  (vi) The
+sequential Genscript replay finished information-greedy after about six hours but then crashed while
+computing its paired difference, because some trials never completed (infinite cost); nothing was
+saved.  We fixed the bug, ran the other Genscript conditions in parallel processes with the same
+per-condition seeds (they reproduced every value logged by the sequential run), and re-started
+information-greedy; it had not finished when this version was built, so Table~\ref{tab:replay} has no
+information-greedy row for Genscript.  The fact that some of its trials did not complete within the
+read stream is the only information-greedy result we report for this pool.
 
 \textbf{Post-hoc analyses} (not pre-specified).  With the binomial likelihood ($\rho_U{=}0$), on the
 same 300 baseline retrievals, coverage-greedy used 3.34k reads ($-$4.4\% vs.\ round-robin, against

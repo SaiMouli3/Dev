@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.11.2)  3 NOV 2026 06:30
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.11.2)  3 NOV 2026 09:39
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -588,20 +588,20 @@ File: l3backend-pdftex.def 2024-01-04 L3 backend support: PDF output (pdfTeX)
 (./main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 22.
-LaTeX Font Info:    ... okay on input line 22.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 22.
-LaTeX Font Info:    ... okay on input line 22.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 22.
-LaTeX Font Info:    ... okay on input line 22.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 22.
-LaTeX Font Info:    ... okay on input line 22.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 22.
-LaTeX Font Info:    ... okay on input line 22.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 22.
-LaTeX Font Info:    ... okay on input line 22.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 22.
-LaTeX Font Info:    ... okay on input line 22.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 21.
+LaTeX Font Info:    ... okay on input line 21.
 
 -- Lines per column: 56 (exact).
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
@@ -626,13 +626,13 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-LaTeX Font Info:    Trying to load font information for U+msa on input line 41.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 40.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 41.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 40.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
@@ -648,34 +648,34 @@ LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 3
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 )) [2]
-Underfull \hbox (badness 10000) in paragraph at lines 256--258
+Underfull \hbox (badness 10000) in paragraph at lines 258--260
 []\OT1/ptm/m/it/10 Coverage-greedy\OT1/ptm/m/n/10 : $[]$ = pos-te-rior mean; re
 ads
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 258--260
+Underfull \hbox (badness 10000) in paragraph at lines 260--262
 []\OT1/ptm/m/it/10 Pivotal\OT1/ptm/m/n/10 : weights each frag-ment by a normal-
 
  []
 
 
-Underfull \hbox (badness 3088) in paragraph at lines 258--260
+Underfull \hbox (badness 3088) in paragraph at lines 260--262
 \OT1/ptm/m/n/10 approximation sen-si-tiv-ity of its stripe's com-ple-tion
  []
 
 [3]
-Underfull \hbox (badness 10000) in paragraph at lines 321--330
+Underfull \hbox (badness 10000) in paragraph at lines 323--332
 []\OT1/ptm/m/n/10 Design, poli-cies, met-rics, statis-tics, pre-specified
  []
 
 
-Underfull \hbox (badness 4168) in paragraph at lines 321--330
+Underfull \hbox (badness 4168) in paragraph at lines 323--332
 \OT1/ptm/m/n/10 com-par-isons and the cal-i-bra-tion rule were writ-ten to
  []
 
 
-Underfull \hbox (badness 1424) in paragraph at lines 321--330
+Underfull \hbox (badness 1424) in paragraph at lines 323--332
 \OT1/ptm/m/n/10 syn-the-ses of all six con-tain-ers $\OMS/cmsy/m/n/10 ^^B$ \OT1
 /ptm/m/n/10 10 read or-ders (300
  []
@@ -684,7 +684,7 @@ Underfull \hbox (badness 1424) in paragraph at lines 321--330
 <figures/fig_dt_policies.pdf, id=41, 498.663pt x 144.54pt>
 File: figures/fig_dt_policies.pdf Graphic file (type pdf)
 <use figures/fig_dt_policies.pdf>
-Package pdftex.def Info: figures/fig_dt_policies.pdf  used on input line 372.
+Package pdftex.def Info: figures/fig_dt_policies.pdf  used on input line 374.
 (pdftex.def)             Requested size: 516.0pt x 149.57477pt.
  [5]
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -692,7 +692,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 <figures/fig_dt_sweep.pdf, id=45, 498.663pt x 122.85901pt>
 File: figures/fig_dt_sweep.pdf Graphic file (type pdf)
 <use figures/fig_dt_sweep.pdf>
-Package pdftex.def Info: figures/fig_dt_sweep.pdf  used on input line 442.
+Package pdftex.def Info: figures/fig_dt_sweep.pdf  used on input line 444.
 (pdftex.def)             Requested size: 252.0pt x 62.08734pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -701,13 +701,13 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 <figures/fig_dt_calibration.pdf, id=50, 498.663pt x 122.85901pt>
 File: figures/fig_dt_calibration.pdf Graphic file (type pdf)
 <use figures/fig_dt_calibration.pdf>
-Package pdftex.def Info: figures/fig_dt_calibration.pdf  used on input line 485
+Package pdftex.def Info: figures/fig_dt_calibration.pdf  used on input line 487
 .
 (pdftex.def)             Requested size: 340.56189pt x 83.9067pt.
 <figures/fig_forecast.pdf, id=51, 249.3315pt x 144.54pt>
 File: figures/fig_forecast.pdf Graphic file (type pdf)
 <use figures/fig_forecast.pdf>
-Package pdftex.def Info: figures/fig_forecast.pdf  used on input line 486.
+Package pdftex.def Info: figures/fig_forecast.pdf  used on input line 488.
 (pdftex.def)             Requested size: 170.28094pt x 98.71375pt.
 
 (./tables/replay.tex
@@ -766,56 +766,56 @@ Overfull \hbox (2.76848pt too wide) in paragraph at lines 8--28
  []
 
 )
-Underfull \hbox (badness 10000) in paragraph at lines 590--606
+Underfull \hbox (badness 10000) in paragraph at lines 607--623
 []\OT1/ptm/m/n/10 All code, con-fig-u-ra-tion and re-sult files are
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 590--606
+Underfull \hbox (badness 10000) in paragraph at lines 607--623
 \OT1/ptm/m/n/10 in the ac-com-pa-ny-ing repos-i-tory and ar-ti-fact
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 590--606
+Underfull \hbox (badness 10000) in paragraph at lines 607--623
 \OT1/ptm/m/n/10 archive. The digital-twin ex-per-i-ments are driven
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 590--606
+Underfull \hbox (badness 10000) in paragraph at lines 607--623
 \OT1/ptm/m/n/10 by \OT1/pcr/m/n/10 experiments/dt_experiments.py \OT1/ptm/m/n/1
 0 (sub-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 590--606
+Underfull \hbox (badness 10000) in paragraph at lines 607--623
 \OT1/pcr/m/n/10 forecast\OT1/ptm/m/n/10 , \OT1/pcr/m/n/10 posthoc_rho0\OT1/ptm/
 m/n/10 ); the re-play by
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 590--606
+Underfull \hbox (badness 10000) in paragraph at lines 607--623
 \OT1/pcr/m/n/10 experiments/paper_experiments.py
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 590--606
+Underfull \hbox (badness 10000) in paragraph at lines 607--623
 \OT1/pcr/m/n/10 replay_v3\OT1/ptm/m/n/10 ; statis-tics by \OT1/pcr/m/n/10 dt_an
 alysis.py\OT1/ptm/m/n/10 ;
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 590--606
+Underfull \hbox (badness 10000) in paragraph at lines 607--623
 \OT1/ptm/m/n/10 ta-bles and fig-ures by \OT1/pcr/m/n/10 make_tables.py \OT1/ptm
 /m/n/10 and
  []
 
 
-Underfull \hbox (badness 7468) in paragraph at lines 590--606
+Underfull \hbox (badness 7468) in paragraph at lines 607--623
 \OT1/pcr/m/n/10 make_dt_figures.py\OT1/ptm/m/n/10 , which read only com-mit-ted
 
  []
 
-(./tables/leak_appendix.tex
+[9] (./tables/leak_appendix.tex
 
 LaTeX Font Warning: Font shape `OT1/ptm/m/scit' undefined
 (Font)              using `OT1/ptm/m/it' instead on input line 3.
@@ -834,8 +834,8 @@ en-script num-bers (com-puted be-fore the per-strand con-sen-sus cache was re-g
 en-er-ated) are kept in
  []
 
-) [9]
-Underfull \hbox (badness 1394) in paragraph at lines 647--657
+)
+Underfull \hbox (badness 1394) in paragraph at lines 671--681
 \OT1/ptm/m/n/10 against $\OT1/cmr/m/n/10 +$\OT1/ptm/m/n/10 15.1% at $\OML/cmm/m
 /it/10 ^^Z[][]\OT1/cmr/m/n/10 0\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 1$\OT1/ptm/m/n
 /10 ), Thomp-son sam-pling 3.37k
@@ -844,22 +844,22 @@ Underfull \hbox (badness 1394) in paragraph at lines 647--657
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-
+ [10]
 (./main.bbl
 Underfull \hbox (badness 1360) in paragraph at lines 29--33
 \OT1/ptm/m/n/8 B. Sipos, and E. Bir-ney, ``To-wards prac-ti-cal, high-capacity,
  low-
  []
 
-[10]
+
 Underfull \hbox (badness 2626) in paragraph at lines 46--52
 []\OT1/ptm/m/n/8 L. Or-gan-ick, S. D. Ang, Y.-J. Chen, R. Lopez, S. Yekhanin,
  []
 
-
+[11]
 Underfull \vbox (badness 1270) has occurred while \output is active []
 
- [11])
+)
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -871,19 +871,17 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-[12
-
-] (./main.aux)
+[12] (./main.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 15606 strings out of 476106
- 317599 string characters out of 5793933
+ 15605 strings out of 476106
+ 317596 string characters out of 5793933
  1964975 words of memory out of 5000000
- 37299 multiletter control sequences out of 15000+600000
+ 37298 multiletter control sequences out of 15000+600000
  605128 words of font info for 127 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
  84i,14n,87p,822b,829s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -910,7 +908,7 @@ ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texliv
 e/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fo
 nts/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (12 pages, 443518 bytes).
+Output written on main.pdf (12 pages, 446043 bytes).
 PDF statistics:
  310 PDF objects out of 1000 (max. 8388607)
  171 compressed objects within 2 object streams

@@ -15,7 +15,6 @@
 \usetikzlibrary{arrows.meta,positioning,fit,shapes.geometric,calc}
 \newcommand{\E}{\mathbb{E}}
 \newcommand{\Prob}{\mathbb{P}}
-\newcommand{\TBD}[1]{\textcolor{red}{[TBD: #1]}}
 \graphicspath{{figures/}}
 \input{tables/macros}
 
@@ -45,7 +44,9 @@ helped only after an outright container failure (up to $-$24\%) or under mild he
 oracle, no output file was wrong (exact 95\% upper limit \SafeWUB{}) and no wrong payload passed the inner
 checks in \SafeAtt{} decodes (bound \SafeFUB{}).  A leak-free replay of real Illumina read streams
 from two vendors (secondary, oracle decodability) agrees: stopping cut reads against fixed depth by
-14\% and 25\%, and allocation changed them by at most a few percent.
+14\% and 25\%, and allocation with a generic prior changed them by at most 3\%; only a prior
+calibrated on held-out reads of the same containers, which identified a near-dead container in
+advance, saved more (16\% on one pool).
 Every number is regenerated from committed result files under a frozen protocol with logged
 deviations, and sampled retrievals re-run bit for bit.
 \end{abstract}
@@ -87,7 +88,8 @@ every setting (digital twin and both real-read pools) and against the hindsight-
 on the digital twin and the Twist replay; on the Genscript replay the hindsight plan, which knows
 in advance to avoid a near-dead container, was 1\% cheaper.  (ii) \emph{Adaptive allocation is a measured negative} when
 a container is near-dead: every model-based rule we tried read more than round-robin; it helps only
-after an outright failure or under mild heterogeneity.  (iii) No rule lowers the 0.99-quantile, so
+after an outright failure, under mild heterogeneity, or when calibration data identify the weak
+container before retrieval.  (iii) No rule lowers the 0.99-quantile, so
 the gains serve pay-per-read users, not users who reserve capacity.  (iv) Two results mark the
 \emph{design boundaries} of the archive rather than of the policies: with two failed containers or
 with a noisier (photolithographic) synthesis model, the file is unrecoverable by any policy.
@@ -498,7 +500,20 @@ Information-greedy reduced to coverage-greedy after the first probes (identical 
 the leak-free calibrated belief changed coverage-greedy by $-$0.2\%.  As on the digital twin, no rule
 lowered q99 materially: 65.6--67.2k for the model-based rules against the 65.7k static budget.  Stopping supplies most of the gain
 (about 7.1k of 9.0k reads).
-\TBD{Genscript replay still running at the time of this build}
+On the Genscript pool, whose PCR-30-cycle container is near-dead, verified stopping with
+round-robin used 637k reads against 852k for fixed depth ($-$25\%), but 1\% more than the 631k of
+the hindsight-tuned static plan, which knows in advance to give that container 2.7\% of its reads
+(paired difference $+$6.0k, 95\% CI $-$57.4 to $+$15.1k).  Every model-based rule with the generic
+prior was 0--3\% costlier than round-robin (UCB 637k, coverage-greedy and pivotal 639k, tail-aware
+644k, learn-then-commit 651k, Thompson sampling 654k), and, as on the digital twin, each gave the
+near-dead container more reads than round-robin did (19--20\% against 17\%).  The exception is the
+leak-free calibrated belief, fitted on calibration reads of the same containers that are disjoint
+from the evaluation reads: coverage-greedy with it gave the near-dead container 3.4\% of its reads and
+used 533k ($-$16\% vs.\ round-robin; $-$97.9k, 95\% CI $-$161.6 to $-$90.0k, vs.\ the hindsight static
+budget).  Allocation therefore pays when the weak container is identified \emph{before} retrieval,
+not when the controller must learn it online.  q99 was 820--853k for the generic-prior rules and 676k
+with the calibrated belief, against the 631k static budget.  The information-greedy run on this pool
+did not complete in time (Appendix~\ref{app:dev}).
 
 \subsection{Supporting channel result (real nanopore reads)}
 On two independent nanopore flowcells of DNAformer reads~\cite{barlev2025deep,technion2025dnaformerreads},
@@ -526,11 +541,12 @@ not make its decisions better; the misspecification (one multiplier for a contai
 dropout) is the problem to fix.  We therefore present the controller as online-adaptive, not
 self-calibrating, and do not recommend its forecasts as probabilities.
 
-\textbf{Digital twin versus replay.}  The two settings agree that stopping is the main saving and that no rule lowers q99; they
-disagree on allocation, which helps slightly on the replay (2--3\%) but hurts on the digital twin
-with a near-dead container.  The replay's containers are runs of one synthesis batch with no
-near-dead member, which resembles the mild-heterogeneity end of the sweep; the digital twin's
-independent syntheses include the harder case.
+\textbf{Digital twin versus replay.}  The two settings agree that stopping is the main saving and that no rule lowers q99; on
+allocation with the generic prior they agree where the conditions match.  On the Twist pool, whose
+containers are runs of one synthesis batch with no near-dead member (the mild-heterogeneity end of
+the sweep), allocation saved 2--3\%; on the Genscript pool, which has a near-dead container, it cost
+0--3\% and over-read that container, as on the digital twin.  Only prior knowledge of the weak
+container, through calibration reads, turned allocation into a large saving.
 
 \begin{figure}[t]
 \centering
@@ -544,6 +560,7 @@ file hash).  This is the robust saving and needs no model.
 here posterior rules helped (up to $-$24\%).
 \item Do \textbf{not} rely on model-based allocation when a container may be near-dead: every rule we
 tried read more than round-robin.  Use it only with a container model that represents dropout,
+or when calibration reads already identify the weak container ($-$16\% on the Genscript replay),
 and check it against round-robin on a digital twin first.
 \item If capacity must be \textbf{reserved}, budget the q99 of round-robin; no rule lowered it.
 \item Size the archive's redundancy for the failures you must survive: two failed containers out
@@ -642,7 +659,14 @@ re-run in full.  (iv) The photolithographic scenario was run with 10 syntheses $
 orders for compute reasons; the first 50 retrievals of the full run were discarded unseen.
 (v) The static allocator crashed when only zero-weight (failed) containers remained; it now reads
 them out, which can only affect failed retrievals of the failure scenarios.  The $\rho_U$ rule was
-applied as frozen even though the selected value lies at the edge of the grid.
+applied as frozen even though the selected value lies at the edge of the grid.  (vi) The
+sequential Genscript replay finished information-greedy after about six hours but then crashed while
+computing its paired difference, because some trials never completed (infinite cost); nothing was
+saved.  We fixed the bug, ran the other Genscript conditions in parallel processes with the same
+per-condition seeds (they reproduced every value logged by the sequential run), and re-started
+information-greedy; it had not finished when this version was built, so Table~\ref{tab:replay} has no
+information-greedy row for Genscript.  The fact that some of its trials did not complete within the
+read stream is the only information-greedy result we report for this pool.
 
 \textbf{Post-hoc analyses} (not pre-specified).  With the binomial likelihood ($\rho_U{=}0$), on the
 same 300 baseline retrievals, coverage-greedy used 3.34k reads ($-$4.4\% vs.\ round-robin, against

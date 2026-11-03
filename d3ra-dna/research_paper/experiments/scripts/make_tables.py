@@ -136,10 +136,13 @@ def replay():
                 m, q, dl = r["cap@0.99"], r["cap@0.99"], ""
             else:
                 m, q = r.mean_reads, r.q99_reads
-                dl = f"{r.diff_vs_hindsight_static / 1e3:+.1f} [{r.diff_lo / 1e3:+.1f}, {r.diff_hi / 1e3:+.1f}]"
+                dl = (f"{r.diff_vs_hindsight_static / 1e3:+.1f} [{r.diff_lo / 1e3:+.1f}, {r.diff_hi / 1e3:+.1f}]"
+                      if pd.notna(r.diff_vs_hindsight_static) else "n/a")
             dig = 1 if pool == "Twist" else 0
             out.append(f"{pool if first else ''} & {name} & {m / 1e3:.{dig}f} & {q / 1e3:.{dig}f} & {dl} \\\\")
             first = False
+            if pool == "Genscript" and r.policy == "ltc" and "info" not in set(d.policy):
+                out.append(r" & Info-greedy & \multicolumn{3}{l}{not completed (Appendix~\ref{app:dev})} \\")
         out.append(r"\midrule")
     out[-1] = r"\bottomrule"
     out += [r"\end{tabular}", r"\end{table}"]

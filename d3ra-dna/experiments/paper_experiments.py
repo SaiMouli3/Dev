@@ -321,7 +321,10 @@ def replay_v3(trials=200):
             c = np.where(r.success, r.cost, np.inf)
             per_trial[f"{pol}|{belief_name}"] = c
             s = adaptive_summary(c, r.success, (0.95, 0.99))
-            d = RD._paired_spend_diff(c, per_trial["static_hindsight"])
+            try:
+                d = RD._paired_spend_diff(c, per_trial["static_hindsight"])
+            except OverflowError:      # >1% of trials never completed: the 0.99 budget is infinite
+                d = (float("nan"),) * 3
             rows.append({"policy": pol, "belief": belief_name, **_flat(s), "mean_reads": float(np.mean(c)),
                          "q99_reads": float(budget_for_target(c, 0.99)),
                          "diff_vs_hindsight_static": d[0], "diff_lo": d[1], "diff_hi": d[2],

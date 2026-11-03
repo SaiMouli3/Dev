@@ -1,18 +1,18 @@
 \begin{table}[!t]
 \centering
-\caption{Safety of verification-gated stopping over every digital-twin retrieval run for this paper (all scenarios, policies, static plans, ablations and forecast runs).  Exact 95\% upper bounds (Clopper--Pearson).}
+\caption{Safety of verification-gated stopping over every digital-twin retrieval run for this paper (all scenarios, policies, static plans and ablations; the forecast-evaluation runs are excluded).  Exact 95\% upper bounds (Clopper--Pearson).}
 \label{tab:safety}
 \footnotesize
 \begin{tabular}{@{}lr@{}}
 \toprule
-End-to-end retrievals & 7{,}200 \\
-\quad output byte-identical to stored file & 3{,}216 \\
-\quad reported as not recovered (no output) & 3{,}984 \\
+End-to-end retrievals & 23{,}040 \\
+\quad output byte-identical to stored file & 16{,}032 \\
+\quad reported as not recovered (no output) & 7{,}008 \\
 \quad wrong output (file returned, not identical) & 0 \\
-Wrong-output rate, 95\% upper bound & 5.1e-04 \\
-Fragment decode attempts & 7{,}694{,}549 \\
+Wrong-output rate, 95\% upper bound & 1.6e-04 \\
+Fragment decode attempts & 28{,}101{,}524 \\
 \quad false accepts (wrong payload passed inner checks) & 0 \\
-False-accept rate per attempt, 95\% upper bound & 4.8e-07 \\
+False-accept rate per attempt, 95\% upper bound & 1.3e-07 \\
 \bottomrule
 \end{tabular}
 \end{table}

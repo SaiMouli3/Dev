@@ -92,6 +92,25 @@ R.~Lopez, Y.-J. Chen, S.~Dumas~Ang, S.~Yekhanin, K.~Makarychev, M.~Z. Racz,
   storage readout,'' \emph{Nature Communications}, vol.~10, no.~1, p. 2933,
   2019.
 
+\bibitem{thompson1933likelihood}
+W.~R. Thompson, ``On the likelihood that one unknown probability exceeds
+  another in view of the evidence of two samples,'' \emph{Biometrika}, vol.~25,
+  no. 3-4, pp. 285--294, 1933.
+
+\bibitem{auer2002finite}
+P.~Auer, N.~Cesa-Bianchi, and P.~Fischer, ``Finite-time analysis of the
+  multiarmed bandit problem,'' \emph{Machine Learning}, vol.~47, no. 2--3, pp.
+  235--256, 2002.
+
+\bibitem{garivier2016explore}
+A.~Garivier, T.~Lattimore, and E.~Kaufmann, ``On explore-then-commit
+  strategies,'' in \emph{Advances in Neural Information Processing Systems
+  (NeurIPS)}, vol.~29, 2016.
+
+\bibitem{chaloner1995bayesian}
+K.~Chaloner and I.~Verdinelli, ``Bayesian experimental design: A review,''
+  \emph{Statistical Science}, vol.~10, no.~3, pp. 273--304, 1995.
+
 \bibitem{antkowiak2020low}
 P.~L. Antkowiak, J.~Lietard, M.~Z. Darestani, M.~M. Somoza, W.~J. Stark,
   R.~Heckel, and R.~N. Grass, ``Low cost {DNA} data storage using
@@ -151,19 +170,14 @@ L.~Weilguny, N.~De~Maio, R.~Munro, C.~Manser, E.~Birney, M.~Loose, and
   {Bayesian} experimental design,'' \emph{Nature Biotechnology}, vol.~41,
   no.~7, pp. 1018--1025, 2023.
 
-\bibitem{thompson1933likelihood}
-W.~R. Thompson, ``On the likelihood that one unknown probability exceeds
-  another in view of the evidence of two samples,'' \emph{Biometrika}, vol.~25,
-  no. 3-4, pp. 285--294, 1933.
+\bibitem{russo2018tutorial}
+D.~J. Russo, B.~Van~Roy, A.~Kazerouni, I.~Osband, and Z.~Wen, ``A tutorial on
+  {Thompson} sampling,'' \emph{Foundations and Trends in Machine Learning},
+  vol.~11, no.~1, pp. 1--96, 2018.
 
-\bibitem{bubeck2013optimal}
-\BIBentryALTinterwordspacing
-S.~Bubeck, D.~Ernst, and A.~Garivier, ``Optimal discovery with probabilistic
-  expert advice: Finite time analysis and macroscopic optimality,''
-  \emph{Journal of Machine Learning Research}, vol.~14, no.~17, pp. 601--623,
-  2013. [Online]. Available:
-  \url{https://www.jmlr.org/papers/v14/bubeck13a.html}
-\BIBentrySTDinterwordspacing
+\bibitem{lattimore2020bandit}
+T.~Lattimore and C.~Szepesv{\'a}ri, \emph{Bandit Algorithms}.\hskip 1em plus
+  0.5em minus 0.4em\relax Cambridge University Press, 2020.
 
 \bibitem{weil2006crush}
 S.~Weil, S.~Brandt, E.~Miller, and C.~Maltzahn, ``{CRUSH}: Controlled,
@@ -245,6 +259,15 @@ R.~R. Wick, L.~M. Judd, and K.~E. Holt, ``Performance of neural network
   basecalling tools for {Oxford Nanopore} sequencing,'' \emph{Genome Biology},
   vol.~20, no.~1, p. 129, 2019.
 
+\bibitem{bubeck2013optimal}
+\BIBentryALTinterwordspacing
+S.~Bubeck, D.~Ernst, and A.~Garivier, ``Optimal discovery with probabilistic
+  expert advice: Finite time analysis and macroscopic optimality,''
+  \emph{Journal of Machine Learning Research}, vol.~14, no.~17, pp. 601--623,
+  2013. [Online]. Available:
+  \url{https://www.jmlr.org/papers/v14/bubeck13a.html}
+\BIBentrySTDinterwordspacing
+
 \bibitem{gimpel2023prjeb65931}
 \BIBentryALTinterwordspacing
 {FML, ETH Zurich}, ``{DT4DDS} -- characterization of errors and biases in {DNA}
@@ -252,22 +275,6 @@ R.~R. Wick, L.~M. Judd, and K.~E. Holt, ``Performance of neural network
   sequencing data of Gimpel et al., Nat. Commun. 14:6026 (2023); first public
   2023-09-08. [Online]. Available:
   \url{https://www.ebi.ac.uk/ena/browser/view/PRJEB65931}
-\BIBentrySTDinterwordspacing
-
-\bibitem{technion2025dnaformerreads}
-\BIBentryALTinterwordspacing
-{Technion -- Israel Institute of Technology}, ``Binned {Nanopore/Illumina}
-  reads from {DNAformer}, split by the data type,'' Zenodo dataset, 2025.
-  [Online]. Available: \url{https://doi.org/10.5281/zenodo.17473983}
-\BIBentrySTDinterwordspacing
-
-\bibitem{barlev2024binned}
-\BIBentryALTinterwordspacing
-D.~Bar-Lev, I.~Orr, O.~Sabary, T.~Etzion, and E.~Yaakobi, ``Prepared binned
-  {DNA} data storage datasets for reconstruction benchmarking,'' Zenodo
-  dataset, 2024, re-packaging that includes the clustered nanopore reads
-  released with Srinivasavaradhan et al. (ISIT 2021). [Online]. Available:
-  \url{https://doi.org/10.5281/zenodo.14296588}
 \BIBentrySTDinterwordspacing
 
 \bibitem{reed1960polynomial}
@@ -278,5 +285,22 @@ I.~S. Reed and G.~Solomon, ``Polynomial codes over certain finite fields,''
 \bibitem{efron1993introduction}
 B.~Efron and R.~J. Tibshirani, \emph{An Introduction to the Bootstrap}.\hskip
   1em plus 0.5em minus 0.4em\relax Springer US, 1993.
+
+\bibitem{clopper1934use}
+C.~J. Clopper and E.~S. Pearson, ``The use of confidence or fiducial limits
+  illustrated in the case of the binomial,'' \emph{Biometrika}, vol.~26, no.~4,
+  pp. 404--413, 1934.
+
+\bibitem{gneiting2007strictly}
+T.~Gneiting and A.~E. Raftery, ``Strictly proper scoring rules, prediction, and
+  estimation,'' \emph{Journal of the American Statistical Association}, vol.
+  102, no. 477, pp. 359--378, 2007.
+
+\bibitem{technion2025dnaformerreads}
+\BIBentryALTinterwordspacing
+{Technion -- Israel Institute of Technology}, ``Binned {Nanopore/Illumina}
+  reads from {DNAformer}, split by the data type,'' Zenodo dataset, 2025.
+  [Online]. Available: \url{https://doi.org/10.5281/zenodo.17473983}
+\BIBentrySTDinterwordspacing
 
 \end{thebibliography}

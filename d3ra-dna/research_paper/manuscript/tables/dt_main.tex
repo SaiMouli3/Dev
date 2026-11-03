@@ -9,24 +9,47 @@
 Scenario & Policy & Success & Mean reads (k) [95\% CI] & q99 (k) & vs.\ round-robin, \% [95\% CI] \\
 \midrule
 Baseline & Round-robin + verified stop & 1.00 & 3.49 [3.37, 3.60] & 5.15 &  \\
- & Coverage-greedy & 1.00 & 4.02 [3.77, 4.30] & 9.05 & +15 [+10, +21] \\
- & Pivotal & 1.00 & 5.21 [4.75, 5.70] & 9.60 & +49 [+39, +60] \\
- & Thompson sampling & 1.00 & 3.75 [3.55, 3.94] & 6.45 & +7 [+4, +11] \\
+ & Coverage-greedy & 1.00 & 4.02 [3.76, 4.30] & 9.05 & +15 [+10, +21] \\
+ & Pivotal & 1.00 & 5.21 [4.76, 5.70] & 9.60 & +49 [+40, +60] \\
+ & Thompson sampling & 1.00 & 3.75 [3.56, 3.95] & 6.45 & +7 [+4, +11] \\
  & UCB ($q{=}0.9$) & 1.00 & 4.02 [3.78, 4.30] & 8.15 & +15 [+11, +20] \\
- & Learn-then-commit & 1.00 & 5.05 [4.76, 5.31] & 7.65 & +45 [+40, +49] \\
- & Info-greedy (exp.\ design) & 1.00 & 18.87 [17.22, 20.36] & 37.45 & +441 [+408, +467] \\
- & Tail-aware (LCB) & 1.00 & 3.94 [3.70, 4.18] & 7.15 & +13 [+9, +18] \\
+ & Learn-then-commit & 1.00 & 5.05 [4.74, 5.31] & 7.65 & +45 [+40, +49] \\
+ & Info-greedy (exp.\ design) & 1.00 & 18.87 [17.15, 20.37] & 37.45 & +441 [+407, +470] \\
+ & Tail-aware (LCB) & 1.00 & 3.94 [3.72, 4.18] & 7.15 & +13 [+8, +18] \\
+ & Static, uniform (fixed depth) & 1.00 & 5.15 (= q99) & 5.15 &  \\
+ & Static, $w\propto e^{0.5}$ & 1.00 & 4.90 (= q99) & 4.90 &  \\
+ & Static, $w\propto e$ (equal coverage) & 1.00 & 4.80 (= q99) & 4.80 &  \\
+ & Static, $w\propto e^{2}$ & 1.00 & 4.90 (= q99) & 4.90 &  \\
 \midrule
 One container failed & Round-robin + verified stop & 0.34 & 20.31$^{s}$ & -- &  \\
- & Coverage-greedy & 0.34 & 16.86$^{s}$ & -- & -17 [-23, -8] \\
+ & Coverage-greedy & 0.34 & 16.86$^{s}$ & -- & -17 [-23, -9] \\
  & Pivotal & 0.34 & 17.30$^{s}$ & -- & -15 [-21, -6] \\
- & Thompson sampling & 0.34 & 18.43$^{s}$ & -- & -9 [-15, -2] \\
+ & Thompson sampling & 0.34 & 18.43$^{s}$ & -- & -9 [-15, -1] \\
  & UCB ($q{=}0.9$) & 0.34 & 15.49$^{s}$ & -- & -24 [-28, -17] \\
- & Learn-then-commit & 0.34 & 21.91$^{s}$ & -- & +8 [+2, +14] \\
- & Info-greedy (exp.\ design) & 0.34 & 36.68$^{s}$ & -- & +81 [+49, +133] \\
+ & Learn-then-commit & 0.34 & 21.91$^{s}$ & -- & +8 [+3, +14] \\
+ & Info-greedy (exp.\ design) & 0.34 & 36.68$^{s}$ & -- & +81 [+50, +130] \\
  & Tail-aware (LCB) & 0.34 & 20.63$^{s}$ & -- & +2 [-8, +14] \\
+ & Static, uniform (fixed depth) & 0.34 & -- & -- &  \\
+ & Static, $w\propto e^{0.5}$ & 0.34 & -- & -- &  \\
+ & Static, $w\propto e$ (equal coverage) & 0.34 & -- & -- &  \\
+ & Static, $w\propto e^{2}$ & 0.34 & -- & -- &  \\
 \midrule
-Two containers failed & all 8 policies and static plans & 0.00 & -- (stream exhausted, 72k reads) & -- & \\
+Two containers failed & all 12 policies and static plans & 0.00 & -- (stream exhausted, 72k reads) & -- & \\
+\midrule
+Homogeneous (control) & Round-robin + verified stop & 1.00 & 2.26 [2.23, 2.29] & 2.85 &  \\
+ & Coverage-greedy & 1.00 & 2.18 [2.16, 2.21] & 2.70 & -3 [-4, -2] \\
+ & Pivotal & 1.00 & 2.18 [2.16, 2.20] & 2.75 & -4 [-5, -3] \\
+ & Thompson sampling & 1.00 & 2.19 [2.17, 2.22] & 2.70 & -3 [-4, -2] \\
+ & UCB ($q{=}0.9$) & 1.00 & 2.18 [2.16, 2.20] & 2.75 & -4 [-5, -3] \\
+ & Learn-then-commit & 1.00 & 2.19 [2.17, 2.21] & 2.75 & -3 [-4, -2] \\
+ & Info-greedy (exp.\ design) & 1.00 & 2.25 [2.23, 2.28] & 2.90 & -0 [-1, +0] \\
+ & Tail-aware (LCB) & 1.00 & 2.20 [2.18, 2.23] & 2.75 & -2 [-4, -1] \\
+ & Static, uniform (fixed depth) & 1.00 & 2.85 (= q99) & 2.85 &  \\
+ & Static, $w\propto e^{0.5}$ & 1.00 & 2.85 (= q99) & 2.85 &  \\
+ & Static, $w\propto e$ (equal coverage) & 1.00 & 2.85 (= q99) & 2.85 &  \\
+ & Static, $w\propto e^{2}$ & 1.00 & 2.85 (= q99) & 2.85 &  \\
+\midrule
+Photolithographic synthesis$^{\ddagger}$ & all 8 policies and static plans & 0.00 & -- (stream exhausted, 72k reads) & -- & \\
 \bottomrule
 \end{tabular}
 

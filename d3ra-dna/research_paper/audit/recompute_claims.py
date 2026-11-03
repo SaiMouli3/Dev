@@ -43,7 +43,11 @@ p("\n== Baseline DT ==")
 rr = g("baseline", "round_robin_stop", "mean_reads")
 st = {a: g("baseline", f"static_a{a}", "q99_reads") for a in ("0.0", "0.5", "1.0", "2.0")}
 p(f"RR mean={rr:.0f} CI=[{g('baseline','round_robin_stop','mean_lo'):.0f},{g('baseline','round_robin_stop','mean_hi'):.0f}] q99={g('baseline','round_robin_stop','q99_reads'):.0f}")
-p("static q99 (=reservation):", st, f"best={min(st.values()):.0f}  RR saving vs best static={1 - rr / min(st.values()):.1%}")
+p("static q99 (= capacity a non-stopping plan must reserve):", st, f"best={min(st.values()):.0f}")
+p(f"  consumed-vs-reserved saving of stopping: RR consumed {rr:.0f} vs best reservation {min(st.values()):.0f} "
+  f"= {1 - rr / min(st.values()):.1%}; vs uniform reservation {st['0.0']:.0f} = {1 - rr / st['0.0']:.1%}")
+p("  NOTE: this is a consumed-vs-reserved comparison, not an allocation comparison; for allocation see "
+  "r4_actual_vs_reserved.csv, where the static plans also stop.")
 for sc in ("baseline", "fail1", "homog"):
     for po in ("coverage", "pivotal", "thompson", "ucb", "learn_then_commit", "info_greedy", "tail_aware"):
         r = S[(S.scenario == sc) & (S.policy == po)].iloc[0]

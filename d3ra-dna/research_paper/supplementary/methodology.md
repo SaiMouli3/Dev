@@ -1,3 +1,70 @@
+# Supplementary S4: Methodology and Experimental Protocol (revision 4)
+
+Revision 4 keeps every revision-3 primary setting and adds the pre-registered secondary analyses of
+`experiments/configurations/dt_protocol_rev4.yaml`. The revision-3 text follows below, unchanged, from
+the heading "Supplementary S4: Methodology and Experimental Protocol (revision 3)".
+
+## Archive geometry: where every count comes from
+The file is 18,432 bytes. The library bundles it with a 162-byte header (name, length, SHA-256) into an
+18,594-byte blob, which is split into stripes of `K x payload = 32 x 24 = 768` bytes:
+`ceil(18594 / 768) = 25` stripes, the last zero-padded. Hence 25 x 48 = 1,200 strands of 136 nt, 200 per
+container, 8 fragments of each stripe per container, and a maximum stream of 60 x 1,200 = 72,000 reads.
+(24 stripes would carry only the 18,432 payload bytes and not the header, so 24 is the wrong count.)
+
+## Replay: mapping from sequencing runs to emulated containers
+Each emulated container is one ENA run holding 250 stripes of (32,48) = 12,000 designed strands.
+- Twist design file: exactly 12,000 strands (108 nt); all used.
+- Genscript design file: 12,472 strands (102 nt). A seeded random subset of 12,000 is used and the other
+  472 designs are excluded; reads mapping to them are discarded. Of the 6 x 900,000 evaluation reads,
+  86.3% map to a design and 4.23% of those are discarded as excluded designs, leaving 4,461,804 usable
+  reads. The subset is identical in every condition and policy.
+- Split: the first 300,000 reads of each run are calibration, the next 900,000 evaluation; no read is in
+  both. Recovery events are generated from evaluation reads only. The generic prior sees neither split;
+  the leak-free calibrated belief sees only the calibration split; the hindsight static plan is the one
+  baseline deliberately fitted on evaluation data and is labelled an oracle wherever it appears.
+
+## Metrics, kept separate
+1. mean reads over all attempts (failures included, charged the whole stream);
+2. mean reads conditional on success;
+3. success probability;
+4. q95 and q99 with cluster-bootstrap intervals over syntheses;
+5. reserved capacity: the q99 budget a plan must commit in advance.
+Verified stopping is a comparison between (5) and (1). Policy-versus-policy comparisons use (1) or (2)
+with both policies stopping. No metric is money; the cost model adds per-batch and per-container charges.
+
+## Container models
+- **Frozen (primary):** one efficiency multiplier, theta_j in {0} u 25 log-spaced points in [0.01, 5],
+  prior P(theta=0) = 1e-3 and log-normal with s = 0.5 otherwise, beta-binomial likelihood rho_U = 0.1.
+- **Revision 4 (secondary):** efficiency and dropout, d_j in {0, 0.05, 0.15, 0.3, 0.5, 0.7, 0.9} with
+  P(d=0) = 0.6; joint posterior over (theta_j, d_j); verified-fragment probability (1-d_j) Q(theta_j R_j pi_j);
+  hazards multiplied by (1 - d_hat_j). The frozen path is bit-for-bit unchanged (rerun_check: 0 of 12 differ).
+
+## Revision-4 experiments
+- dropout model on baseline, homog, sweep_cov3, sweep_cov1, fail1 (full designs);
+- 2x2x2 ablation of {model} x {rho_U = 0, 0.1} x {s = 0.5, 1.0};
+- rho_U re-selection with s = 0.5 on the extended grid {0, 0.003, 0.01, 0.03, 0.1, 0.2, 0.3, 0.5},
+  selected on replicates 1000-1009 and validated on 0-29, reported per container;
+- prior sensitivity: failure rate 0.01/0.1, dropout 0/0.05, NB shape 3/30, theta grid [0.001,10] x 40 and
+  [0.01,5] x 10, s = 0.25/1.0, consensus-curve scale 0.5/2.0;
+- failure modes: 50% of one container's designs lost; 25% lost in two containers; 90% junk reads from one
+  container; 50% contamination in another; common-cause degradation of all six;
+- geometries: 3 and 12 containers, (32,40), (32,64), (16,24), and a four times larger file;
+- consensus caps 12 and 48 against the frozen 24;
+- static family alpha in {0.25, 0.75, 1.25, 1.5, 3} and a calibration-estimated plan whose efficiencies
+  come from the disjoint calibration replicates;
+- baseline extended to 100 syntheses x 3 read orders for tail estimates;
+- photolithographic scenario at the full 30 x 10 design;
+- replay calibration cost: coverage-greedy with beliefs from 1k/3k/10k/30k/100k/300k calibration reads per
+  container, with calibration reads charged and a break-even number of retrievals;
+- cost model: reads, batches, container switches and containers touched, priced under three charging models.
+
+## What was not done
+No DNA was synthesised or sequenced. The replay keeps oracle decodability; its containers are runs of one
+synthesis batch, not independent syntheses. Failure rates are assumed, not measured. No regret or
+optimality result is proved.
+
+---
+
 # Supplementary S4: Methodology and Experimental Protocol (revision 3)
 
 All work is computational. The frozen protocol is `experiments/configurations/dt_protocol.yaml`; changes made after freezing are listed there under `deviations`, and analyses that were not pre-specified are listed under `post_hoc_analyses`.

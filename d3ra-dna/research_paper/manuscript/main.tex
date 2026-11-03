@@ -567,9 +567,9 @@ advantage is not an artefact of hindsight.
 \end{enumerate}
 Against that band of roughly $-$4\%, the model-based rules consume 3.75--18.87k reads, 7--441\%
 \emph{more} than round-robin.  The baseline ranking is therefore: fixed proportions measured once, plus
-verified stopping, best by about 4\%; round-robin with stopping next; every online rule we tried worse.  Our earlier revision quoted the 27\% figure in a way that could be read as an
-allocation result; it is not one, and the comparison it does make (consumed versus reserved) is the one
-that carries the recommendation of Section~\ref{sec:disc}.
+verified stopping, best by about 4\%; round-robin with stopping next; every online rule we tried worse.  The 27--32\% figure above is \emph{not} an allocation
+result and should not be read as one: it compares reads consumed against capacity reserved, and it is
+that comparison which carries the recommendation of Section~\ref{sec:disc}.
 
 \subsection{Policy comparison on the digital twin}
 \input{tables/dt_main}

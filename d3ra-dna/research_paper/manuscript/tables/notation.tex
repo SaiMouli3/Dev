@@ -15,7 +15,7 @@ $b$ & batch size (reads per decision) & \texttt{AdaptiveConfig} \\
 $R_j$, $U_j$ & reads taken from $j$, verified fragments from $j$ & \texttt{StreamRetriever} \\
 $\theta_j$, $\Theta$, $s$ & efficiency multiplier, its grid, prior log-sd & \texttt{AdaptiveConfig} \\
 $f_j$ & prior probability that container $j$ failed & \texttt{ChannelParams} \\
-$\bar\pi_j$ & prior per-fragment read share of container $j$ & \texttt{AdaptiveController} \\
+$\bar\pi_j$ & prior per-fragment read share of container $j$ & \texttt{Adaptive}\allowbreak\texttt{Controller} \\
 $k$, $d$, $\varphi(t)$ & NB shape, dropout, consensus-success curve & \texttt{ChannelParams} \\
 $Q(\mu)$ & P(fragment decodable) at mean coverage $\mu$ & \texttt{\_QTable} \\
 $\rho_U$ & beta-binomial ICC of recoveries in the likelihood & \texttt{overdispersion} \\

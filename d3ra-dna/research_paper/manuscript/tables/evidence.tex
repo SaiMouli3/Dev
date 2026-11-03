@@ -12,13 +12,13 @@ Claim & Command (\texttt{dt\_experiments.py} unless noted) & Result file (\textt
 No wrong output, no false accept (Table~\ref{tab:safety}) & all DT runs & \texttt{dt\_*.csv} & DT \\
 Verified stop: $-$27\% mean vs.\ best static reservation & \texttt{run}/\texttt{static baseline} & \texttt{dt\_baseline.csv}, \texttt{dt\_baseline\_static.csv} & DT \\
 Model-based rules costlier than round-robin (baseline) & \texttt{run baseline} & \texttt{dt\_summary.csv} & DT, negative \\
-Gains after outright failure (UCB $-$24\%); success set by redundancy & \texttt{run fail1}, \texttt{run fail2} & \texttt{dt\_fail1.csv}, \texttt{dt\_fail2.csv} & DT, simulated failures \\
+Gains after outright failure (UCB $-$24\%); success set by redundancy & \texttt{run fail1}, \texttt{run fail2} & \texttt{dt\_fail\{1,2\}\{,\_static\}.csv} & DT, simulated failures \\
 Crossover with severity of the worst container & \texttt{run sweep\_cov*} & \texttt{dt\_sweep\_cov*.csv} & DT \\
 No rule lowers q99 & all DT runs & \texttt{dt\_summary.csv} & DT, negative \\
-$\rho_U$ selection and held-out coverage & \texttt{calib}, \texttt{calib\_eval} & \texttt{dt\_calibration\_\{select,eval\}\_baseline.csv} & DT, partly negative \\
+$\rho_U$ selection and held-out coverage & \texttt{calib}, \texttt{calib\_eval} & \texttt{dt\_calibration\_\{select,}\allowbreak\texttt{eval\}\_baseline.csv} & DT, partly negative \\
 Forecasts over-confident, worse than climatology & \texttt{forecast baseline} & \texttt{dt\_forecast\_baseline.csv} & DT, negative \\
 Binomial likelihood cheaper (post hoc) & \texttt{posthoc\_rho0} & \texttt{dt\_*\_posthoc\_rho0.csv} & DT, post hoc \\
-Homogeneous control; photolithographic synthesis & \texttt{run homog}, \texttt{run photolitho} & \texttt{dt\_homog.csv}, \texttt{dt\_photolitho.csv} & DT (photolitho reduced) \\
+Homogeneous control; photolithographic synthesis & \texttt{run homog}, \texttt{run photolitho} & \texttt{dt\_homog\{,\_static\}.csv}, \texttt{dt\_photolitho\{,\_static\}.csv} & DT (photolitho reduced) \\
 Leak-free real-read replay & \texttt{paper\_experiments.py replay\_v3} & \texttt{replay\_v3\{,\_genscript\}.csv} & Replay \\
 Leaky first analysis (upper bound only) & \texttt{real\_data.py policies} & \texttt{realdata\_*policies*\_v2.csv} & superseded \\
 Correlated nanopore errors (MAE 0.083 vs.\ 0.181) & \texttt{q3\_correlated\_errors.py} & \texttt{q3\_summary.json} & real nanopore reads \\

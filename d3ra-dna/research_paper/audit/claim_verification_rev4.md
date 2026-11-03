@@ -62,3 +62,13 @@ part of the artifact and the manuscript says so.
 | 4 | **panel (b) pooled every ρ on the grid instead of using the selected ρ_U, and its title read ρ_U = 0.0** — the bars did not show the quantity the text reports | filtered to the selected ρ_U = 0.1, values annotated, title corrected; the panel now shows 1.00 for five containers and 0.20 for the near-dead one, matching Section VI-I |
 | 5 | was crammed into the same float as Figure 4 at one third of the width | split into its own single-column figure with a caption that states what calibration would look like |
 | 1 | the routing arrow was drawn across the text of the controller box | arrow rerouted outside the box, box widened |
+
+## 5. Table corrections made in the final pass
+
+| Table | Defect | Fix |
+|---|---|---|
+| VIII (ablation) | **the float was taller than the page** — LaTeX reported "Float too large for page by 268pt" and rows were silently missing from the rendered PDF | rewritten as a pivot (scenario × policy rows, one column per ablation cell); all 105 conditions now render on one page |
+| XVIII (claim-to-evidence) | said the calibrated prior "pays for itself after ≈1 retrieval" (the correct figure is ≈17); summarised the ablation as "the one-parameter model is the cause"; gave a single static percentage; said "no rule lowers q99" | all four rows rewritten to the recomputed values and the correct causal statement |
+| XVI (cost model) | the "reads only" cost column duplicated the Reads column exactly | column removed, caption adjusted |
+| VI vs V | Table VI costs static plans as reservations, Table V runs the same plans with stopping; the two conventions were not distinguished | Table VI's caption now states the convention explicitly and warns that its static rows are not comparable with Table V's |
+| XVII (limitations) | claimed the photolithographic scenario used a reduced design and that static baselines rely on hindsight | updated: the scenario was re-run at full design, and the calibration-estimated plan matches the hindsight one |

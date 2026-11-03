@@ -1,3 +1,75 @@
+# Scientific Quality Report: Reviewer-Style Assessment (revision 4)
+
+**Manuscript:** "Verified Stopping, Not Adaptive Allocation, Saves Reads in Multi-Container DNA Storage:
+A Leak-Free Computational Study on a Digital Twin and Real Read Streams"
+
+- **Companion files:** `audit/claim_verification_rev4.md` (claim-by-claim recomputation),
+  `audit/recompute_claims.py` and `experiments/statistical_analysis/r4_analysis.py` (the recomputation
+  itself), `audit/table1_verification.md`, `audit/citation_verification.md`,
+  `evidence/evidence_traceability_rev4.csv`.
+- The revision-3 report follows below, unchanged, for comparison.
+
+## 1. What the paper now claims
+
+1. **Verified stopping is the saving, and it is consumed-versus-reserved.** Round-robin with
+   verification-gated stopping consumes 3.49k reads per retrieval against the 4.80–5.15k that the same
+   read proportions must reserve to succeed 99% of the time: −27% to −32%, with no container model.
+2. **Allocation is second-order, and was harmful under the frozen model.** Every online rule read more
+   than round-robin on the baseline (+7% to +441%). A 2×2×2 ablation shows the frozen configuration is
+   the one corner where the penalty is large: relaxing the container model, the likelihood or the prior
+   width individually brings every rule into a band 0–4.5% below round-robin, where a hindsight static
+   plan already sits (−4.2%).
+3. **The repair is worth most where loss dominates.** A two-parameter (efficiency + dropout) container
+   model turns +77% into −6% under partial physical loss, +47% into −34% under common-cause
+   degradation, and −17% into −35% after an outright failure.
+4. **No adaptive rule lowers the tail.** With 100 synthesis replicates, round-robin's q99 is 5.15k
+   [4.85, 5.20] and the hindsight static plan's 4.70k [4.55, 4.75] (disjoint), while every adaptive rule
+   is worse or indistinguishable. Knowing the proportions lowers the tail; learning them does not.
+5. **Safety, with the dependence stated.** No wrong output in 23,160 retrievals and no false accept in
+   30.2M decode attempts; upper limits 1.6e-4 per retrieval and 1.3e-2 per synthesis replicate, because
+   those retrievals come from 280 replicates.
+6. **Generality within the simulator.** Every qualitative conclusion survives six further archive
+   geometries, five failure modes and an 8-setting prior sweep.
+
+## 2. How the revision-3 weaknesses were handled
+
+| Revision-3 weakness | Disposition in revision 4 |
+|---|---|
+| The 27% headline compared consumed reads against a reserved budget, which reads as an allocation result | Separated explicitly. Both comparisons are reported; with stopping enabled for both, the static plan is **4.2% cheaper** than round-robin, which is stated in the results, the discussion and the abstract. |
+| The 24% post-failure gain was conditional on success | Both denominators reported: −24% conditional, −3% over all attempts, and the success probability is identical across policies. |
+| Safety bounds assumed independent trials | Cluster structure quantified (280 synthesis replicates) and the conservative per-synthesis bound reported alongside. |
+| q99 from 300 retrievals | Cluster-bootstrap intervals plus a 100-replicate design; the claim is narrowed to adaptive rules and the static exception is stated. |
+| ρ_U at the grid edge, selected with the wrong prior width | Re-selected with s = 0.5 on an extended grid; the best value is 0.03, no value reaches 0.90 coverage, and the near-dead container is never covered. Reported as a characterised failure. |
+| One container model | Two-parameter model implemented and evaluated across scenarios, geometries and failure modes. |
+| One archive geometry, one failure mode | Six geometries, five failure modes. |
+| Reads treated as cost | Three charging models; switches recorded. |
+| "Best static plan" meant the best of four | Finer α grid plus a calibration-estimated plan that sees no evaluation data. |
+| Kong et al. compared from the abstract | Compared from the full 33-page paper; their open problem 4 is the gap this paper occupies. Levy et al. updated to the ISIT 2026 version with DOI. |
+| Novelty framed broadly | Narrowed to an explicit three-part statement of what is and is not new. |
+| Geometry arithmetic inconsistent | Resolved from the code: the 162-byte header makes the blob need 25 stripes. Genscript's 12,472→12,000 design mapping and the 4.23% discarded reads are stated. |
+
+## 3. Remaining weaknesses, in reviewer terms
+
+- **W1 (fundamental).** Nothing was synthesised or sequenced. The end-to-end safety and exactness results
+  are simulated by DT4DDS; the real-read replay keeps oracle decodability and its containers are runs of
+  one batch. The paper says so in the abstract, the scope paragraph, the limitations table and the
+  conclusion, and names the experiment that would close it, but no amount of wording closes it.
+- **W2.** Failure rates and partial-loss profiles are chosen by us, so the failure-mode results show what
+  happens *if* such containers exist, not how often they do.
+- **W3.** No theory. The negative result is not proved to be unavoidable for any controller of this class.
+- **W4.** The cost model's prices are illustrative.
+- **W5.** One secondary condition (information-greedy on Genscript) is censored.
+- **W6.** 25 pages with appendices; a venue cut will be needed.
+
+## 4. Verdict
+
+The paper is now internally consistent, its headline comparison is correctly labelled, its negative
+results are quantified with dependence-aware uncertainty, and its central mechanism claim is tested by an
+ablation that contradicted our first explanation and was reported as such. Its reach is bounded by W1:
+this is a careful computational study, and it should be read and reviewed as one.
+
+---
+
 # Scientific Quality Report: Reviewer-Style Assessment
 
 **Manuscript:** "Self-Calibrating Adaptive Sequencing for Exact Retrieval from Heterogeneous Multi-Container DNA Storage: Method and Evaluation on Real Read Streams"

@@ -158,7 +158,21 @@ replacement followed by noise~\cite{shomorony2021dna,weinberger2022dna,lenz2020c
 sampling minimise the expected number of reads~\cite{barlev2025cover}.  Follow-ups study random
 access~\cite{gruica2024combinatorial}, real-data sampling distributions~\cite{cao2025optimizing},
 single-container coverage depth of structured codes~\cite{bertuzzo2025coverage}, and the
-reliability of MDS-coded retrieval~\cite{kashanna2026reliability}.
+reliability of MDS-coded retrieval~\cite{kashanna2026reliability}.  Cao
+\emph{et al.}~\cite{cao2026modeling} drop the uniform-sampling idealisation that most of this line
+assumes: they model the PCR and sequencing channel as nonuniform, instantiate it log-normally, and
+analyse the MDS coverage-depth problem for both noiseless and noisy channels, deriving the expected
+minimum depth for complete decoding in the noiseless case and, for the noisy case, a
+coupon-collector envelope and a critical-quantile refinement, with sequencing sample-size estimates
+validated by Monte-Carlo simulation.  Their object is one pool: how deep to sequence it so that enough
+\emph{strands} are recovered.  That is the quantity our controller consumes rather than derives --- our
+consensus-success curve and over-dispersed coverage model play the role their channel model plays --- and
+it is complementary to what we study: several independently handled containers of unknown and
+heterogeneous quality, some of which may have failed; \emph{which} container to read next after each
+batch; when to stop, decided by verification rather than by a depth computed in advance; and, in the
+digital-twin experiments, byte-for-byte verification of the returned file.  We take nonuniform sampling,
+coverage-depth analysis and the use of checksums as established by this literature, not as contributions
+of ours.
 
 \emph{Distributed coverage depth.}  Two 2026 papers are closest to our setting and we state the
 relation precisely.  Kong \emph{et al.}~\cite{kong2026coverage} define the distributed coverage-depth
@@ -946,15 +960,34 @@ model.  Never return an unverified file.
 \item If you \textbf{reserve} capacity rather than pay per read, expect nothing from online
 adaptation: budget the q99 of round-robin.  Fixed proportions tuned to the containers do lower the tail
 (about 9\% here), so spend the effort on measuring the containers once, not on a controller.
-\item \textbf{Switch a container off} once it is clearly failed (no verified fragment after a probe).
-Posterior rules cut the cost of the retrievals that still succeed by up to 24\%, but they do not make
-recovery more likely.
+\item \textbf{Deprioritise, do not permanently exclude, a container that looks dead.}  In our simulated
+total-loss scenario, where a container returns no fragment derived from stored strands at all, posterior
+rules cut the cost of the retrievals that still succeed by up to 24\% --- but they do not make recovery
+more likely, and ``no verified fragment in one probe'' does not prove a container is physically dead.  A
+container that is merely low-efficiency, that has lost part of its strands, or whose fragments need
+deeper consensus can look identical after one batch, and our own experiments show those cases behave very
+differently (Sections~\ref{sec:res-dropout} and~\ref{sec:res-robust}): with partial loss the file is
+still recoverable from that container, and raising the consensus cap alone moved the one-failed-container
+success rate from 0.313 to 0.357.  We did not design or validate a failure-detection rule, and we report
+no false-exclusion rate, so we recommend down-weighting such a container while continuing to sample it,
+not switching it off for good.
 \item Do \textbf{not} put a model-based allocation rule in front of a container model that cannot
 represent dropout: every such rule we tried read more than round-robin, by 7--441\%.  With efficiency
 \emph{and} dropout, the best rule gained 3.5\%; decide whether that is worth the complexity.
-\item If calibration reads of the same containers are available, spend them: a prior fitted on
-held-out reads identified the weak container in advance and saved 16\% on one real-read pool, which is
-the largest allocation effect we measured, though it is repaid only over repeated retrievals.
+\item \textbf{Calibration pays only for an archive that will be read repeatedly.}  A prior fitted on
+held-out reads of the same containers identified the weak container in advance and saved about 16\% per
+retrieval on the Genscript replay --- the largest allocation effect we measured --- but it consumed
+1.8M calibration reads, 2.8 times one retrieval's cost, so it breaks even only after roughly 17
+retrievals (about 10 at 100k calibration reads per container).  Smaller calibration budgets did not help
+consistently, and one intermediate level (30k reads per container) was \emph{worse} than no calibration
+at all.  The result comes from a semi-empirical replay with oracle decodability, not an end-to-end
+physical experiment.  Estimating only the static read proportions is the cheaper route to most of the
+available gain.
+\item \textbf{Read savings are not laboratory-cost savings.}  Every number above is a read count. A
+27\% or 16\% reduction in reads does not imply the same reduction in a sequencing bill: instrument time,
+reagents, library preparation, minimum run sizes and real switching costs are not modelled, and under our
+assumed per-batch and per-container charges the margin allocation competes for shrinks sharply
+(Section~\ref{sec:res-cost}).
 \item \textbf{Size redundancy for the failures you must survive.}  With $(32,48)$ over six containers,
 two lost containers leave exactly $K$ fragments per stripe and no margin; and a noisier synthesis model
 made the file unrecoverable in our design whatever the policy.
@@ -1056,14 +1089,30 @@ synthesis and by the information-greedy policy, and the commands are in the arti
 %=====================================================================
 \section{Conclusion}
 %=====================================================================
-On a digital twin with independently synthesised containers, verified stopping retrieved the
-file without a single wrong output and cut the mean reads per retrieval by 27\% against the best
-static reservation; adaptive container selection added nothing when a container was near-dead
-and helped (by up to 24\%) only after an outright failure or under mild heterogeneity.  No rule
-lowered the 0.99-quantile, and the controller's forecasts are over-confident.  The results are
-computational, for one archive design and one simulator; their value is a reproducible,
-leak-free baseline and a clear account of where online adaptation fails.  A container model
-with dropout, wet-lab containers and a real failure distribution are the next steps.
+On a digital twin whose containers are independently synthesised \emph{in simulation}, verified
+stopping returned the stored file without a single wrong output in \SafeN{} retrievals and reduced the
+reads actually consumed to 27--32\% below the capacity a non-stopping plan must reserve.  That
+consumed-versus-reserved saving is the paper's robust result, and it needs no model of the containers.
+Deciding \emph{which} container to read next is worth far less: fixed proportions, which can be
+estimated offline from calibration replicates, gave about 4\%, while every online rule we tried cost
+more than round-robin when a container was near-dead, by 7--441\%.  An ablation shows that penalty
+requires the frozen combination of container model, likelihood and prior width, and that relaxing any
+one of the three removes most of it; a container model with a dropout parameter is the physically
+meaningful choice and earns its keep where loss dominates, reaching $-$6\% under partial loss, $-$34\%
+under common-cause degradation and $-$35\% after an outright failure.  No adaptive rule reduced the
+0.99-quantile in any configuration we tested, so none of this lowers reserved capacity; the posterior is
+not calibrated for a near-dead container at any value in its likelihood family, and the completion
+forecasts are worse than climatology and are not usable probabilities.
+
+Every result is computational.  The digital-twin experiments run the full decode chain and compare bytes;
+the real-read replay uses public Illumina streams but keeps decodability as an oracle event and emulates
+containers by subsetting runs of one synthesis batch, so it is semi-empirical and is not a physical
+demonstration of the retrieval system.  No DNA was synthesised or sequenced for this paper.  Each
+headline figure is a read count, not a laboratory cost.  What we offer is a leak-free, regenerable
+baseline, bounds on wrong outputs that state their own dependence structure, and a careful account of
+when online adaptation hurts.  The experiments that would settle what we could not are physically
+independent containers with measured failure and dropout statistics, and one end-to-end retrieval of a
+known file from synthesised DNA through this decoder.
 
 \appendices
 \section{Upper bound with evaluation leakage}\label{app:leak}

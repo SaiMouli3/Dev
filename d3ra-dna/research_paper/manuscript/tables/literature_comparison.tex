@@ -19,6 +19,7 @@ Gimpel et al.\ 2023 \cite{gimpel2023digital}       & N & N & P & N  & N & N & Y 
 Bar-Lev et al.\ 2025 \cite{barlev2025cover}        & N & N & N & N  & N & I & N & N \\
 Gruica et al.\ 2024 \cite{gruica2024combinatorial} & N & N & N & N  & N & I & N & N \\
 Cao \& Chen 2025 \cite{cao2025optimizing}          & N & N & N & N  & N & I & P & N \\
+Cao et al.\ 2026 \cite{cao2026modeling}            & N & N & N & Y  & N & I & P & N \\
 Kas Hanna 2026 \cite{kashanna2026reliability}      & N & N & N & N  & N & N & N & N \\
 Levy et al.\ 2026 \cite{levy2026expected}          & Y & Y & N & N  & N & I & N & N \\
 Kong et al.\ 2026 \cite{kong2026coverage}          & Y & N & N & N  & N & I & N & N \\
@@ -36,8 +37,10 @@ This work                                          & Y & P & Y & P  & Y & Y & P 
 consensus curves; real reads (ENA PRJEB65931 \cite{gimpel2023prjeb65931}, same-batch aliquots) are used in a
 semi-empirical replay with oracle decodability, so they are marked partial; the end-to-end digital twin is DT4DDS
 \cite{gimpel2023digital}.  Gimpel et al.\ \cite{gimpel2023digital}: heterogeneity characterised across handling conditions
-of one pool, and the digital twin itself.  Cao \& Chen \cite{cao2025optimizing}: log-normal channel fitted to their own
-data.  Weilguny et al.\ \cite{weilguny2023dynamic}: genomic loci, not storage containers.  Kong et al.\
+of one pool, and the digital twin itself.  Cao \& Chen \cite{cao2025optimizing} and Cao et al.\ \cite{cao2026modeling}: log-normal nonuniform
+channel fitted to sequencing data; \cite{cao2026modeling} treats noisy as well as noiseless MDS coverage depth, so its
+``correlated errors'' cell is Y in the sense of a noisy channel model, but it is a single-pool, strand-level analysis
+with no containers, failures, allocation or operational stopping rule.  Weilguny et al.\ \cite{weilguny2023dynamic}: genomic loci, not storage containers.  Kong et al.\
 \cite{kong2026coverage} (full paper, 33\,pp.): containers are homogeneous, never fail and are sampled noiselessly and
 uniformly, one read per container per round, with the allocation fixed in advance; adaptive, nonuniform, asynchronous
 and noisy sampling are listed there as open problems.  Levy et al.\ \cite{levy2026expected}: objective is repairing one

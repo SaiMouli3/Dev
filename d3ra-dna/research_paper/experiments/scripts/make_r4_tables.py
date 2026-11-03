@@ -205,12 +205,12 @@ def ablation():
            r"the three choices moves every rule into a band a few per cent below round-robin.  Blank: not run.  "
            r"Cluster-bootstrap intervals for every cell are in \texttt{results/r4\_ablation.csv}; those the text "
            r"relies on are quoted there.}",
-           r"\label{tab:r4abl}", r"\scriptsize", r"\setlength{\tabcolsep}{4pt}",
+           r"\label{tab:r4abl}", r"\scriptsize", r"\setlength{\tabcolsep}{3pt}",
            r"\begin{tabular}{@{}ll" + "r" * len(cells) + r"@{}}", r"\toprule",
            r" & & \multicolumn{4}{c}{$\theta$ only} & \multicolumn{4}{c}{$\theta$ and dropout $d$} \\",
            r"\cmidrule(lr){3-6}\cmidrule(lr){7-10}",
-           r"Scenario & Policy & " + " & ".join(
-               f"$\\rho_U{{=}}{c[1]}$, $s{{=}}{c[2]}$" for c in cells) + r" \\", r"\midrule"]
+           r"Scenario & Policy ($\rho_U$, $s$) & " + " & ".join(
+               f"${c[1]}$, ${c[2]}$" for c in cells) + r" \\", r"\midrule"]
     for sc in ["baseline", "fail1", "homog", "sweep_cov3", "sweep_cov1"]:
         g = d[d.scenario == sc]
         if g.empty:

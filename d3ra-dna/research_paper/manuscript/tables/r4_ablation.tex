@@ -3,12 +3,12 @@
 \caption{Ablation of the three modelling choices (digital twin; paired mean reads against round-robin on jointly successful retrievals, per cent, negative is cheaper than round-robin).  $\theta$: one efficiency multiplier per container (the frozen model); $\theta{+}d$: efficiency and a dropout fraction.  $\rho_U$ is the beta-binomial correlation and $s$ the prior width; the frozen configuration is the first column.  The penalty is large only in that column: relaxing any one of the three choices moves every rule into a band a few per cent below round-robin.  Blank: not run.  Cluster-bootstrap intervals for every cell are in \texttt{results/r4\_ablation.csv}; those the text relies on are quoted there.}
 \label{tab:r4abl}
 \scriptsize
-\setlength{\tabcolsep}{4pt}
+\setlength{\tabcolsep}{3pt}
 \begin{tabular}{@{}llrrrrrrrr@{}}
 \toprule
  & & \multicolumn{4}{c}{$\theta$ only} & \multicolumn{4}{c}{$\theta$ and dropout $d$} \\
 \cmidrule(lr){3-6}\cmidrule(lr){7-10}
-Scenario & Policy & $\rho_U{=}0.1$, $s{=}0.5$ & $\rho_U{=}0.0$, $s{=}0.5$ & $\rho_U{=}0.1$, $s{=}1.0$ & $\rho_U{=}0.0$, $s{=}1.0$ & $\rho_U{=}0.1$, $s{=}0.5$ & $\rho_U{=}0.0$, $s{=}0.5$ & $\rho_U{=}0.1$, $s{=}1.0$ & $\rho_U{=}0.0$, $s{=}1.0$ \\
+Scenario & Policy ($\rho_U$, $s$) & $0.1$, $0.5$ & $0.0$, $0.5$ & $0.1$, $1.0$ & $0.0$, $1.0$ & $0.1$, $0.5$ & $0.0$, $0.5$ & $0.1$, $1.0$ & $0.0$, $1.0$ \\
 \midrule
 baseline & Coverage-greedy & +15 & -4 & -1 & -5 & +2 & -4 & +1 & -2 \\
  & Thompson sampling & +7 & -4 & +1 & -4 & +1 & -4 & -1 & -4 \\

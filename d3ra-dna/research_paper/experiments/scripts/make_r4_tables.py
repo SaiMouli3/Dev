@@ -318,10 +318,11 @@ def cost_model():
     if d.switches.notna().any():
         d = d[d.switches.notna()]
     d = d.drop_duplicates("policy")
-    cols = [c for c in d.columns if c.startswith("cost[")]
+    cols = [c for c in d.columns if c.startswith("cost[") and "reads only" not in c]
     out = [r"\begin{table}[!t]", r"\centering",
-           r"\caption{Reads are not the only cost.  Three charging models applied to the same baseline retrievals: "
-           r"reads only; a multiplexed run (50 read-equivalents per batch of 50 reads, 500 per container library); "
+           r"\caption{Reads are not the only cost.  Two further charging models applied to the same baseline "
+           r"retrievals; the reads-only model is the Reads column itself.  A multiplexed run charges 50 "
+           r"read-equivalents per batch of 50 reads and 500 per container library preparation; "
            r"and a separate sequencing run per batch (2{,}000 per batch).  Costs in read-equivalents (thousands).  "
            r"Switching containers every batch is free in the first model and dominant in the third.}",
            r"\label{tab:r4cost}", r"\scriptsize", r"\setlength{\tabcolsep}{3pt}",

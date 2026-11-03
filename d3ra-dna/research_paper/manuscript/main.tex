@@ -48,8 +48,9 @@ penalty is not caused by one modelling choice: the frozen configuration is the o
 large, and relaxing the container model (adding a dropout parameter), the likelihood, or the prior width
 individually all bring every rule into a narrow band 0 to 4.5\% below round-robin --- the same band as
 the hindsight static plan.  So adaptive allocation is worth a few percent at best, against stopping's
-27--32\%.  No rule lowered the 0.99-quantile in any configuration, including with the
-better model, so none of this reduces reserved capacity.  Over \SafeN{} end-to-end retrievals no output
+27--32\%.  No \emph{adaptive} rule lowered the 0.99-quantile in any configuration, including with the better
+model, so online learning does not reduce reserved capacity; fixed proportions chosen with hindsight
+knowledge of the containers do lower it, by about 9\%.  Over \SafeN{} end-to-end retrievals no output
 file was ever wrong and no wrong payload passed the inner checks in \SafeAtt{} decode attempts; because
 those retrievals share \SafeUnits{} synthesis replicates, we report both the per-retrieval upper limit
 (\SafeWUB{}) and the conservative per-synthesis one (\SafeWUBc{}).  A leak-free replay of real Illumina
@@ -102,8 +103,8 @@ container, with three independent modelling choices each sufficient to cause it,
 remove it.  Once any of them is relaxed, every rule lands 0--4.5\% below round-robin, where a
 hindsight static plan already sits ($-$4.2\%).  The one substantially larger allocation effect requires
 knowing the weak container \emph{before} retrieval, from calibration reads ($-$16\% per retrieval on one
-real-read pool, repaid after about 17 retrievals).  (iii) \emph{Nothing we tried lowered the
-0.99-quantile}, so none of this reduces the capacity a user must reserve; the gains are mean-only.
+real-read pool, repaid after about 17 retrievals).  (iii) \emph{No adaptive rule lowered the 0.99-quantile}, so online learning does not reduce the
+capacity a user must reserve, although fixed proportions chosen in hindsight lower it by about 9\%.
 (iv) \emph{Two zero-success results mark boundaries of the archive design, not of the policies}: two
 failed containers leave exactly $K$ fragments per stripe by construction, and under the
 photolithographic synthesis model no policy or static plan in our design recovered the file.
@@ -636,9 +637,9 @@ savings of $-$6\% and $-$34\% (Section~\ref{sec:res-robust}).
 
 Three qualifications keep this from being a positive headline.  First, as the ablation shows, the
 dropout model is not uniquely responsible: the binomial likelihood alone does as much on the baseline.
-Second, the tail does not move: the paired q99 difference for UCB with the dropout model is $-$450 reads
-with a 95\% interval of $-$1{,}147 to $+$150, so even the best rule is not resolved as better than
-round-robin at q99, and the statement that no rule lowered q99 survives the better model.  Third, the size depends entirely on the scenario: in the baseline the best allocation result is a
+Second, the tail does not move for any \emph{adaptive} rule: the paired q99 difference for UCB with the
+dropout model is $-$450 reads with a 95\% interval of $-$1{,}147 to $+$150, so even the best rule is not
+resolved as better than round-robin at q99 (a hindsight static plan is, Section~\ref{sec:res-tail}).  Third, the size depends entirely on the scenario: in the baseline the best allocation result is a
 3.5--4.5\% mean saving, against the 27--32\% that verified stopping delivers with no model at all; it is
 only in the dropout-dominated scenarios (partial loss, common-cause degradation, a failed container)
 that allocation reaches 6--45\%, and there it is repairing a problem the frozen model created.  The right reading of our negative result
@@ -682,19 +683,23 @@ multiplier is a fair description of the worst container.
 
 \subsection{Tail metrics and the static family}\label{sec:res-tail}
 \input{tables/r4_tails}
-No allocation rule lowered the 0.99-quantile, but the precision of that statement needs care.  A q99
-estimated from 300 retrievals is driven by its three most expensive observations, and those sit in a few
-synthesis replicates, so we report cluster-bootstrap intervals over syntheses
-(Table~\ref{tab:r4tails}).  In the frozen design round-robin has q99 5.15k (95\% CI 4.75--5.65k),
-Thompson sampling 6.45k (5.30--7.16k), tail-aware 7.15k (5.75--7.76k), UCB 8.15k (6.25--8.60k),
-coverage-greedy 9.05k (5.80--9.50k) and pivotal 9.60k (9.10--9.91k).  The intervals of coverage-greedy
-and Thompson sampling overlap round-robin's, so for those two rules the direction is clear from the
-means but the q99 gap is not resolved by this design; pivotal, learn-then-commit and info-greedy are
-separated from round-robin at q99 as well as in the mean.  The tail-aware rule, built to attack the
-bottleneck stripes, is worse than round-robin at q99 in every design we ran: the heuristic did not
-work.  We therefore make only the claim the evidence supports --- \emph{no rule we tested lowered q99,
-and none of this machinery should be sold as tail-risk reduction} --- and we report q95 beside q99
-because it is the better-determined tail statistic at this sample size.
+No \emph{adaptive} rule lowered the 0.99-quantile; a tuned static plan did.  Both halves of that
+sentence needed more data than the frozen design provides, because a q99 estimated from 300 retrievals
+is driven by its three most expensive observations and those sit in a few synthesis replicates.  We
+therefore report cluster-bootstrap intervals over syntheses and we re-ran the baseline with 100
+independent syntheses $\times$ 3 read orders (Table~\ref{tab:r4tails}).  With 100 syntheses, round-robin
+has q99 5.15k (95\% CI 4.85--5.20k) and the hindsight-tuned static proportions 4.70k (4.55--4.75k):
+the intervals are disjoint, so fixed proportions chosen with knowledge of the containers lower the tail
+by about 9\% as well as the mean.  Every adaptive rule is worse than round-robin or indistinguishable
+from it: Thompson sampling 6.10k (5.40--7.16k), UCB 7.50k (6.15--8.16k), coverage-greedy 8.05k
+(5.85--9.06k), and with the dropout model coverage-greedy 5.05k (4.55--5.11k) and Thompson sampling
+5.10k (4.60--5.46k) --- both overlapping round-robin.  The best adaptive cell anywhere is UCB with the
+dropout model in the frozen design, q99 4.70k (4.40--5.05k) against round-robin's 5.15k
+(4.75--5.65k), which still overlaps.  The tail-aware rule, built to attack the bottleneck stripes, is
+worse than round-robin at q99 in every design we ran: the heuristic did not work.  The claim we make is
+therefore the narrow one --- \emph{knowing the right proportions in advance lowers the tail; learning
+them online does not} --- and we report q95 beside q99 because it is the better-determined tail
+statistic at this sample size.
 
 The static family deserves the same caution.  Its members are $w_j\propto e_j^{\alpha}$, and the frozen
 protocol tested only $\alpha\in\{0,0.5,1,2\}$, so ``best static plan'' means the best of those four,
@@ -914,8 +919,9 @@ container, through calibration reads, turned allocation into a large saving.
 \item Read the containers in turn and \textbf{stop on verification} (every stripe against its CRC-32,
 the file against its hash).  This is the robust saving, 27--32\% of a reserved budget, and it needs no
 model.  Never return an unverified file.
-\item If you \textbf{reserve} capacity rather than pay per read, expect no saving at all from any of
-this: budget the q99 of round-robin, and prefer a tuned static allocation.
+\item If you \textbf{reserve} capacity rather than pay per read, expect nothing from online
+adaptation: budget the q99 of round-robin.  Fixed proportions tuned to the containers do lower the tail
+(about 9\% here), so spend the effort on measuring the containers once, not on a controller.
 \item \textbf{Switch a container off} once it is clearly failed (no verified fragment after a probe).
 Posterior rules cut the cost of the retrievals that still succeed by up to 24\%, but they do not make
 recovery more likely.

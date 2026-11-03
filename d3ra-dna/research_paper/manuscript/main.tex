@@ -253,10 +253,10 @@ number can be regenerated.
 \node[box, left=of clus] (cons) {consensus $\to$\\inner RS + CRC-16\\+ address check};
 \node[box, left=of cons] (outer) {outer RS per stripe\\+ CRC-32 (leave-\\one-out repair)};
 \node[box=gray, left=of outer] (out) {file + SHA-256 $\to$\\byte comparison\\(after the fact)};
-\node[box=red, below=8mm of cons, minimum width=110mm, xshift=-10mm] (ctl) {online-adaptive controller: posterior over $\theta_j$ $\to$ allocation rule $\to$ next container / verified stop};
+\node[box=red, below=8mm of cons, minimum width=120mm, xshift=-6mm, inner xsep=10pt] (ctl) {online-adaptive controller: posterior over $\theta_j$ $\to$ allocation rule $\to$ next container, or stop};
 \draw[arr] (files)--(stripes); \draw[arr] (stripes)--(strands); \draw[arr] (strands)--(place); \draw[arr] (place)--(dt);
 \draw[arr] (dt)--(clus); \draw[arr] (clus)--(cons); \draw[arr] (cons)--(outer); \draw[arr] (outer)--(out);
-\draw[arr] (cons.south) -- (cons.south |- ctl.north); \draw[arr] (ctl.east) -| (clus.south);
+\draw[arr] (cons.south) -- (cons.south |- ctl.north); \draw[arr] (ctl.east) -- ++(4mm,0) |- (clus.south);
 \end{tikzpicture}}
 \caption{Pipeline of the primary experiments (conceptual diagram).  Every container is an
 independent DT4DDS synthesis with its own handling history; its reads are consumed in batches
@@ -574,7 +574,17 @@ that carries the recommendation of Section~\ref{sec:disc}.
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{fig_dt_policies.pdf}
-\caption{Digital-twin end-to-end retrieval.  (a) Baseline scenario: mean reads (95\% cluster-bootstrap CI) and q99 per policy; vertical lines: static plans (whose cost equals their q99).  (b) Paired relative cost against round-robin with verified stopping on retrievals where both succeeded (95\% CI); negative is cheaper.}
+\caption{Digital-twin end-to-end retrieval, baseline unless stated.  \textbf{(a)} For each policy, the
+reads a retrieval actually \emph{consumes}: filled circles are the mean over 300 retrievals with a 95\%
+cluster-bootstrap interval over syntheses, open squares the 0.99-quantile of the same retrievals.  The two
+vertical lines are the capacity a plan that does \emph{not} stop must \emph{reserve} to succeed on 99\% of
+retrievals: dotted for uniform fixed depth, dashed for the best static plan.  The horizontal distance from a
+filled circle to a vertical line is the saving verified stopping provides; the distance between circles is
+the (much smaller) allocation effect.  \textbf{(b)} Allocation effect alone: each bar is the paired
+difference in mean reads against round-robin with the same verified stopping, computed on the retrievals in
+which both policies succeeded, with 95\% cluster-bootstrap intervals; negative is cheaper than round-robin.
+Information-greedy is annotated rather than plotted because it runs off the scale.  Scenarios in which no
+retrieval succeeded (photolithographic, two failed containers) have no paired statistic and are omitted.}
 \label{fig:dt}
 \end{figure*}
 Table~\ref{tab:dt} and Fig.~\ref{fig:dt} give the pre-specified comparisons.  In the baseline
@@ -717,7 +727,10 @@ multiplier is a fair description of the worst container.
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{fig_dt_sweep.pdf}
-\caption{Severity sweep: the near-dead container's copy number varied from 200 to 1 (300 retrievals per point and policy).}
+\caption{Severity sweep: mean reads consumed as the degraded container's copy number falls from 200 to 1
+(300 retrievals per point and policy, 95\% cluster-bootstrap intervals; the axis runs from mild to severe
+degradation).  Every retrieval at every level returned the correct file, so the success probability is
+1.00 throughout and is not plotted.  Adaptive rules are cheaper than round-robin only at the mild end.}
 \label{fig:sweep}
 \end{figure}
 
@@ -788,11 +801,28 @@ rely on them, is disabled in every run, and we make no claim that these numbers 
 probabilities.
 \begin{figure*}[t]
 \centering
-\includegraphics[width=0.66\textwidth]{fig_dt_calibration.pdf}\hfill
-\includegraphics[width=0.33\textwidth]{fig_forecast.pdf}
-\caption{Calibration on the digital twin.  Left: 90\% credible-interval coverage of $\theta^\ast$ per container on the selection replicates for each $\rho_U$, and on held-out replicates at the selected $\rho_U$.  Right: reliability of the completion forecast (analytic vs.\ posterior simulation).}
+\includegraphics[width=0.98\textwidth]{fig_dt_calibration.pdf}
+\caption{Is the posterior over container efficiency calibrated?  Each point or bar is the fraction of
+cases in which the 90\% credible interval for $\theta_j$ contained the target $\theta^\ast_j$; a
+calibrated posterior would sit on the dotted line at 0.90.  \textbf{(a)} Selection replicates
+1000--1009, one curve per container, against the beta-binomial correlation $\rho_U$; the thick black
+curve is the mean over containers, which is what the selection rule maximised.  \textbf{(b)} Held-out
+replicates 0--29 at the selected $\rho_U{=}0.1$, per container.  Five containers are covered perfectly
+and the near-dead one is covered in 0.20 of cases at this $\rho_U$ (0.00--0.03 across the extended grid
+of Table~\ref{tab:r4calib}): no value of $\rho_U$ calibrates the container that matters.}
 \label{fig:calib}
 \end{figure*}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{fig_forecast.pdf}
+\caption{Reliability of the completion forecast on the digital twin: forecast probability of finishing
+within the remaining budget against the observed frequency of finishing, pooled over checkpoints at
+30/50/70/85\% of the budget (10 equal-width bins, bins with fewer than five checkpoints dropped).  A
+calibrated forecast would lie on the diagonal; both curves lie below it, so both are over-confident, and
+both have a worse Brier score than a constant forecast at the base rate.}
+\label{fig:forecast}
+\end{figure}
 
 \subsection{Secondary evidence: real read streams}\label{sec:res-replay}
 \input{tables/replay}

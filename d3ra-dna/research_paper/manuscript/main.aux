@@ -124,12 +124,12 @@
 \newlabel{tab:dt}{{VI}{10}{}{}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-F}}An efficiency-and-dropout container model}{10}{}\protected@file@percent }
 \newlabel{sec:res-dropout}{{\mbox  {VI-F}}{10}{}{}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Digital-twin end-to-end retrieval. (a) Baseline scenario: mean reads (95\% cluster-bootstrap CI) and q99 per policy; vertical lines: static plans (whose cost equals their q99). (b) Paired relative cost against round-robin with verified stopping on retrievals where both succeeded (95\% CI); negative is cheaper.}}{11}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Digital-twin end-to-end retrieval, baseline unless stated. \textbf  {(a)} For each policy, the reads a retrieval actually \emph  {consumes}: filled circles are the mean over 300 retrievals with a 95\% cluster-bootstrap interval over syntheses, open squares the 0.99-quantile of the same retrievals. The two vertical lines are the capacity a plan that does \emph  {not} stop must \emph  {reserve} to succeed on 99\% of retrievals: dotted for uniform fixed depth, dashed for the best static plan. The horizontal distance from a filled circle to a vertical line is the saving verified stopping provides; the distance between circles is the (much smaller) allocation effect. \textbf  {(b)} Allocation effect alone: each bar is the paired difference in mean reads against round-robin with the same verified stopping, computed on the retrievals in which both policies succeeded, with 95\% cluster-bootstrap intervals; negative is cheaper than round-robin. Information-greedy is annotated rather than plotted because it runs off the scale. Scenarios in which no retrieval succeeded (photolithographic, two failed containers) have no paired statistic and are omitted.}}{11}{}\protected@file@percent }
 \newlabel{fig:dt}{{2}{11}{}{}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {VII}{\ignorespaces One failed container: cost conditional on success and over all attempts (300 retrievals per row, 72k-read stream). Every policy has the same success probability, so the conditional saving does not buy a better chance of recovery, and failures dominate the unconditional mean. Thousands of reads.}}{11}{}\protected@file@percent }
 \newlabel{tab:uncond}{{VII}{11}{}{}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-G}}Failed containers and severity sweep}{11}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Severity sweep: the near-dead container's copy number varied from 200 to 1 (300 retrievals per point and policy).}}{12}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Severity sweep: mean reads consumed as the degraded container's copy number falls from 200 to 1 (300 retrievals per point and policy, 95\% cluster-bootstrap intervals; the axis runs from mild to severe degradation). Every retrieval at every level returned the correct file, so the success probability is 1.00 throughout and is not plotted. Adaptive rules are cheaper than round-robin only at the mild end.}}{12}{}\protected@file@percent }
 \newlabel{fig:sweep}{{3}{12}{}{}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-H}}Tail metrics and the static family}{12}{}\protected@file@percent }
 \newlabel{sec:res-tail}{{\mbox  {VI-H}}{12}{}{}{}}
@@ -139,29 +139,31 @@
 \newlabel{sec:res-replay}{{\mbox  {VI-J}}{13}{}{}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-K}}Robustness: what does and does not change the conclusions}{13}{}\protected@file@percent }
 \newlabel{sec:res-robust}{{\mbox  {VI-K}}{13}{}{}{}}
-\citation{barlev2025deep,technion2025dnaformerreads}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Calibration on the digital twin. Left: 90\% credible-interval coverage of $\theta ^\ast $ per container on the selection replicates for each $\rho _U$, and on held-out replicates at the selected $\rho _U$. Right: reliability of the completion forecast (analytic vs.\ posterior simulation).}}{14}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Is the posterior over container efficiency calibrated? Each point or bar is the fraction of cases in which the 90\% credible interval for $\theta _j$ contained the target $\theta ^\ast _j$; a calibrated posterior would sit on the dotted line at 0.90. \textbf  {(a)} Selection replicates 1000--1009, one curve per container, against the beta-binomial correlation $\rho _U$; the thick black curve is the mean over containers, which is what the selection rule maximised. \textbf  {(b)} Held-out replicates 0--29 at the selected $\rho _U{=}0.1$, per container. Five containers are covered perfectly and the near-dead one is covered in 0.20 of cases at this $\rho _U$ (0.00--0.03 across the extended grid of Table~\ref {tab:r4calib}): no value of $\rho _U$ calibrates the container that matters.}}{14}{}\protected@file@percent }
 \newlabel{fig:calib}{{4}{14}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-L}}Reads are not the only cost}{14}{}\protected@file@percent }
-\newlabel{sec:res-cost}{{\mbox  {VI-L}}{14}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-M}}Supporting channel result (real nanopore reads)}{14}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {VII}Discussion}{14}{}\protected@file@percent }
-\newlabel{sec:disc}{{VII}{14}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Reliability of the completion forecast on the digital twin: forecast probability of finishing within the remaining budget against the observed frequency of finishing, pooled over checkpoints at 30/50/70/85\% of the budget (10 equal-width bins, bins with fewer than five checkpoints dropped). A calibrated forecast would lie on the diagonal; both curves lie below it, so both are over-confident, and both have a worse Brier score than a constant forecast at the base rate.}}{14}{}\protected@file@percent }
+\newlabel{fig:forecast}{{5}{14}{}{}{}}
+\citation{barlev2025deep,technion2025dnaformerreads}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-L}}Reads are not the only cost}{15}{}\protected@file@percent }
+\newlabel{sec:res-cost}{{\mbox  {VI-L}}{15}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-M}}Supporting channel result (real nanopore reads)}{15}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {VII}Discussion}{15}{}\protected@file@percent }
+\newlabel{sec:disc}{{VII}{15}{}{}{}}
+\newlabel{sec:wetlab}{{VII}{15}{}{}{}}
 \citation{gimpel2023prjeb65931}
 \citation{technion2025dnaformerreads,barlev2024binned}
-\newlabel{sec:wetlab}{{VII}{15}{}{}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {VIII}Limitations and Threats to Validity}{15}{}\protected@file@percent }
-\newlabel{sec:limits}{{VIII}{15}{}{}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {IX}Reproducibility and Availability}{15}{}\protected@file@percent }
-\newlabel{sec:repro}{{IX}{15}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {VIII}Limitations and Threats to Validity}{16}{}\protected@file@percent }
+\newlabel{sec:limits}{{VIII}{16}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {IX}Reproducibility and Availability}{16}{}\protected@file@percent }
+\newlabel{sec:repro}{{IX}{16}{}{}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {X}Conclusion}{16}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{Appendix\nobreakspace  A: Upper bound with evaluation leakage}{16}{}\protected@file@percent }
-\newlabel{app:leak}{{A}{16}{}{}{}}
-\@writefile{toc}{\contentsline {section}{Appendix\nobreakspace  B: Protocol deviations and post-hoc analyses}{16}{}\protected@file@percent }
-\newlabel{app:dev}{{B}{16}{}{}{}}
 \bibstyle{IEEEtran}
 \bibdata{references}
 \bibcite{church2012next}{1}
+\@writefile{toc}{\contentsline {section}{Appendix\nobreakspace  A: Upper bound with evaluation leakage}{17}{}\protected@file@percent }
+\newlabel{app:leak}{{A}{17}{}{}{}}
+\@writefile{toc}{\contentsline {section}{Appendix\nobreakspace  B: Protocol deviations and post-hoc analyses}{17}{}\protected@file@percent }
+\newlabel{app:dev}{{B}{17}{}{}{}}
 \bibcite{goldman2013towards}{2}
 \bibcite{grass2015robust}{3}
 \bibcite{erlich2017fountain}{4}
@@ -182,7 +184,6 @@
 \bibcite{press2020hedges}{19}
 \bibcite{chen2020quantifying}{20}
 \bibcite{shomorony2021dna}{21}
-\@writefile{toc}{\contentsline {section}{References}{17}{}\protected@file@percent }
 \bibcite{weinberger2022dna}{22}
 \bibcite{lenz2020coding}{23}
 \bibcite{cao2025optimizing}{24}
@@ -203,6 +204,7 @@
 \bibcite{srinivasavaradhan2021trellis}{39}
 \bibcite{sabary2024reconstruction}{40}
 \bibcite{rashtchian2017clustering}{41}
+\@writefile{toc}{\contentsline {section}{References}{18}{}\protected@file@percent }
 \bibcite{barlev2025deep}{42}
 \bibcite{delahaye2021sequencing}{43}
 \bibcite{wick2019performance}{44}
@@ -214,8 +216,8 @@
 \bibcite{gneiting2007strictly}{50}
 \bibcite{technion2025dnaformerreads}{51}
 \bibcite{barlev2024binned}{52}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Practical recommendation derived from Section~\ref {sec:results}.}}{19}{}\protected@file@percent }
-\newlabel{fig:recommend}{{5}{19}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Practical recommendation derived from Section~\ref {sec:results}.}}{19}{}\protected@file@percent }
+\newlabel{fig:recommend}{{6}{19}{}{}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {VIII}{\ignorespaces Ablation of the three modelling choices (digital twin, paired against round-robin on jointly successful retrievals, cluster-bootstrap 95\% intervals). $\theta $: one efficiency multiplier per container (frozen model); $\theta {+}d$: efficiency and a dropout fraction. Negative is cheaper than round-robin. ``Share'' is the fraction of reads given to the near-dead container (baseline) or to the failed one (fail1).}}{20}{}\protected@file@percent }
 \newlabel{tab:r4abl}{{VIII}{20}{}{}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {IX}{\ignorespaces Tail metrics with cluster-bootstrap 95\% intervals over synthesis replicates (baseline). Extreme quantiles estimated from a few hundred retrievals are imprecise, and the intervals of most policies overlap; the ordering of the means does not carry over to q99. Thousands of reads.}}{21}{}\protected@file@percent }

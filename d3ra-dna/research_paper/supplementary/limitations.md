@@ -1,3 +1,27 @@
+# Supplementary S5: Limitations (revision 4)
+
+Revision 4 measured several things that revision 3 could only acknowledge. The table below records what
+changed; the revision-3 text follows unchanged.
+
+| Revision-3 limitation | Status in revision 4 |
+|---|---|
+| Single efficiency multiplier per container | Measured: a two-parameter (efficiency + dropout) model turns the baseline penalty from +15% to +1.6% for coverage-greedy and -3.5% for UCB, and from +77%/+47% to -6%/-34% under partial loss and common-cause degradation. The frozen model remains the primary configuration; the two-parameter model is secondary. |
+| rho_U at the edge of its grid, selected at s = 1 while runs use s = 0.5 | Re-selected at s = 0.5 on {0, 0.003, 0.01, 0.03, 0.1, 0.2, 0.3, 0.5}: best value 0.03, no value reaches 0.90 coverage, near-dead container covered 0.00-0.03 at every value. |
+| Gains in the mean only | Confirmed and sharpened with 100 synthesis replicates: no adaptive rule lowers q99; the hindsight static plan lowers it by about 9% (5.15k [4.85, 5.20] vs 4.70k [4.55, 4.75]). |
+| Failures simulated as total loss | Four further modes added (50% design loss; 25% in two containers; 90% junk reads; 50% junk reads; common-cause ageing). Rates are still chosen by us. |
+| One archive geometry | Six further geometries (3 and 12 containers, (32,40), (32,64), (16,24), 4x file). Every qualitative conclusion survives all six. |
+| Consensus cap of 24 reads per cluster | Caps 12/24/48 tested. Not binding on the baseline; in the one-failed-container scenario success rises 0.313 -> 0.340 -> 0.357, so part of what we called an archive boundary is a decoder-configuration boundary. |
+| Abstract read costs, no setup cost | Cost model with per-batch and per-container charges under three charging models; container switches recorded (54-63 per retrieval). Vendor prices still assumed. |
+| Safety bounds assume independence | 23,160 retrievals come from 280 synthesis replicates; both the per-retrieval (1.6e-4) and per-synthesis (1.3e-2) upper limits are reported. |
+| Reduced photolithographic design | Re-run at the full 30 x 10 design. |
+| Calibrated beliefs on the replay | Calibration reads charged: 1.8M reads for the 16% saving, break-even about 17 retrievals; smaller budgets save nothing and 30k reads per container is worse than no calibration. |
+
+Unchanged and fundamental: no DNA was synthesised or sequenced; the replay keeps oracle decodability and
+its containers are runs of one synthesis batch; failure rates are assumed; no regret or optimality result
+is proved.
+
+---
+
 # Supplementary S5: Limitations and Threats to Validity (revision 3)
 
 ## External validity

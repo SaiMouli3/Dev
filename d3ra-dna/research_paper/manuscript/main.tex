@@ -414,8 +414,15 @@ PCR cycles; 45 PCR cycles with 20 copies; near-dead (two half-lives, 40 cycles, 
 3 copies).  \emph{One/two failed}: the fresh (and the 30-cycle) container returns only
 non-informative reads.  \emph{Homogeneous control}: six fresh containers.
 \emph{Photolithographic}: the baseline histories with DT4DDS's photolithographic synthesis
-model.  \emph{Severity sweep}: the baseline with the near-dead container's copy number set to
-200, 30, 10, 3 or 1.
+model.  \emph{Severity sweep}: the baseline with the near-dead container's copy number set to 200, 30, 10, 3
+or 1.  \emph{Revision-4 failure modes}: half of one container's designs physically lost before storage;
+a quarter lost in each of two containers; one container whose reads are 90\% not derived from stored
+strands (library-preparation failure or severe contamination); another at 50\%; and a common-cause
+scenario in which every container is aged two further half-lives and amplified harder.
+\emph{Revision-4 geometries}: 3 and 12 containers, $(32,40)$, $(32,64)$ and $(16,24)$ codes, and a file
+four times larger.  With three containers the six conditions cannot all be kept; we retain one healthy,
+one weak and one near-dead container, so a third of that archive is near-dead instead of a sixth, which
+makes it a harder archive and not only a smaller one.
 
 \subsection{Frozen protocol and statistics}
 Design, policies, metrics, statistics, pre-specified comparisons and the calibration rule were

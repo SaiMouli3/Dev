@@ -101,7 +101,7 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-C}}Frozen protocol and statistics}{6}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-D}}Calibration protocol}{6}{}\protected@file@percent }
 \newlabel{sec:calib-protocol}{{\mbox  {V-D}}{6}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-E}}Real read streams (secondary evidence)}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-E}}Real read streams (secondary evidence)}{7}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {VI}Results}{7}{}\protected@file@percent }
 \newlabel{sec:results}{{VI}{7}{}{}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-A}}Safety of verified stopping}{7}{}\protected@file@percent }
@@ -118,12 +118,12 @@
 \newlabel{tab:dt}{{VI}{9}{}{}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-E}}Why adaptive allocation loses, and what fixes it}{9}{}\protected@file@percent }
 \newlabel{sec:res-misspec}{{\mbox  {VI-E}}{9}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-F}}An efficiency-and-dropout container model}{9}{}\protected@file@percent }
-\newlabel{sec:res-dropout}{{\mbox  {VI-F}}{9}{}{}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Digital-twin end-to-end retrieval. (a) Baseline scenario: mean reads (95\% cluster-bootstrap CI) and q99 per policy; vertical lines: static plans (whose cost equals their q99). (b) Paired relative cost against round-robin with verified stopping on retrievals where both succeeded (95\% CI); negative is cheaper.}}{10}{}\protected@file@percent }
 \newlabel{fig:dt}{{2}{10}{}{}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {VII}{\ignorespaces One failed container: cost conditional on success and over all attempts (300 retrievals per row, 72k-read stream). Every policy has the same success probability, so the conditional saving does not buy a better chance of recovery, and failures dominate the unconditional mean. Thousands of reads.}}{10}{}\protected@file@percent }
 \newlabel{tab:uncond}{{VII}{10}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-F}}An efficiency-and-dropout container model}{10}{}\protected@file@percent }
+\newlabel{sec:res-dropout}{{\mbox  {VI-F}}{10}{}{}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-G}}Failed containers and severity sweep}{10}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-H}}Failed containers and severity sweep}{10}{}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Severity sweep: the near-dead container's copy number varied from 200 to 1 (300 retrievals per point and policy).}}{11}{}\protected@file@percent }
@@ -139,11 +139,11 @@
 \newlabel{tab:r4calib}{{IX}{12}{}{}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-K}}Secondary evidence: real read streams}{12}{}\protected@file@percent }
 \newlabel{sec:res-replay}{{\mbox  {VI-K}}{12}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-L}}Supporting channel result (real nanopore reads)}{12}{}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Calibration on the digital twin. Left: 90\% credible-interval coverage of $\theta ^\ast $ per container on the selection replicates for each $\rho _U$, and on held-out replicates at the selected $\rho _U$. Right: reliability of the completion forecast (analytic vs.\ posterior simulation).}}{13}{}\protected@file@percent }
 \newlabel{fig:calib}{{4}{13}{}{}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {X}{\ignorespaces Secondary evidence: semi-empirical replay of real Illumina read streams (ENA PRJEB65931), generic prior, no evaluation-split statistics. Mean reads (thousands) and q99; $\Delta $: mean minus the hindsight-tuned static budget (paired bootstrap 95\% CI). Decodability is an oracle event here (consensus equals the designed strand), so this is \emph  {not} exact retrieval.}}{13}{}\protected@file@percent }
 \newlabel{tab:replay}{{X}{13}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-L}}Supporting channel result (real nanopore reads)}{13}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {VII}Discussion}{13}{}\protected@file@percent }
 \newlabel{sec:disc}{{VII}{13}{}{}{}}
 \newlabel{sec:wetlab}{{VII}{13}{}{}{}}
@@ -153,24 +153,23 @@
 \newlabel{fig:recommend}{{5}{14}{}{}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {VIII}Limitations and Threats to Validity}{14}{}\protected@file@percent }
 \newlabel{sec:limits}{{VIII}{14}{}{}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {IX}Reproducibility and Availability}{14}{}\protected@file@percent }
-\newlabel{sec:repro}{{IX}{14}{}{}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {XI}{\ignorespaces Assumptions, limitations and their consequence. Items marked $\dagger $ were raised against an earlier revision and are now measured rather than only acknowledged; the measurement is cited.}}{14}{}\protected@file@percent }
 \newlabel{tab:limits}{{XI}{14}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {IX}Reproducibility and Availability}{14}{}\protected@file@percent }
+\newlabel{sec:repro}{{IX}{14}{}{}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {X}Conclusion}{15}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{Appendix\nobreakspace  A: Upper bound with evaluation leakage}{15}{}\protected@file@percent }
 \newlabel{app:leak}{{A}{15}{}{}{}}
 \@writefile{toc}{\contentsline {section}{Appendix\nobreakspace  B: Protocol deviations and post-hoc analyses}{15}{}\protected@file@percent }
 \newlabel{app:dev}{{B}{15}{}{}{}}
-\bibstyle{IEEEtran}
-\bibdata{references}
-\bibcite{church2012next}{1}
-\bibcite{goldman2013towards}{2}
 \@writefile{lot}{\contentsline {table}{\numberline {XII}{\ignorespaces Claim-to-evidence summary (full table: \texttt  {evidence/evidence\_traceability.csv}; every number recomputed from these files by \texttt  {audit/recompute\_claims.py} and \texttt  {r4\_analysis.py}). DT: DT4DDS digital twin, full decode chain, no oracle. Replay: real read streams, oracle decodability. No result in this paper is wet-lab evidence.}}{16}{}\protected@file@percent }
 \newlabel{tab:evidence}{{XII}{16}{}{}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {XIII}{\ignorespaces \textbf  {Upper bound with evaluation leakage} (superseded first analysis, kept for transparency). Replay of real read streams with ``calibrated'' beliefs whose consensus curves were pooled from \emph  {evaluation}-split reads (Appendix~\ref {app:leak}); thousands of reads at 0.99. These numbers are not used for any claim in the main text. Static plans pay their budget on every retrieval; for adaptive policies the 0.99-quantile q99 is shown separately. $\Delta $: adaptive (pivotal) minus oracle-tuned static, paired (95\% CI).}}{16}{}\protected@file@percent }
 \newlabel{tab:leak}{{XIII}{16}{}{}{}}
-\@writefile{toc}{\contentsline {section}{References}{16}{}\protected@file@percent }
+\bibstyle{IEEEtran}
+\bibdata{references}
+\bibcite{church2012next}{1}
+\bibcite{goldman2013towards}{2}
 \bibcite{grass2015robust}{3}
 \bibcite{erlich2017fountain}{4}
 \bibcite{organick2018random}{5}
@@ -206,6 +205,7 @@
 \bibcite{nath2006subtleties}{35}
 \bibcite{leong2012distributed}{36}
 \bibcite{batu2004reconstructing}{37}
+\@writefile{toc}{\contentsline {section}{References}{17}{}\protected@file@percent }
 \bibcite{srinivasavaradhan2021trellis}{38}
 \bibcite{sabary2024reconstruction}{39}
 \bibcite{rashtchian2017clustering}{40}

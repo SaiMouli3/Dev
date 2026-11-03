@@ -386,7 +386,7 @@ In the homogeneous control (six fresh, independently synthesised containers), wh
 no allocation effect, most model-based rules were 2--4\% cheaper than round-robin (coverage-greedy
 2.18k vs.\ 2.26k; information-greedy even at 2.26k): independent syntheses differ enough for mild
 adaptive gains, consistent with the low-severity end of the sweep below.  With DT4DDS's photolithographic synthesis model (reduced design, 30 retrievals per policy) no
-policy recovered the file: every retrieval read the whole 72k-read stream and reported failure,
+policy and none of the four static plans recovered the file: every retrieval read the whole 72k-read stream and reported failure,
 with no wrong output.  Like the two-failure case, this is a boundary of the archive design (inner
 code strength, redundancy and the 60-reads-per-strand stream) under that synthesis model, not a
 policy result; we did not test deeper streams or a stronger inner code.

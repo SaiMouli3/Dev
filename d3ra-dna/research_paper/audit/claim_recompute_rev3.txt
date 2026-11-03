@@ -1,9 +1,11 @@
 == Safety (all dt_*.csv except forecast/calibration runs) ==
-retrievals=23160 wrong=0 UB95=1.59e-04 decode_attempts=30164044 false_accepts=0 UB95=1.22e-07
+retrievals=55110 wrong=0 UB95=6.69e-05 decode_attempts=69520219 false_accepts=0 UB95=5.31e-08
 
 == Baseline DT ==
 RR mean=3490 CI=[3367,3596] q99=5150
-static q99 (=reservation): {'0.0': 5150.0, '0.5': 4900.0, '1.0': 4800.0, '2.0': 4900.0} best=4800  RR saving vs best static=27.3%
+static q99 (= capacity a non-stopping plan must reserve): {'0.0': 5150.0, '0.5': 4900.0, '1.0': 4800.0, '2.0': 4900.0} best=4800
+  consumed-vs-reserved saving of stopping: RR consumed 3490 vs best reservation 4800 = 27.3%; vs uniform reservation 5150 = 32.2%
+  NOTE: this is a consumed-vs-reserved comparison, not an allocation comparison; for allocation see r4_actual_vs_reserved.csv, where the static plans also stop.
 baseline  coverage           success=1.00 mean=4018 q99=9050 rel_vs_RR=+15.1% [+10.4%,+20.6%] n_joint=300
 baseline  pivotal            success=1.00 mean=5209 q99=9600 rel_vs_RR=+49.3% [+39.6%,+59.9%] n_joint=300
 baseline  thompson           success=1.00 mean=3749 q99=6450 rel_vs_RR=+7.4% [+4.4%,+11.0%] n_joint=300

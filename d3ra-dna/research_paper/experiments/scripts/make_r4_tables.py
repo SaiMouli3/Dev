@@ -150,6 +150,7 @@ def safety():
          r"\newcommand{\SafeWUB}{" + sci(r.wrong_ub_retrieval) + "}",
          r"\newcommand{\SafeWUBc}{" + sci(r.wrong_ub_synthesis) + "}",
          r"\newcommand{\SafeUnits}{" + f"{int(r.synthesis_units)}" + "}",
+         r"\newcommand{\SafePerUnit}{" + f"{r.retrievals_per_unit:.0f}" + "}",
          r"\newcommand{\SafeAtt}{" + f"{r.decode_attempts / 1e6:.1f} million" + "}",
          r"\newcommand{\SafeFA}{" + str(int(r.false_accepts)) + "}",
          r"\newcommand{\SafeFUB}{" + sci(r.fa_ub_attempt) + "}",

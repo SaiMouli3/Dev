@@ -50,10 +50,11 @@ individually all bring every rule into a narrow band 0 to 4.5\% below round-robi
 the hindsight static plan.  So adaptive allocation is worth a few percent at best, against stopping's
 27--32\%.  No \emph{adaptive} rule lowered the 0.99-quantile in any configuration, including with the better
 model, so online learning does not reduce reserved capacity; fixed proportions chosen with hindsight
-knowledge of the containers do lower it, by about 9\%.  Over \SafeN{} end-to-end retrievals no output
-file was ever wrong and no wrong payload passed the inner checks in \SafeAtt{} decode attempts; because
-those retrievals share \SafeUnits{} synthesis replicates, we report both the per-retrieval upper limit
-(\SafeWUB{}) and the conservative per-synthesis one (\SafeWUBc{}).  A leak-free replay of real Illumina
+knowledge of the containers do lower it, by about 9\%.  Over \SafeN{} end-to-end retrievals --- every scenario, policy, container model, prior setting, failure
+mode and archive geometry in this paper --- no output file was ever wrong, and no wrong payload passed the
+inner checks in \SafeAtt{} decode attempts; because those retrievals share only \SafeUnits{} synthesis
+replicates we report both the per-retrieval upper limit (\SafeWUB{}) and the conservative per-synthesis
+one (\SafeWUBc{}).  A leak-free replay of real Illumina
 streams from two vendor pools agrees on the ranking, and adds the one case where allocation pays
 substantially: a prior calibrated on held-out reads of the same containers, which identifies the weak
 container before retrieval, saved 16\% per retrieval --- but it needed 1.8M calibration reads, 2.8 times
@@ -494,16 +495,16 @@ Table~\ref{tab:safety} reports the safety record and, next to it, the dependence
 Across \SafeN{} end-to-end retrievals no output file differed from the stored file in a single byte, and
 in \SafeAtt{} fragment decode attempts no wrong payload passed inner RS decoding, the CRC-16 and the
 address check.  These retrievals are \emph{not} independent experiments: they come from \SafeUnits{}
-distinct synthesis replicates, about 83 retrievals per replicate (10 read orders $\times$ several
-policies and models on the same simulated DNA), and the decode attempts inside one retrieval share the
-same reads.  A Clopper--Pearson bound that treats 23{,}160 retrievals as Bernoulli trials would
-therefore overstate what has been shown.  We report both ends: per retrieval the upper limit is
+distinct synthesis replicates, \SafePerUnit{} retrievals per replicate on average (several read orders,
+policies, container models and prior settings applied to the same simulated DNA), and the decode attempts
+inside one retrieval share the same reads.  A Clopper--Pearson bound that treats every retrieval as an
+independent Bernoulli trial would therefore overstate what has been shown.  We report both ends: per retrieval the upper limit is
 \SafeWUB{}, and treating one synthesis replicate as one unit --- the conservative reading, which
 discards the information in repeated read orders --- it is \SafeWUBc{}.  The false-accept limits are
 \SafeFUB{} per attempt and \SafeFUBc{} per synthesis replicate.  The honest summary is therefore
 qualitative as well as numerical: in every configuration we ran, verification-gated stopping never
-returned a wrong file, and the bound that does not assume independence is of order $10^{-2}$ per
-synthesis, not $10^{-4}$.  A false accept would need a wrong payload to pass a 4-symbol RS code, a
+returned a wrong file, and the bound that does not assume independence is two orders of magnitude weaker
+than the per-retrieval one.  A false accept would need a wrong payload to pass a 4-symbol RS code, a
 CRC-16 and an address byte, then the stripe CRC-32 and the file SHA-256; the cryptographic hash is the
 backstop, and no experiment of this size can bound its failure rate.
 Table~\ref{tab:safety} pools every digital-twin retrieval run for this paper.  No retrieval
@@ -553,19 +554,22 @@ coverage-greedy, 40--41\% for pivotal and learn-then-commit, and 66\% for inform
 In the homogeneous control (six fresh, independently synthesised containers), where we expected
 no allocation effect, most model-based rules were 2--4\% cheaper than round-robin (coverage-greedy
 2.18k vs.\ 2.26k; information-greedy even at 2.26k): independent syntheses differ enough for mild
-adaptive gains, consistent with the low-severity end of the sweep below.  With DT4DDS's photolithographic synthesis model (reduced design, 30 retrievals per policy) no
-policy and none of the four static plans recovered the file: every retrieval read the whole 72k-read stream and reported failure,
+adaptive gains, consistent with the low-severity end of the sweep below.  With DT4DDS's photolithographic
+synthesis model, no policy and none of the four static plans recovered the file in any of 660 retrievals
+(eight policies at 10 syntheses $\times$ 3 read orders, four static plans, and round-robin re-run at the
+full 30 $\times$ 10 design to confirm the reduced one): every retrieval read the whole 72k-read stream and reported failure,
 with no wrong output.  These two zero-success results have different standing and we state them separately.  For
 \emph{two failed containers} the boundary is arithmetic: with $(32,48)$ over six containers each
 container holds exactly 8 of the 48 fragments of every stripe, so losing two leaves exactly $K{=}32$
 fragments and no margin for a single further strand loss; no policy and no read budget can recover the
 file, and this follows from the code and placement rather than from our experiments.  For the
 \emph{photolithographic} scenario the statement is empirical and narrower: under that synthesis model,
-with this code, this decoder, a 24-read consensus cap and a 72k-read stream, none of the eight policies
-and none of the four static plans recovered the file in any of the retrievals we ran, and no wrong file
-was returned.  We did not test deeper streams, a stronger inner code, a larger consensus cap or a lower
-code rate, so this is a boundary of \emph{our} archive design under that synthesis model, not a claim
-that photolithographic DNA archives are unrecoverable.
+with this code, this decoder, a 24-read consensus cap and a 72k-read stream, nothing recovered the file
+in 660 retrievals and no wrong file was returned.  We did not test deeper streams, a stronger inner code
+or a lower code rate, and we know the consensus cap moves the boundary in the neighbouring failure
+scenario (Section~\ref{sec:res-robust}), so this is a boundary of \emph{our} archive design and decoder
+configuration under that synthesis model, not a claim that photolithographic DNA archives are
+unrecoverable.
 
 \subsection{What the gain after a container failure buys}\label{sec:res-uncond}
 \input{tables/r4_uncond}
@@ -1049,8 +1053,9 @@ run, by DT4DDS's photolithographic synthesis model, because the CustomArray sett
 re-ran it; a direct test showed that it had used the frozen $\rho_U{=}0.1$, and the re-run reproduced it
 exactly, so nothing changed.  (iii) One cached homogeneous
 replicate was truncated by an interrupted job; it was regenerated from its seed and the scenario
-re-run in full.  (iv) The photolithographic scenario was run with 10 syntheses $\times$ 3 read
-orders for compute reasons; the first 50 retrievals of the full run were discarded unseen.
+re-run in full.  (iv) The photolithographic scenario was first run with 10 syntheses $\times$ 3 read
+orders for compute reasons; the first 50 retrievals of the full run were discarded unseen.  Revision~4
+re-ran round-robin on it at the full 30 $\times$ 10 design, with the same outcome (0 of 300 recovered).
 (v) The static allocator crashed when only zero-weight (failed) containers remained; it now reads
 them out, which can only affect failed retrievals of the failure scenarios.  The $\rho_U$ rule was
 applied as frozen even though the selected value lies at the edge of the grid.  (vi) The

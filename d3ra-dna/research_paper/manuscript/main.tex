@@ -42,12 +42,14 @@ reservation into a bill 27--32\% smaller, with no model of the containers.  Choo
 container to read next is a far smaller and more fragile effect.  Under our pre-registered container
 model, a single efficiency multiplier, every model-based rule --- Thompson sampling, UCB,
 learn-then-commit, information-greedy --- read \emph{more} than round-robin when one container was
-near-dead ($+$7\% to $+$441\%), because one multiplier cannot express dropout; a hindsight-tuned static
-allocation with the same stopping rule was 4.2\% cheaper than round-robin.  A $2\times2\times2$ ablation shows that this
+near-dead ($+$7\% to $+$441\%), because one multiplier cannot express dropout, while \emph{fixed} read
+proportions with the same stopping rule were 4.6\% cheaper than round-robin when tuned in hindsight and
+4.4\% cheaper when estimated from ten disjoint calibration replicates --- so the useful allocation
+knowledge is obtainable offline.  A $2\times2\times2$ ablation shows that this
 penalty is not caused by one modelling choice: the frozen configuration is the one corner in which it is
 large, and relaxing the container model (adding a dropout parameter), the likelihood, or the prior width
-individually all bring every rule into a narrow band 0 to 4.5\% below round-robin --- the same band as
-the hindsight static plan.  So adaptive allocation is worth a few percent at best, against stopping's
+individually all bring every rule into a narrow band 0 to 4.5\% below round-robin --- the same band that
+fixed proportions already occupy.  So adaptive allocation is worth a few percent at best, against stopping's
 27--32\%.  No \emph{adaptive} rule lowered the 0.99-quantile in any configuration, including with the better
 model, so online learning does not reduce reserved capacity; fixed proportions chosen with hindsight
 knowledge of the containers do lower it, by about 9\%.  Over \SafeN{} end-to-end retrievals --- every scenario, policy, container model, prior setting, failure

@@ -1,5 +1,5 @@
 == Safety (all dt_*.csv except forecast/calibration runs) ==
-retrievals=55110 wrong=0 UB95=6.69e-05 decode_attempts=69520219 false_accepts=0 UB95=5.31e-08
+retrievals=58710 wrong=0 UB95=6.28e-05 decode_attempts=73308314 false_accepts=0 UB95=5.03e-08
 
 == Baseline DT ==
 RR mean=3490 CI=[3367,3596] q99=5150

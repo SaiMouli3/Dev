@@ -192,7 +192,9 @@ def static_family(scen, workers=4):
     for alpha in (0.0, 0.5, 1.0, 2.0):
         w = np.where(eff > 0, np.maximum(eff, 1e-6) ** alpha, 0.0)
         w = w / w.sum()
-        jobs = [(scen, r, p, f"static_a{alpha}", {"static_weights": w}, np.inf) for r in range(N_REP) for p in range(N_PERM)]
+        n_rep = int(os.environ.get("D3RA_NREP", N_REP))
+        n_perm = int(os.environ.get("D3RA_NPERM", N_PERM))
+        jobs = [(scen, r, p, f"static_a{alpha}", {"static_weights": w}, np.inf) for r in range(n_rep) for p in range(n_perm)]
         with Pool(workers) as pool:
             for row in pool.imap_unordered(one_retrieval, jobs, chunksize=2):
                 row["reads_per_container"] = json.dumps(row["reads_per_container"])
@@ -322,7 +324,9 @@ def gen(scens=None, workers=4):
 
 def run(scen, policies=None, workers=4, tag="", cfg_kw=None):
     pols = policies or list(POLICIES)
-    jobs = [(scen, r, p, pol, dict(cfg_kw or {}), np.inf) for pol in pols for r in range(N_REP) for p in range(N_PERM)]
+    n_rep = int(os.environ.get("D3RA_NREP", N_REP))     # reduced designs are logged as protocol deviations
+    n_perm = int(os.environ.get("D3RA_NPERM", N_PERM))
+    jobs = [(scen, r, p, pol, dict(cfg_kw or {}), np.inf) for pol in pols for r in range(n_rep) for p in range(n_perm)]
     rows = []
     t0 = time.time()
     with Pool(workers) as pool:

@@ -7,20 +7,18 @@
 \toprule
 Limitation & Consequence \\
 \midrule
-Containers are aliquots of one synthesis batch & coverage correlated across containers; independent synthesis not tested \\
-Failures injected, not observed & failure budget $\varepsilon$ and $f_j$ uncalibrated \\
-Recovery = exact strand consensus vs.\ design & our encoding not synthesised; inner-code gain not measured on real reads \\
+Computational only (digital twin + replay) & no wet-lab confirmation; DT4DDS fidelity bounds external validity \\
+DT4DDS default parameters, one archive geometry & conclusions may change with other codes, strand lengths, error regimes \\
+Failures simulated (junk reads) & real failure modes and rates unknown; failure budget uncalibrated \\
+Single efficiency multiplier $\theta_j$ & cannot represent dropout; adaptive allocators over-read near-dead containers \\
+$\rho_U$ at the edge of its grid & selection coverage 0.87 $<$ 0.90; grid not extended post hoc \\
+$\rho_U$ selected with $s{=}1$, runs use $s{=}0.5$ & selection and use not perfectly aligned \\
+Calibration-optimal vs.\ cost-optimal $\rho_U$ differ & better-calibrated posterior made allocation costlier (post-hoc) \\
+Gains in the mean only & no allocator, including the tail-aware one, lowers q99 \\
+Replay is semi-empirical & oracle decodability; containers are aliquots of one batch \\
 Abstract read costs, no setup cost & favours small batches; Illumina run economics not modelled \\
-Binomial likelihood ignores overdispersion & over-confident credible intervals (Table~\ref{tab:detect}); beta-binomial option fixes most of it on a held-out pool (exploratory, $\rho_U$ chosen post hoc) \\
-Completion forecast $\hat P_{\mathrm{complete}}$ & under-confident (ECE 0.30--0.60); usable only for ranking late in the budget \\
-Futility (early-abandon) rule & abandoned 3.7--4.5\% of recoverable retrievals (simulated s7); disabled \\
-Model bias is pool-dependent & budget error $-16$ to $+6$\% (Twist), up to $5\times$ (Genscript) \\
-Adaptive gain is in the mean only & q99 budget not lower (Twist), 12\% higher (Genscript RR) \\
-Evaluation leak in calibrated beliefs & bounded by leak-free priors ($\le$0.9\% Twist, 4--5\% Genscript) \\
-Semi-empirical replay & decodability is an oracle event; containers emulated by run subsets \\
-Correlated-error model not in controller & enters only through calibrated $\varphi_j$ \\
-Two Illumina pools from one study & external validity limited \\
-Simulated ablation & component effects not confirmed on real reads \\
+Reduced design for photolithographic scenario & 30 instead of 300 retrievals per policy \\
+No theory (regret, optimality) & empirical claims only \\
 \bottomrule
 \end{tabular}
 \end{table}

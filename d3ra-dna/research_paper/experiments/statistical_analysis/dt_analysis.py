@@ -81,7 +81,8 @@ def analyse(scen):
         row = {"scenario": scen, "policy": pol, "retrievals": n, "success": succ / n, "wrong_outputs": wrong,
                "wrong_output_upper95": cp_upper(wrong, n), "false_accepts": fa, "decode_attempts": att,
                "false_accept_upper95": cp_upper(fa, att), "mean_reads": mean, "mean_lo": mean_ci[0],
-               "mean_hi": mean_ci[1], "q99_reads": q99(x), "q99_lo": boot(q99, [Mx], rng)[0],
+               "mean_hi": mean_ci[1], "mean_success": float(np.mean(x[np.isfinite(x)])) if np.isfinite(x).any() else np.nan,
+               "q99_reads": q99(x), "q99_lo": boot(q99, [Mx], rng)[0],
                "q99_hi": boot(q99, [Mx], rng)[1], "best_static": best_static}
         for ref in ("static_a0.0", best_static):
             if ref is None or ref not in mats or ref == pol:

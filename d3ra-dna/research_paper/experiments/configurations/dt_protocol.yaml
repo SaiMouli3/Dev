@@ -79,3 +79,7 @@ deviations:
   - when: digital-twin runs
     what: one cached replicate (homog rep 28) was truncated by an interrupted generation job; it was regenerated from
          its fixed seed (writes are now atomic) and the homog scenario re-run in full.
+  - when: photolitho scenario, during the final runs
+    what: reduced design of 10 syntheses x 3 read orders (30 retrievals per policy and static plan) instead of 30 x 10
+    why: compute -- with the noisier photolithographic synthesis model each retrieval reads far more and the full design
+         would have taken ~6.5 h of the 4-core machine; the first 50 retrievals of the full run were discarded unseen.

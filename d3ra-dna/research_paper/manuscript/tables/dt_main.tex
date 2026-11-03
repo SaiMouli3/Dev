@@ -1,0 +1,35 @@
+\begin{table*}[!t]
+\centering
+\caption{Digital-twin end-to-end retrieval (DT4DDS; primary evidence).  Per scenario and policy: share of retrievals whose output file is byte-identical to the stored file (no retrieval returned a wrong file), mean reads per retrieval (thousands; cluster-bootstrap 95\% CI over syntheses), the 0.99-quantile q99 (the budget to reserve), and the paired relative difference in mean reads against round-robin with verified stopping on retrievals where both succeeded (95\% CI).  Static plans read fixed proportions until decodable and must reserve their q99 on every retrieval, so their mean cost equals q99; their proportions use per-container efficiencies measured in hindsight on the same scenario.}
+\label{tab:dt}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}llrrrr@{}}
+\toprule
+Scenario & Policy & Success & Mean reads (k) [95\% CI] & q99 (k) & vs.\ round-robin, \% [95\% CI] \\
+\midrule
+Baseline & Round-robin + verified stop & 1.00 & 3.49 [3.37, 3.60] & 5.15 &  \\
+ & Coverage-greedy & 1.00 & 4.02 [3.77, 4.30] & 9.05 & +15 [+10, +21] \\
+ & Pivotal & 1.00 & 5.21 [4.75, 5.70] & 9.60 & +49 [+39, +60] \\
+ & Thompson sampling & 1.00 & 3.75 [3.55, 3.94] & 6.45 & +7 [+4, +11] \\
+ & UCB ($q{=}0.9$) & 1.00 & 4.02 [3.78, 4.30] & 8.15 & +15 [+11, +20] \\
+ & Learn-then-commit & 1.00 & 5.05 [4.76, 5.31] & 7.65 & +45 [+40, +49] \\
+ & Info-greedy (exp.\ design) & 1.00 & 18.87 [17.22, 20.36] & 37.45 & +441 [+408, +467] \\
+ & Tail-aware (LCB) & 1.00 & 3.94 [3.70, 4.18] & 7.15 & +13 [+9, +18] \\
+\midrule
+One container failed & Round-robin + verified stop & 0.34 & 20.31$^{s}$ & -- &  \\
+ & Coverage-greedy & 0.34 & 16.86$^{s}$ & -- & -17 [-23, -8] \\
+ & Pivotal & 0.34 & 17.30$^{s}$ & -- & -15 [-21, -6] \\
+ & Thompson sampling & 0.34 & 18.43$^{s}$ & -- & -9 [-15, -2] \\
+ & UCB ($q{=}0.9$) & 0.34 & 15.49$^{s}$ & -- & -24 [-28, -17] \\
+ & Learn-then-commit & 0.34 & 21.91$^{s}$ & -- & +8 [+2, +14] \\
+ & Info-greedy (exp.\ design) & 0.34 & 36.68$^{s}$ & -- & +81 [+49, +133] \\
+ & Tail-aware (LCB) & 0.34 & 20.63$^{s}$ & -- & +2 [-8, +14] \\
+\midrule
+Two containers failed & all 8 policies and static plans & 0.00 & -- (stream exhausted, 72k reads) & -- & \\
+\bottomrule
+\end{tabular}
+
+\vspace{2pt}
+\parbox{\textwidth}{\scriptsize 30 independent syntheses of all six containers $\times$ 10 read orders = 300 retrievals per policy and scenario, except $^{\ddagger}$10 $\times$ 3 (protocol deviation, compute).  A failed retrieval read the whole stream (72{,}000 reads) without verifying; $^{s}$: mean over successful retrievals only (a mean or quantile including failures is undefined, ``--'').  When success $<1$, success was identical for every policy on every synthesis and read order, so the paired comparison uses the same retrievals for all policies.}
+\end{table*}

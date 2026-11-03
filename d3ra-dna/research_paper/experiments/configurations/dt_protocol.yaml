@@ -72,10 +72,13 @@ deviations:
   - when: rho_U selection
     what: none -- rule applied as frozen; selected rho_U = 0.1 is the largest grid value and its calibration
          coverage (0.87) is still below 0.90; reported as a limitation, grid not extended post hoc.
-  - when: secondary replay (Twist), discovered at analysis time
-    what: the first Twist replay_v3 run imported the controller before the rho_U default was changed and therefore
-         ran with rho_U = 0 (binomial); its file is kept as results/replay_v3_rho0.csv (labelled ablation) and the
-         Twist replay is re-run with the frozen default rho_U = 0.1 (results/replay_v3.csv).
+  - when: secondary replay (Twist), discovered at analysis time; CORRECTED later
+    what: we first suspected (from commit timestamps) that the first Twist replay_v3 run used rho_U = 0 and relabelled its
+         file results/replay_v3_rho0.csv, then re-ran the replay. A direct test (same 200 read orders, coverage and
+         Thompson at rho_U = 0 and 0.1; results/replay_v3_twist_rho_check.csv) showed the first run had in fact used the
+         frozen default rho_U = 0.1 (its numbers equal the rho_U = 0.1 test and the re-run). The suspicion was wrong; the
+         re-run (results/replay_v3.csv) is the reported result and the mislabelled duplicate was removed. The real
+         rho_U = 0 numbers (post hoc) are in replay_v3_twist_rho_check.csv.
   - when: digital-twin runs
     what: one cached replicate (homog rep 28) was truncated by an interrupted generation job; it was regenerated from
          its fixed seed (writes are now atomic) and the homog scenario re-run in full.
@@ -90,4 +93,4 @@ deviations:
          after freezing; it affects only static runs of fail1/fail2 and cannot change any successful retrieval.
 post_hoc_analyses:   # not pre-specified; reported as such
   - rho_U = 0 (binomial) for coverage, thompson, tail_aware, pivotal on baseline and fail1 (dt_*_posthoc_rho0.csv)
-  - Twist replay with rho_U = 0 (the accidental first run, replay_v3_rho0.csv)
+  - Twist replay, coverage and Thompson with rho_U = 0 (replay_v3_twist_rho_check.csv)

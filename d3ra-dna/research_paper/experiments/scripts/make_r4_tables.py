@@ -185,25 +185,46 @@ def tails():
 
 # ----------------------------------------------------------------------------- R4.6 ablation
 def ablation():
+    """Pivoted: one row per scenario and policy, one column per ablation cell.  The long form with
+    cluster-bootstrap intervals is results/r4_ablation.csv; intervals for the cells the text relies on
+    are quoted in the text."""
     d = load("r4_ablation.csv")
     if d is None:
         return
+    cells = [("theta", "0.1", "0.5"), ("theta", "0.0", "0.5"), ("theta", "0.1", "1.0"), ("theta", "0.0", "1.0"),
+             ("theta+d", "0.1", "0.5"), ("theta+d", "0.0", "0.5"), ("theta+d", "0.1", "1.0"),
+             ("theta+d", "0.0", "1.0")]
+    d["key"] = list(zip(d.model, d.rho_U.astype(str), d.prior_sd.astype(str)))
+    pols = ["coverage", "thompson", "tail_aware", "pivotal", "ucb", "learn_then_commit", "info_greedy"]
     out = [r"\begin{table*}[!t]", r"\centering",
-           r"\caption{Ablation of the three modelling choices (digital twin, paired against round-robin on jointly "
-           r"successful retrievals, cluster-bootstrap 95\% intervals).  $\theta$: one efficiency multiplier per "
-           r"container (frozen model); $\theta{+}d$: efficiency and a dropout fraction.  Negative is cheaper than "
-           r"round-robin.  ``Share'' is the fraction of reads given to the near-dead container (baseline) or to the "
-           r"failed one (fail1).}",
-           r"\label{tab:r4abl}", r"\scriptsize", r"\setlength{\tabcolsep}{3pt}",
-           r"\begin{tabular}{@{}llllrrr@{}}", r"\toprule",
-           r"Scen. & Model & $\rho_U$ & $s$ & Policy & vs.\ RR [95\% CI] & Share \\", r"\midrule"]
-    for sc, g in d.groupby("scenario", sort=False):
+           r"\caption{Ablation of the three modelling choices (digital twin; paired mean reads against "
+           r"round-robin on jointly successful retrievals, per cent, negative is cheaper than round-robin).  "
+           r"$\theta$: one efficiency multiplier per container (the frozen model); $\theta{+}d$: efficiency and "
+           r"a dropout fraction.  $\rho_U$ is the beta-binomial correlation and $s$ the prior width; the frozen "
+           r"configuration is the first column.  The penalty is large only in that column: relaxing any one of "
+           r"the three choices moves every rule into a band a few per cent below round-robin.  Blank: not run.  "
+           r"Cluster-bootstrap intervals for every cell are in \texttt{results/r4\_ablation.csv}; those the text "
+           r"relies on are quoted there.}",
+           r"\label{tab:r4abl}", r"\scriptsize", r"\setlength{\tabcolsep}{4pt}",
+           r"\begin{tabular}{@{}ll" + "r" * len(cells) + r"@{}}", r"\toprule",
+           r" & & \multicolumn{4}{c}{$\theta$ only} & \multicolumn{4}{c}{$\theta$ and dropout $d$} \\",
+           r"\cmidrule(lr){3-6}\cmidrule(lr){7-10}",
+           r"Scenario & Policy & " + " & ".join(
+               f"$\\rho_U{{=}}{c[1]}$, $s{{=}}{c[2]}$" for c in cells) + r" \\", r"\midrule"]
+    for sc in ["baseline", "fail1", "homog", "sweep_cov3", "sweep_cov1"]:
+        g = d[d.scenario == sc]
+        if g.empty:
+            continue
         first = True
-        for r in g.itertuples():
-            lab = sc.replace("_", "\\_")
-            mdl = {"theta": "$\\theta$", "theta+d": "$\\theta{+}d$"}.get(r.model, r.model)
-            out.append(f"{lab if first else ''} & {mdl} & {r.rho_U} & {r.prior_sd} & {name(r.policy)} & "
-                       f"{pct(r.rel_vs_rr)} [{pct(r.lo)}, {pct(r.hi)}] & {r.share_worst:.2f} \\\\")
+        for pol in pols:
+            gg = g[g.policy == pol]
+            if gg.empty:
+                continue
+            vals = []
+            for c in cells:
+                r_ = gg[gg.key == c]
+                vals.append(f"{r_.rel_vs_rr.iloc[0] * 100:+.0f}" if len(r_) else "")
+            out.append(f"{sc.replace('_', '-') if first else ''} & {name(pol)} & " + " & ".join(vals) + r" \\")
             first = False
         out.append(r"\midrule")
     out[-1] = r"\bottomrule"

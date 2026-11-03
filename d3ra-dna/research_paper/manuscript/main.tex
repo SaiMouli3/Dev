@@ -1055,9 +1055,12 @@ computational.  The digital twin uses DT4DDS's default parameters and one archiv
 returns non-informative reads).  The replay uses real reads, but decodability is an oracle event
 and the ``containers'' are runs of one synthesis batch.  \emph{Internal validity}: $\rho_U$ was
 selected with prior sd $s{=}1$ and used with $s{=}0.5$; the selected value lies at the edge of the
-pre-specified grid; the photolithographic scenario uses a reduced design; and one code fix (static
-allocator) was made after freezing (Appendix~\ref{app:dev}).  The static baselines use
-efficiencies measured in hindsight on the evaluated syntheses, which favours them.
+pre-specified grid; and one code fix (static allocator) was made after freezing
+(Appendix~\ref{app:dev}).  The photolithographic scenario was first run at a reduced design and
+re-run at the full 30 $\times$ 10 design for round-robin, with the same outcome.  The pre-specified
+static baselines use efficiencies measured in hindsight on the evaluated syntheses, which favours
+them; the calibration-estimated variant, which sees no evaluation data, performs the same within
+noise, so that advantage is not what drives the static result.
 \emph{Construct validity}: read counts are a proxy for cost; we do not model run set-up costs,
 which favour fewer, larger batches.  \emph{Statistical}: wrong-output and false-accept bounds
 come from zero events and scale with the number of trials; the comparisons are paired but within

@@ -43,17 +43,20 @@ container to read next is a far smaller and more fragile effect.  Under our pre-
 model, a single efficiency multiplier, every model-based rule --- Thompson sampling, UCB,
 learn-then-commit, information-greedy --- read \emph{more} than round-robin when one container was
 near-dead ($+$7\% to $+$441\%), because one multiplier cannot express dropout; a hindsight-tuned static
-allocation with the same stopping rule was 4.2\% cheaper than round-robin.  Adding a dropout parameter
-to the container model removes most of that penalty (UCB $-$3.5\%, 95\% CI $-$4.9 to $-$2.2\%), which
-locates the failure in the model rather than in adaptivity, but the best allocation gain remains 3.5\%
-against stopping's 27--32\%.  No rule lowered the 0.99-quantile in any configuration, including with the
+allocation with the same stopping rule was 4.2\% cheaper than round-robin.  A $2\times2\times2$ ablation shows that this
+penalty is not caused by one modelling choice: the frozen configuration is the one corner in which it is
+large, and relaxing the container model (adding a dropout parameter), the likelihood, or the prior width
+individually all bring every rule into a narrow band 0 to 4.5\% below round-robin --- the same band as
+the hindsight static plan.  So adaptive allocation is worth a few percent at best, against stopping's
+27--32\%.  No rule lowered the 0.99-quantile in any configuration, including with the
 better model, so none of this reduces reserved capacity.  Over \SafeN{} end-to-end retrievals no output
 file was ever wrong and no wrong payload passed the inner checks in \SafeAtt{} decode attempts; because
 those retrievals share \SafeUnits{} synthesis replicates, we report both the per-retrieval upper limit
 (\SafeWUB{}) and the conservative per-synthesis one (\SafeWUBc{}).  A leak-free replay of real Illumina
 streams from two vendor pools agrees on the ranking, and adds the one case where allocation pays
 substantially: a prior calibrated on held-out reads of the same containers, which identifies the weak
-container before retrieval, saved 16\%.  Every number is regenerated from committed result files under
+container before retrieval, saved 16\% per retrieval --- but it needed 1.8M calibration reads, 2.8 times
+one retrieval's cost, so it only pays for itself after about 17 retrievals of the same archive.  Every number is regenerated from committed result files under
 frozen protocols with logged deviations.
 \end{abstract}
 
@@ -93,11 +96,13 @@ consumed-versus-reserved saving.}  It needs no model, never returned a wrong fil
 4.80--5.15k reads that a static plan must reserve into a 3.49k average bill on the digital twin
 ($-$27 to $-$32\%); on both real-read pools it cut reads against fixed depth by 14\% and 25\%.
 (ii) \emph{Allocation is worth a few percent at best, and is harmful under a misspecified container
-model.}  With one efficiency multiplier per container every model-based rule read more than round-robin
-when a container was near-dead; with efficiency \emph{and} dropout the best rule (UCB) became 3.5\%
-cheaper than round-robin, and a hindsight static plan with the same stopping rule was 4.2\% cheaper.
-Allocation pays substantially only when the weak container is identified \emph{before} retrieval, from
-calibration reads ($-$16\% on one real-read pool).  (iii) \emph{Nothing we tried lowered the
+model.}  Under the frozen configuration every model-based rule read more than round-robin when a container was
+near-dead, by 7--441\%; an ablation attributes that to the controller being slow to recognise a bad
+container, with three independent modelling choices each sufficient to cause it, and each sufficient to
+remove it.  Once any of them is relaxed, every rule lands 0--4.5\% below round-robin, where a
+hindsight static plan already sits ($-$4.2\%).  The one substantially larger allocation effect requires
+knowing the weak container \emph{before} retrieval, from calibration reads ($-$16\% per retrieval on one
+real-read pool, repaid after about 17 retrievals).  (iii) \emph{Nothing we tried lowered the
 0.99-quantile}, so none of this reduces the capacity a user must reserve; the gains are mean-only.
 (iv) \emph{Two zero-success results mark boundaries of the archive design, not of the policies}: two
 failed containers leave exactly $K$ fragments per stripe by construction, and under the
@@ -589,36 +594,55 @@ never brings that variance below its threshold and spends two thirds of its read
 
 \emph{Separating the three candidate causes.}  Three things could be responsible: the container model,
 the likelihood ($\rho_U$), and the prior width ($s$).  We ran the $2\times2\times2$ ablation of
-Table~\ref{tab:r4abl} to tell them apart, rather than attributing the result to the model by argument.
-The likelihood matters: with the binomial likelihood ($\rho_U{=}0$) on the same retrievals,
-coverage-greedy, Thompson sampling and tail-aware are 3--4\% \emph{cheaper} than round-robin instead of
-7--15\% costlier, so the better-calibrated posterior is the costlier one.  The prior width matters
-much less.  But the container model dominates, and it is the one factor that changes the conclusion.
+Table~\ref{tab:r4abl} rather than attributing the result to the model by argument, and the answer is
+not the one we expected.  No single factor is \emph{the} cause; the frozen configuration
+($\theta$ only, $\rho_U{=}0.1$, $s{=}0.5$) is simply the one corner of the cube in which the penalty is
+large, and relaxing \emph{any} of the three removes most of it.  For coverage-greedy, paired against
+round-robin on the same 300 syntheses and read orders: the frozen corner costs $+$15.1\% (95\% CI
+$+$10.3 to $+$20.6\%); switching to the binomial likelihood alone gives $-$4.4\% ($-$6.0 to $-$2.8\%);
+widening the prior alone gives $-$0.6\% ($-$2.5 to $+$1.4\%); adding dropout alone gives $+$1.6\%
+($-$0.2 to $+$3.4\%); and combinations reach a floor of about $-$4.5\%, with no combination beating the
+best single change.  Thompson sampling behaves the same way ($+$7.4\%, then $-$3.5\%, $+$0.9\%,
+$+$0.7\%).  The common mechanism is how fast the controller can conclude that a container is bad: the
+over-dispersed likelihood widens the posterior, a tight prior holds it near $\theta{=}1$, and a
+single-multiplier model keeps extrapolating the surviving fragments' rate to the absent ones.  Any one
+of those three being relaxed lets the evidence arrive fast enough, and once it does, every rule lands in
+the same narrow band a few percent below round-robin --- the same band as the hindsight static plan
+($-$4.2\%).  That band, not the $+$15\%, is the honest estimate of what allocation is worth here.
 
 \subsection{An efficiency-and-dropout container model}\label{sec:res-dropout}
-Representing a container by efficiency \emph{and} a dropout fraction --- a joint posterior over
-$(\theta_j,d_j)$ with $d_j\in\{0,0.05,0.15,0.3,0.5,0.7,0.9\}$, so that a fragment still missing after
-many reads is increasingly attributed to permanent absence rather than to low coverage --- removes most
-of the penalty.  On the baseline, against round-robin on the same 300 syntheses and read orders, UCB
-goes from $+$15.3\% to $-$3.5\% (95\% CI $-$4.9 to $-$2.2\%), Thompson sampling from $+$7.4\% to
-$+$0.7\% ($-$1.0 to $+$2.8\%), coverage-greedy from $+$15.1\% to $+$1.6\% ($-$0.1 to $+$3.3\%), pivotal
-from $+$49.3\% to $+$7.4\% and learn-then-commit from $+$44.6\% to $+$12.7\%.  The mechanism is visible
-in the read shares: coverage-greedy's share of the near-dead container falls from 0.27 to 0.20 and
-UCB's from 0.27 to 0.17, against round-robin's 0.16.  Information-greedy gets worse ($+$441\% to
-$+$612\%), which is consistent: a richer model has more uncertainty for a pure-information rule to
-chase.  In the homogeneous control, where there is no dropout to detect, the two models agree to within
-0.5\% on every rule, so the second parameter costs nothing when it is not needed.
+\input{tables/r4_ablation}
+The reviewer-facing question is whether a container model that \emph{can} express dropout rescues
+adaptive allocation.  We built one --- a joint posterior over $(\theta_j,d_j)$ with
+$d_j\in\{0,0.05,0.15,0.3,0.5,0.7,0.9\}$, so that a fragment still missing after many reads is
+increasingly attributed to permanent absence rather than to low coverage --- and the answer is a
+qualified yes.
 
-Two qualifications keep this from being a positive headline.  First, the tail does not move: the paired
-q99 difference for UCB with the dropout model is $-$450 reads with a 95\% interval of $-$1{,}147 to
-$+$150, so even the best rule is not resolved as better than round-robin at q99, and our statement that
-no rule lowered q99 survives the better model.  Second, the size: the best allocation result in this
-paper is a 3.5\% mean saving, against the 27--32\% that verified stopping delivers with no model at all.
-The right reading of our negative result is therefore not ``adaptive allocation does not work'' but
-\emph{``a container model that cannot express dropout makes adaptive allocation actively harmful, and
-fixing the model buys a few percent, not the bulk of the saving''}.
+On the baseline, keeping the frozen likelihood and prior and changing only the model, UCB goes from
+$+$15.3\% to $-$3.5\% against round-robin (95\% CI $-$4.9 to $-$2.2\%), coverage-greedy from $+$15.1\%
+to $+$1.6\% ($-$0.2 to $+$3.4\%), Thompson sampling from $+$7.4\% to $+$0.7\%, pivotal from $+$49.3\%
+to $+$7.4\% and learn-then-commit from $+$44.6\% to $+$12.7\%.  The mechanism is visible in the read
+shares: coverage-greedy's share of the near-dead container falls from 0.27 to 0.20 and UCB's from 0.27
+to 0.17, against round-robin's 0.16.  Information-greedy gets worse ($+$441\% to $+$612\%), which is
+consistent --- a richer model gives a pure-information rule more uncertainty to chase.  In the
+homogeneous control, where there is no dropout to detect, the two models agree within 0.5\% on every
+rule, so the second parameter costs nothing when it is not needed.  The clearest benefit is after an
+outright failure: with the dropout model and the binomial likelihood, the conditional saving in the
+one-failed-container scenario grows from $-$17\% to $-$45\% for coverage-greedy, and all four rules land
+between $-$42\% and $-$45\%.
 
-\subsection{Failed containers and severity sweep}\subsection{Failed containers and severity sweep}
+Three qualifications keep this from being a positive headline.  First, as the ablation shows, the
+dropout model is not uniquely responsible: the binomial likelihood alone does as much on the baseline.
+Second, the tail does not move: the paired q99 difference for UCB with the dropout model is $-$450 reads
+with a 95\% interval of $-$1{,}147 to $+$150, so even the best rule is not resolved as better than
+round-robin at q99, and the statement that no rule lowered q99 survives the better model.  Third, the
+size: the best allocation result anywhere in this paper is a 3.5--4.5\% mean saving, against the
+27--32\% that verified stopping delivers with no model at all.  The right reading of our negative result
+is therefore not ``adaptive allocation does not work'' but \emph{``a controller that is slow to
+recognise a bad container makes allocation actively harmful, several independent modelling choices cause
+that slowness, and fixing any of them buys a few percent --- not the bulk of the saving''}.
+
+\subsection{Failed containers and severity sweep}\subsection{Failed containers and severity sweep}\subsection{Failed containers and severity sweep}
 With one failed container (the fresh one, which returns only non-informative reads), 34\% of
 retrievals succeeded under every policy, and success was identical for all policies on every
 synthesis and read order: whether the file can be recovered is set by which fragments the

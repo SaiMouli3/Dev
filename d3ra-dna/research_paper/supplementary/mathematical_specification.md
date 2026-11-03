@@ -10,7 +10,10 @@ This file combines the project's mathematical specification (`docs/system_model.
 | (2) | Recovery time T_ij = Γ(t_ij, 1)/π_ij | `channel/surrogate.py` (`sample_T`); empirical version in `realdata/empirical.py` (`empirical_T`) |
 | (3) | Q_j(μ): NB-mixed, Gauss–Hermite-averaged decodability | `retrieval/adaptive_policy.py` (`_QTable`) |
 | (4) | Objective: expected spend at 1−ε | `retrieval/fixed_policy.py` (`budget_for_target`), `evaluation/metrics.py` (`adaptive_summary`, `static_summary`) |
-| (5) | Discrete posterior over θ_j with a failure atom | `AdaptiveController.posterior` |
+| (5) | Discrete posterior over θ_j with a failure atom; beta-binomial likelihood with ICC ρ_U (revision 3, Eq. 2 of the manuscript) | `AdaptiveController.posterior` (`AdaptiveConfig.overdispersion`, default 0.1) |
+| R3 | Allocation rules: round-robin, coverage, pivotal, Thompson (posterior draw), UCB (`quantile`=0.9), learn-then-commit, info-greedy, tail-aware (0.1-quantile, `tail_frac`=0.1) | `AdaptiveController.scores`, `StreamRetriever.choose` |
+| R3 | Posterior-simulation completion forecast (200 draws) | `AdaptiveController.p_complete` (`forecast="mc"`) |
+| R3 | Static family w ∝ e^α | `experiments/dt_experiments.py` (`static_family`), `StreamRetriever.choose` (`static_w`) |
 | (6) | Hazard h_ij(Δ) | `AdaptiveController._hazard` |
 | (7) | Pivotal score S_j; coverage-greedy score | `AdaptiveController.scores` |
 | (8) | Posterior-predictive P_complete | `AdaptiveController.p_complete` |
@@ -22,7 +25,10 @@ This file combines the project's mathematical specification (`docs/system_model.
 - **Posterior grid:** Θ = {0} ∪ exp(linspace(log 0.01, log 5, 25)). After the first verified recovery in container j, the failure atom is set to zero.
 - **Look-ahead horizon:** H = 6 batches per container.
 - **Batch size:** b = 200 reads for real-data runs. If not set, it defaults to max(50, 0.02·n).
-- **Overdispersion is not modelled.** The likelihood is binomial in U_j given the plug-in Q_j and ignores overdispersion. This is the over-confidence source discussed in the paper.
+- **Overdispersion.** Revision 2 used a binomial likelihood in U_j. Revision 3 uses a beta-binomial with ICC ρ_U (ρ_U = 0 recovers the binomial):
+  - parameters a = q(1−ρ)/ρ and b = (1−q)(1−ρ)/ρ;
+  - ρ_U = 0.1 was selected on DT calibration replicates.
+- **Prior sd in revision-3 policy runs:** s = 0.5. The ρ_U selection used s = 1.
 
 ---
 

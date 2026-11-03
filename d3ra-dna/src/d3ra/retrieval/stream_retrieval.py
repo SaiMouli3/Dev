@@ -125,6 +125,8 @@ class StreamRetriever:
         if self.static_w is not None:              # static allocation: keep reads proportional to w
             w = np.where(avail, self.static_w, 0)
             ok = np.flatnonzero(w > 0)
+            if ok.size == 0:                       # every positive-weight container exhausted:
+                return int(cand[0])                # read out the rest (retrieval will fail)
             return int(ok[np.argmin(self.reads_used[ok] / w[ok])])
         if name == "uniform":
             return int(cand[rounds % len(cand)])

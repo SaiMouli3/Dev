@@ -1,30 +1,28 @@
 \begin{table*}[!t]
 \centering
-\caption{Claim-to-evidence summary (full table: \texttt{evidence/evidence\_traceability.csv}).
-``Real reanalysis'' = computation on public sequencing reads; no result is wet-lab evidence produced for this work.}
+\caption{Claim-to-evidence summary (full table: \texttt{evidence/evidence\_traceability.csv}).  DT: DT4DDS digital
+twin, full decode chain, no oracle.  Replay: real reads, oracle decodability.  No result is wet-lab evidence.}
 \label{tab:evidence}
 \scriptsize
 \setlength{\tabcolsep}{3pt}
-\begin{tabular}{@{}p{58mm}p{38mm}p{46mm}p{27mm}@{}}
+\begin{tabular}{@{}p{70mm}p{40mm}p{44mm}p{22mm}@{}}
 \toprule
-Claim & Experiment / script & Result file & Status \\
+Claim & Command (\texttt{dt\_experiments.py} unless noted) & Result file (\texttt{results/}) & Evidence \\
 \midrule
-Adaptive mean cost $-$11.6 to $-$16.9\% vs.\ oracle-tuned static (Twist); q99 not lower & \texttt{real\_data.py policies} & \texttt{realdata\_policies\_v2.csv} & verified, replay of real reads \\
-Adaptive mean cost $-$13.9\% (RR), $-$21.6\% (single) vs.\ oracle static; q99 +12\% (Genscript) & \texttt{real\_data.py policies} (Genscript) & \texttt{realdata\_genscript\_\allowbreak policies\_\{rr,sb\}\_v2.csv} & verified, replay of real reads \\
-Pivotal score no better than coverage-greedy & real-data policies; ablation & \texttt{realdata\_policies.csv}, \texttt{ablations.csv} & verified, negative \\
-Zero-calibration prior matches full calibration (RQ2) & \texttt{paper\_experiments.py e4} & \texttt{paper\_e4\_limited\_calibration.csv} & verified, replay of real reads \\
-Degraded containers flagged; CIs over-confident (RQ3) & \texttt{paper\_experiments.py ed} & \texttt{paper\_ed\_change\_detection.csv} & verified (sim.\ + real); negative part \\
-$\hat P_{\mathrm{complete}}$ under-confident, AUC $\le$0.71 & \texttt{paper\_experiments.py ec} & \texttt{paper\_ec\_*.csv} & verified, negative \\
-Cross-pool transfer (RQ1) & \texttt{paper\_experiments.py e10} & \texttt{paper\_e10\_cross\_pool.csv} & verified, replay of real reads \\
-Degradation under container loss (RQ5) & \texttt{real\_data.py failure\_injection} & \texttt{realdata\_failure\_injection.csv} & verified; failures injected \\
-No wrong output; 0/10{,}557 false accepts & \texttt{q4\_stopping\_safety.py} & \texttt{q4\_summary.json} & verified, simulated channel \\
-Futility rule harmful & \texttt{q4\_stopping\_safety.py} & \texttt{q4\_futility.csv} & verified, negative \\
-Component ablation & \texttt{run\_all.py} & \texttt{ablations.csv} & simulated \\
-Beta-binomial errors: MAE 0.083 vs.\ 0.181 & \texttt{q3\_correlated\_errors.py} & \texttt{q3\_summary.json} & verified, real nanopore \\
-Spreading threshold $q^\star$ & \texttt{theory\_checks.py} & \texttt{theory\_summary.json} & theoretical (known result) \\
-Calibrated beliefs free of evaluation data & \texttt{belief\_from\_calibration} & -- & violated (leak disclosed; bounded) \\
-Correlated-error likelihood in controller; regret bounds & -- & -- & proposed future work \\
-Independent synthesis; observed vial failure rates; currency cost & -- & -- & unsupported \\
+No wrong output, no false accept (Table~\ref{tab:safety}) & all DT runs & \texttt{dt\_*.csv} & DT \\
+Verified stop: $-$27\% mean vs.\ best static reservation & \texttt{run}/\texttt{static baseline} & \texttt{dt\_baseline.csv}, \texttt{dt\_baseline\_static.csv} & DT \\
+Model-based rules costlier than round-robin (baseline) & \texttt{run baseline} & \texttt{dt\_summary.csv} & DT, negative \\
+Gains after outright failure (UCB $-$24\%); success set by redundancy & \texttt{run fail1}, \texttt{run fail2} & \texttt{dt\_fail1.csv}, \texttt{dt\_fail2.csv} & DT, simulated failures \\
+Crossover with severity of the worst container & \texttt{run sweep\_cov*} & \texttt{dt\_sweep\_cov*.csv} & DT \\
+No rule lowers q99 & all DT runs & \texttt{dt\_summary.csv} & DT, negative \\
+$\rho_U$ selection and held-out coverage & \texttt{calib}, \texttt{calib\_eval} & \texttt{dt\_calibration\_\{select,eval\}\_baseline.csv} & DT, partly negative \\
+Forecasts over-confident, worse than climatology & \texttt{forecast baseline} & \texttt{dt\_forecast\_baseline.csv} & DT, negative \\
+Binomial likelihood cheaper (post hoc) & \texttt{posthoc\_rho0} & \texttt{dt\_*\_posthoc\_rho0.csv} & DT, post hoc \\
+Homogeneous control; photolithographic synthesis & \texttt{run homog}, \texttt{run photolitho} & \texttt{dt\_homog.csv}, \texttt{dt\_photolitho.csv} & DT (photolitho reduced) \\
+Leak-free real-read replay & \texttt{paper\_experiments.py replay\_v3} & \texttt{replay\_v3\{,\_genscript\}.csv} & Replay \\
+Leaky first analysis (upper bound only) & \texttt{real\_data.py policies} & \texttt{realdata\_*policies*\_v2.csv} & superseded \\
+Correlated nanopore errors (MAE 0.083 vs.\ 0.181) & \texttt{q3\_correlated\_errors.py} & \texttt{q3\_summary.json} & real nanopore reads \\
+Regret bounds; wet-lab containers; real failure rates & -- & -- & not attempted \\
 \bottomrule
 \end{tabular}
 \end{table*}

@@ -11,3 +11,4 @@ hypothesis>=6
 
 streamlit>=1.30
 tabulate>=0.9
+dt4dds==1.1.0   # digital twin (primary evidence, revision 3)

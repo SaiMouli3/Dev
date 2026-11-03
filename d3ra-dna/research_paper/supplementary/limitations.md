@@ -1,6 +1,45 @@
-# Supplementary S5: Limitations and Threats to Validity
+# Supplementary S5: Limitations and Threats to Validity (revision 3)
+
+## External validity
+- **Computational only.**
+  - The primary evidence is the DT4DDS digital twin with its default parameters.
+  - Conclusions are bounded by DT4DDS's fidelity and by one archive geometry: 1,200 strands of 136 nt, (32, 48), six containers.
+- **Failures are simulated.** A failed container returns non-informative reads. Real failure modes and rates are unknown.
+- **Replay data.** The replay uses real reads but oracle decodability. Its containers are runs of one synthesis batch.
+
+## Internal validity
+- **ρ_U selection:**
+  - ρ_U was selected with prior sd s = 1 but used with s = 0.5, a mismatch noticed after freezing.
+  - The selected ρ_U = 0.1 is the largest grid value, and its selection coverage of 0.87 is below 0.90.
+- **Static plans** use efficiencies measured in hindsight on the evaluated syntheses, which favours them.
+- **Deviations:**
+  - the photolithographic scenario uses a reduced 10 × 3 design;
+  - the static allocator was fixed after freezing (it affects failed retrievals only);
+  - one truncated replicate was regenerated;
+  - the first Twist replay ran with ρ_U = 0 (see `dt_protocol.yaml`).
 
 ## Construct validity
+- Reads are an abstract cost: no set-up cost and no flowcell granularity.
+- The mean cost serves pay-per-read users. Users who must reserve capacity pay the q99, which no rule lowers.
+
+## Statistical conclusion validity
+- Safety bounds come from zero events and scale as about 3/n.
+- Comparisons are paired, but all within one archive design.
+- In fail1, comparisons use the 102 jointly successful retrievals.
+
+## Measured weaknesses of the method
+| Weakness | Evidence |
+|---|---|
+| A single efficiency multiplier cannot represent dropout; every model-based rule is costlier than round-robin with a near-dead container | `results/dt_baseline.csv`, `results/dt_sweep_cov*.csv` |
+| Better-calibrated likelihood (ρ_U = 0.1) gives costlier allocation than the binomial (post hoc) | `results/dt_*_posthoc_rho0.csv` |
+| Held-out 90% CI coverage 0.87 overall, 0.20 for the near-dead container | `results/dt_calibration_eval_baseline.csv` |
+| Completion forecasts over-confident; Brier worse than climatology | `results/dt_forecast_baseline.csv` |
+| No rule, including tail-aware, lowers q99 | `results/dt_summary.csv` |
+| Information-greedy spends 66% of reads on the near-dead container (+441%) | `results/dt_baseline.csv` |
+
+## Revision 2 limitations (real-read replay; kept for reference)
+
+### Construct validity
 1. **Containers.** Each "container" is one sequencing run of an aliquot from a single synthesis batch.
    - Coverage is strongly correlated across containers: 69% of excess variance is shared on Twist, 52% on Genscript.
    - Independently synthesised containers would be less correlated. This would change how much diversity spreading provides, and so how useful adaptive allocation is. We have not tested it.
@@ -13,7 +52,7 @@
    - Illumina flowcells are bought in fixed sizes, so batch-level adaptivity matches streaming nanopore sequencing better.
    - Savings in reads do not translate one-to-one into money.
 
-## Internal validity
+### Internal validity
 - All policies share the same read permutations.
 - Baselines receive budgets tuned in hindsight, which is favourable to them.
 - The φ̂ curves and recovery matrices use the evaluation split for the truth.
@@ -28,16 +67,16 @@
 - **Cache regeneration.** The real-data caches (per-strand φ̂) were regenerated between experiment runs, which shifted Genscript costs by ~9%. The policy tables were re-run on the current caches (`*_v2` result files). The superseded files are kept for transparency.
 - Per-run φ̂ seeding used Python's randomised `hash()`, so re-runs are not bit-identical (see S2).
 
-## Statistical conclusion validity
+### Statistical conclusion validity
 - Bootstrap CIs of a 0.99-quantile are asymmetric and can be anti-conservative when trials are few (60–100 in E4/E10/failure injection).
 - The simulation ablation uses 2,000 trials, but its seed sweep showed the 0.99 target is not reliably met in s4.
 
-## External validity
+### External validity
 - Two Illumina pools from one study (PRJEB65931) and two nanopore datasets.
 - Strand lengths are 102–108 nt.
 - No long-strand, enzymatic-synthesis or cold-storage-aged pools.
 
-## Known weaknesses of the method (measured)
+### Known weaknesses of the method (measured)
 | Weakness | Evidence |
 |---|---|
 | Posterior credible intervals are over-confident (coverage 0–83% for nominal 90%) | `paper_ed_change_detection.csv` |

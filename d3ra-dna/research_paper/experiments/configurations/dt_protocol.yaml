@@ -83,3 +83,11 @@ deviations:
     what: reduced design of 10 syntheses x 3 read orders (30 retrievals per policy and static plan) instead of 30 x 10
     why: compute -- with the noisier photolithographic synthesis model each retrieval reads far more and the full design
          would have taken ~6.5 h of the 4-core machine; the first 50 retrievals of the full run were discarded unseen.
+  - when: static baselines, fail1 and fail2, during the final runs
+    what: the static allocator crashed (argmin over an empty set) once every container with positive weight was
+         exhausted, which happens when a failed container (weight 0) is the only one left; the allocator now reads out
+         the remaining containers in that case (the retrieval then fails, as for the adaptive policies). Code change
+         after freezing; it affects only static runs of fail1/fail2 and cannot change any successful retrieval.
+post_hoc_analyses:   # not pre-specified; reported as such
+  - rho_U = 0 (binomial) for coverage, thompson, tail_aware, pivotal on baseline and fail1 (dt_*_posthoc_rho0.csv)
+  - Twist replay with rho_U = 0 (the accidental first run, replay_v3_rho0.csv)

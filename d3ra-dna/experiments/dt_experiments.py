@@ -43,12 +43,31 @@ from d3ra.storage.placement import round_robin  # noqa: E402
 
 RES = ROOT / "results"
 CACHE = ROOT / "data" / "processed" / "dt"
+if os.environ.get("D3RA_GEOM", "main") != "main":
+    CACHE = CACHE / f"geom_{os.environ['D3RA_GEOM']}"
 SEED = 20261102
 
 # ---------------------------------------------------------------- frozen design
 PAYLOAD, K, PARITY, NSYM, M = 24, 32, 16, 4, 6
-FILE_BYTES = 24 * K * 24          # 24 data stripes -> 24 stripes x 48 = 1,152 strands, 192 per container
+# 18,432 payload bytes; the library bundles the file with a 162-byte header (name, size, hash) into an
+# 18,594-byte blob, which fills ceil(18594 / (32*24)) = 25 stripes (the last one zero-padded):
+# 25 x 48 = 1,200 strands, 200 per container, and a 60 x 1,200 = 72,000-read maximum stream.
+FILE_BYTES = 24 * K * 24
 READS_PER_STRAND = 60             # reads simulated per stored strand (stream length; >> reads needed)
+
+# Revision-4 archive geometries (D3RA_GEOM); "main" is the frozen primary design above.
+GEOMS = {
+    "main": dict(K=32, PARITY=16, M=6, FILE_BYTES=FILE_BYTES),
+    "m3": dict(K=32, PARITY=16, M=3, FILE_BYTES=FILE_BYTES),             # 3 containers, 16 fragments/stripe each
+    "m12": dict(K=32, PARITY=16, M=12, FILE_BYTES=FILE_BYTES),           # 12 containers, 4 fragments/stripe each
+    "n40": dict(K=32, PARITY=8, M=6, FILE_BYTES=FILE_BYTES),             # lower redundancy (32,40)
+    "n64": dict(K=32, PARITY=32, M=6, FILE_BYTES=FILE_BYTES),            # higher redundancy (32,64)
+    "k16": dict(K=16, PARITY=8, M=6, FILE_BYTES=FILE_BYTES),             # short stripes (16,24)
+    "big": dict(K=32, PARITY=16, M=6, FILE_BYTES=4 * FILE_BYTES),        # 4x file (~100 stripes, 4,800 strands)
+}
+GEOM = os.environ.get("D3RA_GEOM", "main")
+K, PARITY, M, FILE_BYTES = (GEOMS[GEOM][x] for x in ("K", "PARITY", "M", "FILE_BYTES"))
+GTAG = "" if GEOM == "main" else f"_geom_{GEOM}"
 
 # Handling histories mirror the six conditions of the PRJEB65931 study (aging / PCR),
 # but every container is an independent synthesis.
@@ -81,6 +100,17 @@ SCENARIOS = {
                                        pcr_cycles=c.pcr_cycles, pcr_eff=c.pcr_eff, eff_sd=c.eff_sd,
                                        sigma=c.sigma, coverage=c.coverage) for c in BASE],     # different synthesis vendor model
 }
+# revision-4 failure modes (pre-specified in dt_protocol_rev4.yaml)
+SCENARIOS.update({
+    "partial_c0_50": _with(BASE, c0={"loss_frac": 0.5, "name": "fresh(50% strands lost)"}),
+    "partial_c0c3_25": _with(BASE, c0={"loss_frac": 0.25, "name": "fresh(25% lost)"},
+                             c3={"loss_frac": 0.25, "name": "pcr_30c(25% lost)"}),
+    "lowyield_c0": _with(BASE, c0={"junk_frac": 0.9, "name": "fresh(90% junk reads)"}),
+    "contam_c2": _with(BASE, c2={"junk_frac": 0.5, "name": "aged_2hl_lowcopy(50% contamination)"}),
+    "common_cause": [ContainerCondition(c.name + "_cc", halflives=c.halflives + 2.0, pcr_cycles=max(c.pcr_cycles, 30),
+                                        pcr_eff=min(c.pcr_eff, 0.93), eff_sd=c.eff_sd, sigma=c.sigma, coverage=c.coverage)
+                     for c in BASE],                                   # correlated degradation of every container
+})
 # degradation sweep: severity of the last container (copies per design after handling)
 for cov in (200, 30, 10, 3, 1):
     SCENARIOS[f"sweep_cov{cov}"] = _with(BASE, c5={"coverage": float(cov), "name": f"c5_cov{cov}"})
@@ -99,9 +129,33 @@ N_REP, N_PERM = 30, 10             # 30 independent syntheses x 10 read orders =
 CALIB_REPS = range(1000, 1010)     # disjoint replicates used only to select rho_U
 
 
-def generic_belief(m):
+def generic_belief(m, over=None):
+    """Generic literature prior; `over` (prior-sensitivity runs) may override failure, dropout,
+    shape, yield, sigma_g or the consensus-success curve scale (phi_scale)."""
     from paper_experiments import generic_prior
-    return generic_prior(m)
+    b = generic_prior(m)
+    for k_, v in (over or {}).items():
+        if k_ == "failure":
+            from d3ra.channel.surrogate import FailureModel
+            b.failure = FailureModel(np.full(m, float(v)))
+        elif k_ == "phi_scale":
+            from d3ra.evaluation.scenarios import phi_for_scale
+            b.phi = np.tile(phi_for_scale(float(v)), (m, 1))
+        elif k_ == "sigma_g":
+            b.sigma_g = float(v)
+        else:
+            setattr(b, {"yield": "yield_"}.get(k_, k_), np.full(m, float(v)))
+    return b
+
+
+def conditions(scen):
+    """Container conditions of `scen` for the current geometry (M containers)."""
+    base = SCENARIOS[scen]
+    if M == len(base):
+        return base
+    if M == 3:
+        return [base[0], base[2], base[5]]       # fresh, aged low-copy, near-dead
+    return [ContainerCondition(**{**c.__dict__, "name": f"{c.name}_{r}"}) for r in range(M // len(base)) for c in base]
 
 
 def archive():
@@ -127,7 +181,7 @@ def gen_rep(args):
     if out.exists():
         return str(out), "cached"
     lib, X, *_ = archive()
-    conds = SCENARIOS[scen]
+    conds = conditions(scen)
     streams = []
     for j in range(M):
         idx = np.flatnonzero(X[:, j] > 0)
@@ -153,18 +207,22 @@ def one_retrieval(args):
     prng = np.random.default_rng(zlib.crc32(f"perm|{scen}|{rep}|{perm}".encode()))
     streams = [[s[i] for i in prng.permutation(len(s))] for s in streams]
     cfg_kw = dict(cfg_kw)
+    meta = {k_: v for k_, v in cfg_kw.items() if k_.startswith("_") and k_ != "_checkpoints"}
     cps = cfg_kw.pop("_checkpoints", None)
+    belief_over = cfg_kw.pop("_belief", None)
+    mcr = cfg_kw.pop("_max_cluster_reads", 24)
     w = cfg_kw.pop("static_weights", None)
     ctl = POLICIES[pol][0] if pol in POLICIES else "uniform"
     cfg = AdaptiveConfig(controller=ctl, batch=50, cap=cap, **cfg_kw)
-    r = StreamRetriever(lib.manifest, lib.fmt, X, addresses, streams, generic_belief(M), cfg, truth=truth,
-                        static_weights=w, cap_reads=cap, checkpoints=cps)
+    r = StreamRetriever(lib.manifest, lib.fmt, X, addresses, streams, generic_belief(M, belief_over), cfg, truth=truth,
+                        static_weights=w, cap_reads=cap, checkpoints=cps, max_cluster_reads=mcr)
     out = r.run(np.random.default_rng(zlib.crc32(f"ctl|{scen}|{rep}|{perm}|{pol}".encode())))
     files = out.pop("files")
     exact_bytes = bool(files) and files[0].data == data
     return {"scenario": scen, "rep": rep, "perm": perm, "policy": pol, **{k: v for k, v in out.items() if k != "checkpoints"},
             "file_identical": exact_bytes, "wrong_output": bool(files) and not exact_bytes,
-            "checkpoints": json.dumps(out["checkpoints"]), **{f"cfg_{k}": v for k, v in cfg_kw.items()}}
+            "checkpoints": json.dumps(out["checkpoints"]), "geom": GEOM,
+            **{f"cfg_{k}": v for k, v in cfg_kw.items()}, **{f"cfg{k}": json.dumps(v) for k, v in meta.items()}}
 
 
 # ---------------------------------------------------------------- static baselines
@@ -174,36 +232,45 @@ def static_family(scen, workers=4):
     0.99-quantile of that requirement as its budget. Family: w_j ~ e_j^alpha with e_j the
     hindsight per-read recovery rate of container j measured on the same replicates
     (alpha = 0 is uniform fixed depth; the best alpha is a hindsight-tuned static plan)."""
-    rr = pd.read_csv(RES / f"dt_{scen}.csv")
-    rr = rr[rr.policy == "round_robin_stop"]
-    rpc = np.stack(rr.reads_per_container.map(json.loads).values)
     eff = np.array([0.0] * M)
-    # hindsight efficiency: recovered fragments per read in a single-container pass
+    # hindsight efficiency: recovered fragments per read in a single-container pass, measured on the
+    # evaluation replicates; with D3RA_STATIC_EFF=calib it is measured on the disjoint calibration
+    # replicates instead (a practical static plan that sees no evaluation data)
+    src = os.environ.get("D3RA_STATIC_EFF", "hindsight")
+    eff_reps = list(CALIB_REPS) if src == "calib" else list(range(min(N_REP, 10)))
+    for r_ in eff_reps:
+        gen_rep((scen, r_))
     lib, X, addresses, truth, data = archive()
     for j in range(M):
         tot = rec = 0
-        for rep in range(min(N_REP, 10)):
+        for rep in eff_reps:
             s = load_rep(scen, rep)[j]
             cur = container_curve(lib, X, addresses, s, j, upto=8 * int(X[:, j].sum()))
             tot += cur[-1][0]
             rec += cur[-1][1]
         eff[j] = rec / max(tot, 1)
     rows = []
-    for alpha in (0.0, 0.5, 1.0, 2.0):
+    alphas = [float(a) for a in os.environ.get("D3RA_STATIC_ALPHAS", "0,0.5,1,2").split(",")]
+    tag = os.environ.get("D3RA_STATIC_TAG", "")
+    pfx = "static_cal_a" if src == "calib" else "static_a"
+    rep0 = int(os.environ.get("D3RA_REP0", 0))
+    for alpha in alphas:
         w = np.where(eff > 0, np.maximum(eff, 1e-6) ** alpha, 0.0)
         w = w / w.sum()
         n_rep = int(os.environ.get("D3RA_NREP", N_REP))
         n_perm = int(os.environ.get("D3RA_NPERM", N_PERM))
-        jobs = [(scen, r, p, f"static_a{alpha}", {"static_weights": w}, np.inf) for r in range(n_rep) for p in range(n_perm)]
+        jobs = [(scen, r, p, f"{pfx}{alpha}", {"static_weights": w}, np.inf)
+                for r in range(rep0, rep0 + n_rep) for p in range(n_perm)]
         with Pool(workers) as pool:
             for row in pool.imap_unordered(one_retrieval, jobs, chunksize=2):
                 row["reads_per_container"] = json.dumps(row["reads_per_container"])
                 row["alpha"] = alpha
+                row["eff_source"] = src
                 row["weights"] = json.dumps(w.round(4).tolist())
                 rows.append(row)
         print("static", scen, alpha, flush=True)
-    pd.DataFrame(rows).to_csv(RES / f"dt_{scen}_static.csv", index=False)
-    (RES / f"dt_{scen}_hindsight_eff.json").write_text(json.dumps(eff.tolist()))
+    pd.DataFrame(rows).to_csv(RES / f"dt_{scen}{GTAG}_static{tag}.csv", index=False)
+    (RES / f"dt_{scen}{GTAG}_{'calib' if src == 'calib' else 'hindsight'}_eff{tag}.json").write_text(json.dumps(eff.tolist()))
 
 
 # ---------------------------------------------------------------- calibration (rho_U) on disjoint replicates
@@ -259,7 +326,7 @@ def calib_job(args):
             U = [c[1] for c in curve if c[0] <= Rj]
             U = U[-1] if U else 0
             for rho in rhos:
-                ctl = AdaptiveController(L, generic_belief(M), AdaptiveConfig(prior_sd=1.0, overdispersion=rho))
+                ctl = AdaptiveController(L, generic_belief(M), AdaptiveConfig(prior_sd=CALIB_SD, overdispersion=rho))
                 Rm = np.zeros((1, M)); Rm[0, j] = Rj
                 Um = np.zeros((1, M)); Um[0, j] = U
                 P = ctl.posterior(Rm, Um)[0, j]
@@ -272,7 +339,8 @@ def calib_job(args):
     return rows
 
 
-RHOS = (0.0, 0.003, 0.01, 0.03, 0.1)
+RHOS = tuple(float(x) for x in os.environ.get("D3RA_RHOS", "0,0.003,0.01,0.03,0.1").split(","))
+CALIB_SD = float(os.environ.get("D3RA_CALIB_SD", 1.0))   # frozen selection used 1.0; revision 4 repeats it at 0.5
 
 
 def calib(scen="baseline", reps=CALIB_REPS, out="dt_calibration_select", workers=4):
@@ -284,7 +352,8 @@ def calib(scen="baseline", reps=CALIB_REPS, out="dt_calibration_select", workers
         for rr_ in p.imap_unordered(calib_job, jobs):
             rows += rr_
     df = pd.DataFrame(rows)
-    df.to_csv(RES / f"{out}_{scen}.csv", index=False)
+    df["prior_sd"] = CALIB_SD
+    df.to_csv(RES / f"{out}_{scen}{os.environ.get('D3RA_CALIB_TAG', '')}.csv", index=False)
     s = df.groupby("rho").covered.mean()
     print(s, flush=True)
     return df
@@ -316,7 +385,9 @@ def forecast_eval(scen="baseline", workers=4):
 
 
 def gen(scens=None, workers=4):
-    jobs = [(s, r) for s in (scens or SCENARIOS) for r in range(N_REP)]
+    rep0 = int(os.environ.get("D3RA_REP0", 0))
+    n_rep = int(os.environ.get("D3RA_NREP", N_REP))
+    jobs = [(s, r) for s in (scens or SCENARIOS) for r in range(rep0, rep0 + n_rep)]
     with Pool(workers) as p:
         for path, msg in p.imap_unordered(gen_rep, jobs):
             print("gen", path, msg, flush=True)
@@ -326,7 +397,9 @@ def run(scen, policies=None, workers=4, tag="", cfg_kw=None):
     pols = policies or list(POLICIES)
     n_rep = int(os.environ.get("D3RA_NREP", N_REP))     # reduced designs are logged as protocol deviations
     n_perm = int(os.environ.get("D3RA_NPERM", N_PERM))
-    jobs = [(scen, r, p, pol, dict(cfg_kw or {}), np.inf) for pol in pols for r in range(n_rep) for p in range(n_perm)]
+    rep0 = int(os.environ.get("D3RA_REP0", 0))
+    jobs = [(scen, r, p, pol, dict(cfg_kw or {}), np.inf) for pol in pols for r in range(rep0, rep0 + n_rep)
+            for p in range(n_perm)]
     rows = []
     t0 = time.time()
     with Pool(workers) as pool:
@@ -336,7 +409,7 @@ def run(scen, policies=None, workers=4, tag="", cfg_kw=None):
             if k % 50 == 0:
                 print(scen, k, len(jobs), f"{time.time() - t0:.0f}s", flush=True)
     df = pd.DataFrame(rows)
-    df.to_csv(RES / f"dt_{scen}{tag}.csv", index=False)
+    df.to_csv(RES / f"dt_{scen}{GTAG}{tag}.csv", index=False)
     return df
 
 
@@ -349,6 +422,9 @@ if __name__ == "__main__":
     elif cmd == "posthoc_rho0":     # POST-HOC ablation (not in the frozen protocol): binomial likelihood
         run(sys.argv[2], ["coverage", "thompson", "tail_aware", "pivotal"], int(os.environ.get("D3RA_WORKERS", 4)),
             tag="_posthoc_rho0", cfg_kw={"overdispersion": 0.0})
+    elif cmd == "runx":             # revision-4 runs: runx SCEN TAG JSON_CFG POLICY...
+        run(sys.argv[2], sys.argv[5:] or None, int(os.environ.get("D3RA_WORKERS", 4)), tag=sys.argv[3],
+            cfg_kw=json.loads(sys.argv[4]))
     elif cmd == "static":
         static_family(sys.argv[2], int(os.environ.get("D3RA_WORKERS", 4)))
     elif cmd == "forecast":

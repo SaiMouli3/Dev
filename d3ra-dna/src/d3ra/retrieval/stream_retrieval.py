@@ -20,7 +20,7 @@ import numpy as np
 from ..archive import address_prefix
 from ..channel.surrogate import ChannelParams, Layout
 from ..decoding.reconstruction import reconstruct
-from .adaptive_policy import THETA, AdaptiveConfig, AdaptiveController
+from .adaptive_policy import AdaptiveConfig, AdaptiveController
 from .consensus import InventoryClusterer, consensus
 from .fragment_tracker import FragmentTracker
 
@@ -139,9 +139,7 @@ class StreamRetriever:
             post = self._committed
         theta = self.ctl.theta_from_post(post, rng)
         if name == "info":
-            lt = np.log(np.maximum(THETA, 1e-3))
-            pi = self.ctl.posterior(R, U)
-            v = (pi * lt ** 2).sum(2) - ((pi * lt).sum(2)) ** 2
+            v = self.ctl.info_scores(self.ctl.posterior(R, U))
             n_open = self.layout.pair_to_cont_sum((~rec_pair).astype(np.float32))
             sc = v * (n_open > 0)
             if sc.max() <= 1e-3:
@@ -157,7 +155,8 @@ class StreamRetriever:
         while self.checkpoints and spent >= self.checkpoints[0]:
             level = self.checkpoints.pop(0)
             R, rec_pair, rec_frag, by_stripe, U = self._state()
-            theta = self.ctl.posterior(R, U) @ THETA
+            theta = self.ctl.theta_from_post(self.ctl.posterior(R, U), rng) if self.cfg.controller in ("coverage", "pivotal") \
+                else self.ctl.posterior(R, U) @ self.ctl.grid_theta
             p = float(self.ctl.p_complete(R, rec_pair, rec_frag, by_stripe, theta, U, rng)[0])
             self.cp_rows.append((level, p))
 
@@ -172,6 +171,7 @@ class StreamRetriever:
             for j in np.flatnonzero(used):
                 self.read_container(j, self.ctl.probe)
         rounds, repairs = 0, 0
+        switches, last = 0, -1
         status = "partial"
         while self.reads_used.sum() < self.cap_reads:
             if self.tracker.complete():
@@ -188,11 +188,13 @@ class StreamRetriever:
                 break
             self._record_checkpoint(rng)
             j = self.choose(avail, rounds, rng)
+            switches += int(last >= 0 and j != last)
+            last = j
             self.read_container(j, b)
             rounds += 1
         res = reconstruct(self.man, self.tracker.rows)
         return {"status": res.status.value, "reads": float(self.reads_used.sum()),
                 "reads_per_container": self.reads_used.tolist(), "rounds": rounds,
                 "decode_attempts": self.decode_attempts, "false_accepts": self.false_accepts,
-                "verification_rounds": repairs, "files": res.files, "seconds": time.time() - t0,
+                "verification_rounds": repairs, "switches": switches, "files": res.files, "seconds": time.time() - t0,
                 "checkpoints": self.cp_rows}

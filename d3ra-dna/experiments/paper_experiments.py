@@ -335,6 +335,34 @@ def replay_v3(trials=200):
     pd.DataFrame({k: v for k, v in per_trial.items()}).to_csv(RES / f"replay_v3{suf}_per_trial.csv", index=False)
 
 
+def replay_calcost(trials=200):
+    """Revision 4 (R4.14): what the calibrated belief costs.  Coverage-greedy on the replay with beliefs
+    estimated from n calibration reads per container (counts only, generic phi) and from the full
+    300k-read calibration (counts + per-strand consensus statistics).  Calibration reads are reported
+    separately so that total cost and the break-even number of retrievals can be computed."""
+    from d3ra.retrieval.fixed_policy import budget_for_target
+    C = RD.load_cached()
+    belief_cal, runs_v, phi_v, L = _setup_layout()
+    T = EM.empirical_T(L, runs_v, phi_v, trials, np.random.default_rng(SEED + 7))
+    rng = np.random.default_rng(SEED + 3)
+    levels = [(0, "generic", generic_prior(L.m))]
+    for n in [1_000, 3_000, 10_000, 30_000, 100_000]:
+        levels.append((n, "counts", counts_belief(C, n, rng)))
+    levels.append((300_000, "full", belief_cal))
+    rows = []
+    for n, kind, b in levels:
+        ctl = AdaptiveController(L, b, AdaptiveConfig("coverage", batch=200))
+        r = ctl.run(trials, np.random.default_rng(SEED + 11), T=T, failed=np.zeros((trials, L.m), bool))
+        c = np.where(r.success, r.cost, np.inf)
+        rows.append({"calib_reads_per_container": n, "belief": kind, "containers": L.m,
+                     "calib_reads_total": n * L.m, "success": float(r.success.mean()),
+                     "mean_reads": float(np.mean(c)), "q99_reads": float(budget_for_target(c, 0.99)),
+                     "read_share": json.dumps((r.reads_per_container.mean(0) / r.reads_per_container.mean(0).sum()).round(4).tolist())})
+        print(RD.POOL, n, kind, round(rows[-1]["mean_reads"]), flush=True)
+    suf = "" if RD.POOL == "twist" else "_genscript"
+    pd.DataFrame(rows).to_csv(RES / f"replay_calcost{suf}.csv", index=False)
+
+
 if __name__ == "__main__":
     for stage in sys.argv[1:]:
-        {"e4": e4, "ec": ec, "ed": ed, "ed_od": ed_od, "ed_holdout": ed_holdout, "e10": e10, "e10_static": e10_static, "replay_v3": replay_v3}[stage]()
+        {"e4": e4, "ec": ec, "ed": ed, "ed_od": ed_od, "ed_holdout": ed_holdout, "e10": e10, "e10_static": e10_static, "replay_v3": replay_v3, "replay_calcost": replay_calcost}[stage]()

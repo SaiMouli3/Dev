@@ -35,6 +35,9 @@ class ContainerCondition:
     eff_sd: float = 0.0051            # per-sequence efficiency spread (DT4DDS default)
     coverage: float = 200.0           # oligo copies per design sampled into the container
     failed: bool = False              # container lost: produces no usable reads
+    loss_frac: float = 0.0            # fraction of the container's designs lost before storage (partial loss)
+    junk_frac: float = 0.0            # fraction of reads not derived from stored strands (contamination,
+                                      # library-preparation failure, severe but nonzero useful yield)
 
 
 def simulate_container(seqs: list[str], cond: ContainerCondition, n_reads: int, seed: int,
@@ -48,6 +51,18 @@ def simulate_container(seqs: list[str], cond: ContainerCondition, n_reads: int, 
         # derive from the stored strands (contamination, primer dimers, adapter artefacts)
         rng = np.random.default_rng(int(seed))
         return ["".join(rng.choice(list("ACGT"), read_length)) for _ in range(int(n_reads))]
+    if cond.loss_frac > 0:            # fragment-specific permanent loss (e.g. physical degradation of a subset)
+        rng_l = np.random.default_rng(int(seed) ^ 0x5EED)
+        keep = rng_l.random(len(seqs)) >= cond.loss_frac
+        seqs = [s_ for s_, k_ in zip(seqs, keep) if k_]
+    if cond.junk_frac > 0:
+        rng_j = np.random.default_rng(int(seed) ^ 0x1A11)
+        n_junk = int(round(cond.junk_frac * n_reads))
+        good = simulate_container(seqs, ContainerCondition(**{**cond.__dict__, "junk_frac": 0.0, "loss_frac": 0.0}),
+                                  n_reads - n_junk, seed, read_length) if n_reads - n_junk > 0 else []
+        junk = ["".join(rng_j.choice(list("ACGT"), read_length)) for _ in range(n_junk)]
+        out = good + junk
+        return [out[i] for i in rng_j.permutation(len(out))]
     import dt4dds
     dt4dds.config.show_progressbars = False
     dt4dds.helpers.config.set_random_seed(int(seed))

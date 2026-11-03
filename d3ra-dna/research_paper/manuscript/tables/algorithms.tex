@@ -1,0 +1,72 @@
+% algorithms.tex -- operational specification of every policy (revision 4), so that no reader has to
+% consult the code. Parameter values are the frozen defaults used in every run unless stated otherwise.
+\begin{table*}[!t]
+\centering
+\caption{Operational specification of the retrieval loop and of every allocation rule.  All rules share
+the loop, the batch size, the probe, the tie-breaking and the stopping test; they differ only in the
+score $\sigma_j$ and in which point value $\tilde\theta_j$ of the posterior they use.  $R_j$: reads
+spent on container $j$; $U_j$: fragments of container $j$ verified from its own reads; $n_j$: fragments
+stored in $j$; $h_{ij}$: hazard that unrecovered fragment $i$ in $j$ becomes decodable within the next
+batch; $\mathcal O$: fragments of stripes that still need fragments.}
+\label{tab:algorithms}
+\footnotesize
+\begin{tabular}{@{}p{0.47\textwidth}p{0.47\textwidth}@{}}
+\toprule
+\textbf{Retrieval loop (identical for every policy)} & \textbf{Allocation rules: score $\sigma_j$} \\
+\midrule
+\vspace{-3mm}
+\begin{enumerate}[leftmargin=4mm,itemsep=0pt,topsep=1pt]
+\item $R\leftarrow0$; pools empty; tracker empty.
+\item \emph{Probe}: read $b{=}50$ reads from every container that stores fragments, in index order
+(the static plans skip the probe and start from their proportions).
+\item \textbf{repeat}
+  \begin{enumerate}[leftmargin=3mm,itemsep=0pt,topsep=0pt]
+  \item \emph{Stopping test}: if every stripe holds $K$ fragments that passed inner RS, CRC-16 and the
+  address check, outer-decode all stripes; if every stripe matches its CRC-32 and the blob matches its
+  SHA-256, \textbf{return} the file.  If a stripe fails its CRC-32, raise that stripe's requirement by
+  one fragment (leave-one-out localisation) and continue; after 20 such rounds, stop and report failure.
+  \item If every stream is exhausted, \textbf{return} failure (never an unverified file).
+  \item Compute the posterior \eqref{eq:posterior} from $(R_j,U_j)$ for every container, take
+  $\tilde\theta_j$ as the rule prescribes, score the available containers and read $b$ reads from
+  $\arg\max_j\sigma_j$; ties break to the lowest index.
+  \item Cluster the new reads against expected address prefixes, form a consensus from at most 24 reads
+  per cluster, decode, and update $U_j$ and the tracker.  Reads are charged even if the stream runs dry.
+  \end{enumerate}
+\end{enumerate}
+\vspace{-5mm}
+&
+\vspace{-3mm}
+\begin{itemize}[leftmargin=4mm,itemsep=1pt,topsep=1pt]
+\item \emph{Round-robin + verified stop}: $\sigma_j$ unused; container $(\text{round}\bmod M)$.  No
+model is evaluated.
+\item \emph{Static} $\alpha$: no model; read the container minimising $R_j/w_j$ with
+$w_j\propto e_j^{\alpha}$ (exhausted containers excluded; if all positive-weight containers are
+exhausted, read the rest so the failure is charged).
+\item \emph{Coverage-greedy}: $\tilde\theta_j=\E[\theta_j]$;
+$\sigma_j=\sum_{i\in\mathcal O\cap j}h_{ij}$.
+\item \emph{Pivotal}: $\tilde\theta_j=\E[\theta_j]$; $\sigma_j=\sum_i w_s(i)\,h_{ij}(1-\rho_i+h_{ij})$
+with $w_s$ a normal-approximation sensitivity of stripe $s$'s completion probability.
+\item \emph{Thompson sampling}: $\tilde\theta_j\sim p(\theta_j\mid R_j,U_j)$, redrawn every round;
+coverage score.
+\item \emph{UCB}: $\tilde\theta_j=$ posterior 0.9-quantile; coverage score.
+\item \emph{Learn-then-commit}: round-robin for $5$ batches per container, then freeze the posterior
+and use the coverage score with $\tilde\theta_j=\E[\theta_j]$ from the frozen posterior.
+\item \emph{Info-greedy}: $\sigma_j=\mathrm{Var}[\ln\theta_j]$ while any container has
+$\mathrm{Var}[\ln\theta_j]>10^{-3}$, then coverage-greedy.  Containers with no unrecovered fragment score $0$.
+\item \emph{Tail-aware}: $\tilde\theta_j=$ posterior 0.1-quantile; score counts only fragments of the
+10\% of unfinished stripes with the smallest standardised slack, falling back to the coverage score
+when no such fragment can be advanced.
+\end{itemize}
+\vspace{-5mm}
+\\
+\bottomrule
+\end{tabular}
+
+\vspace{2pt}
+\parbox{\textwidth}{\footnotesize \textbf{Container model.}  Frozen: $\theta_j\in\{0\}\cup\{0.01\dots5\}$
+(25 log-spaced points), prior $p_0(0)=10^{-3}$ and log-normal with $s{=}0.5$ otherwise, beta-binomial
+likelihood with $\rho_U{=}0.1$.  Revision~4 adds the two-parameter model: $d_j\in\{0,0.05,0.15,0.3,0.5,0.7,0.9\}$
+with $p_0(d_j{=}0)=0.6$ and the rest uniform, a joint posterior over $(\theta_j,d_j)$, verified-fragment
+probability $(1-d_j)Q(\theta_jR_j\bar\pi_j)$, and hazards multiplied by $(1-\hat d_j)$ so that a fragment
+still missing after many reads is increasingly attributed to permanent dropout.}
+\end{table*}

@@ -11,6 +11,7 @@
 \usepackage{booktabs}
 \usepackage{multirow}
 \usepackage{array}
+\usepackage{enumitem}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning,fit,shapes.geometric,calc}
 \newcommand{\E}{\mathbb{E}}
@@ -328,11 +329,37 @@ then coverage-greedy.
 counts only the 10\% of stripes with the largest remaining need (the bottleneck stripes that
 set the retrieval's length); a heuristic aimed at the q99.
 \end{itemize}
-All rules probe each container with one batch first.  The \emph{static} family reads fixed
+All rules probe each container with one batch first.  Table~\ref{tab:algorithms} gives the
+operational specification of the loop and of every rule --- initialisation, batch size, tie-breaking,
+when the posterior is updated, the stopping test and how an exhausted stream is handled --- so that
+nothing has to be read out of the code.  The \emph{static} family reads fixed
 proportions $w_j\propto e_j^{\alpha}$, $\alpha\in\{0,0.5,1,2\}$, until decodable, where $e_j$ is
 the per-read recovery rate of container $j$ measured in hindsight on the same scenario:
 $\alpha{=}0$ is uniform fixed depth, $\alpha{=}1$ equalises expected coverage, and the best
 $\alpha$ is a hindsight-tuned (``oracle'') static plan.
+
+\subsection{What a ``container switch'' means here, and what it would mean in a laboratory}
+\label{sec:ops}
+Our controller picks a container after every batch of $b{=}50$ reads.  We do not claim that a
+sequencer can be redirected between physical vials that often, and the paper should not be read as a
+demonstration of a physical sequencing controller.  What our experiments model is an \emph{allocation
+policy over $M$ independent read streams}: each container has its own prepared library and its own
+stream of reads, and the policy decides from which stream the next batch is consumed.  Three physical
+arrangements realise that abstraction with different costs.  (i) \emph{Multiplexed run}: all $M$
+libraries are barcoded and loaded on one flow cell; reads arrive interleaved and ``choosing a
+container'' means choosing which barcode's reads to keep processing.  This matches our model closely
+but does not reduce the reads the instrument actually produces, so it saves analysis and, on
+pay-per-read services, money, but not instrument time.  (ii) \emph{Streaming (nanopore)}: reads
+arrive in real time, and adaptive sampling can reject molecules mid-read~\cite{loose2016real,payne2021readfish};
+with one flow cell per container, stopping is directly actionable, and with barcoded libraries
+selective sequencing approximates container choice.  (iii) \emph{Sequential runs}: one run per
+container, where a switch costs a library preparation and a run setup.  Our frozen cost metric (reads)
+describes case~(i) with per-read billing and is optimistic for cases~(ii) and~(iii); the per-batch and
+per-container charges in Section~\ref{sec:res-cost} bound how much that optimism matters.  Verified
+stopping, the result we actually recommend, needs no switching mechanism at all: it only needs the
+decoder to be able to say ``stop''.
+
+\input{tables/algorithms}
 
 \subsection{Verified stopping}
 A retrieval stops with an output file only when (i) every stripe holds $K$ fragments that each
@@ -494,9 +521,17 @@ no allocation effect, most model-based rules were 2--4\% cheaper than round-robi
 2.18k vs.\ 2.26k; information-greedy even at 2.26k): independent syntheses differ enough for mild
 adaptive gains, consistent with the low-severity end of the sweep below.  With DT4DDS's photolithographic synthesis model (reduced design, 30 retrievals per policy) no
 policy and none of the four static plans recovered the file: every retrieval read the whole 72k-read stream and reported failure,
-with no wrong output.  Like the two-failure case, this is a boundary of the archive design (inner
-code strength, redundancy and the 60-reads-per-strand stream) under that synthesis model, not a
-policy result; we did not test deeper streams or a stronger inner code.
+with no wrong output.  These two zero-success results have different standing and we state them separately.  For
+\emph{two failed containers} the boundary is arithmetic: with $(32,48)$ over six containers each
+container holds exactly 8 of the 48 fragments of every stripe, so losing two leaves exactly $K{=}32$
+fragments and no margin for a single further strand loss; no policy and no read budget can recover the
+file, and this follows from the code and placement rather than from our experiments.  For the
+\emph{photolithographic} scenario the statement is empirical and narrower: under that synthesis model,
+with this code, this decoder, a 24-read consensus cap and a 72k-read stream, none of the eight policies
+and none of the four static plans recovered the file in any of the retrievals we ran, and no wrong file
+was returned.  We did not test deeper streams, a stronger inner code, a larger consensus cap or a lower
+code rate, so this is a boundary of \emph{our} archive design under that synthesis model, not a claim
+that photolithographic DNA archives are unrecoverable.
 
 \subsection{What the gain after a container failure buys}\label{sec:res-uncond}
 \input{tables/r4_uncond}
@@ -751,21 +786,41 @@ one archive design.  We prove no optimality or regret result.
 %=====================================================================
 \section{Reproducibility and Availability}\label{sec:repro}
 %=====================================================================
-All code, configuration and result files are in the accompanying repository and artifact archive.
-The digital-twin experiments are driven by \texttt{experiments/dt\_experiments.py}
-(sub-commands \texttt{gen}, \texttt{run}, \texttt{static}, \texttt{calib}, \texttt{calib\_eval},
-\texttt{forecast}, \texttt{posthoc\_rho0}); the replay by
-\texttt{experiments/paper\_experiments.py replay\_v3}; statistics by
-\texttt{dt\_analysis.py}; tables and figures by \texttt{make\_tables.py} and
-\texttt{make\_dt\_figures.py}, which read only committed result files (no number in the tables is
-entered by hand).  Every random draw is seeded by CRC-32 of a string naming the scenario,
-replicate, container, read order and policy, so results do not depend on process scheduling or
-worker count.  Re-executing 24 randomly sampled baseline retrievals in a fresh single-process run, in reverse
-order, reproduced every recorded field (reads, per-container reads, rounds, decode attempts,
-status) exactly (\texttt{rerun\_check.py}).  The protocol (\texttt{dt\_protocol.yaml}) with its deviation log, the
-DT4DDS version (1.1.0), Python and package versions are in the artifact.  The public data are ENA
-PRJEB65931 (Illumina) and the DNAformer nanopore reads.  Table~\ref{tab:evidence} maps each claim to
-its experiment and result file.
+\textbf{Artifact.}  Code, configuration, every result file and the scripts that build every table and
+figure are in the public repository \url{https://github.com/SaiMouli3/Dev} (directory
+\texttt{d3ra-dna}), at the commit recorded in \texttt{research\_paper/final/COMMIT.txt} of that
+revision.  The environment is Python 3.13.18 with NumPy 2.5.3, SciPy 1.18.1, pandas 3.0.5 and
+DT4DDS~1.1.0 (pinned in \texttt{requirements.txt}); the public data are ENA
+PRJEB65931~\cite{gimpel2023prjeb65931} (Illumina) and the DNAformer nanopore
+reads~\cite{technion2025dnaformerreads,barlev2024binned}, both fetched by the scripts in
+\texttt{experiments/}.  \texttt{research\_paper/audit/} holds the claim-to-number recomputation and its
+output.
+
+\textbf{What reproduces what.}  The digital-twin experiments are driven by
+\texttt{experiments/dt\_experiments.py} (sub-commands \texttt{gen}, \texttt{run}, \texttt{runx},
+\texttt{static}, \texttt{calib}, \texttt{calib\_eval}, \texttt{forecast}, \texttt{posthoc\_rho0}), the
+replay by \texttt{experiments/paper\_experiments.py} (\texttt{replay\_v3}, \texttt{replay\_calcost});
+statistics by \texttt{dt\_analysis.py} and \texttt{r4\_analysis.py}; tables and figures by
+\texttt{make\_tables.py}, \texttt{make\_r4\_tables.py} and \texttt{make\_dt\_figures.py}, which read
+only committed result files, so no number in any table or figure is typed in by hand.
+Table~\ref{tab:evidence} maps each claim to its command and result file, and
+\texttt{dt\_protocol.yaml} and \texttt{dt\_protocol\_rev4.yaml} record the frozen protocols and every
+deviation.
+
+\textbf{Determinism, and the scope of our re-run checks.}  Every random draw is seeded by CRC-32 of a
+string naming the scenario, replicate, container, read order and policy, so results do not depend on
+process scheduling or worker count.  We verify this at three scales and state what each covers.
+(i) \emph{Field level}: 24 randomly sampled baseline retrievals, re-executed in a fresh single-process
+run in reverse order, reproduced every recorded field (status, reads, per-container reads, rounds,
+decode attempts, false accepts, verification rounds) exactly.  (ii) \emph{Condition level}: the
+Genscript replay conditions, re-run in separate parallel processes after a code fix, reproduced the
+values of the original sequential run exactly.  (iii) \emph{Scenario level}: the primary baseline
+scenario and its static family were regenerated from the final commit and every summary number in this
+paper recomputed from those files.  We did \emph{not} re-execute the whole paper: the severity sweep,
+the failure scenarios, the alternative geometries, the photolithographic scenario and the two replays
+are reproduced from their committed result files and seeds.  A full re-execution takes several
+CPU-days, dominated by DT4DDS synthesis and by the information-greedy policy, and the artifact
+contains the commands to do it.
 \input{tables/evidence}
 
 %=====================================================================

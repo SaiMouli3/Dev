@@ -83,8 +83,8 @@ X.~Kong, O.~Elishco, C.~Wang, and T.~M. Duman, ``The coverage depth problem in
 
 \bibitem{levy2026expected}
 A.~Levy, R.~Con, E.~Yaakobi, and H.~M. Kiah, ``Expected recovery time in
-  {DNA}-based distributed storage systems,'' arXiv:2602.07601 [cs.IT], 2026,
-  preprint.
+  {DNA}-based distributed storage systems,'' in \emph{Proc. IEEE International
+  Symposium on Information Theory (ISIT)}, Jun. 2026, pp. 1--6.
 
 \bibitem{lopez2019dna}
 R.~Lopez, Y.-J. Chen, S.~Dumas~Ang, S.~Yekhanin, K.~Makarychev, M.~Z. Racz,
@@ -148,6 +148,11 @@ R.~Cao and X.~Chen, ``Optimizing sequencing coverage depth in {DNA} storage:
   Insights from {DNA} storage data,'' in \emph{Proc. IEEE International
   Symposium on Information Theory (ISIT)}.\hskip 1em plus 0.5em minus
   0.4em\relax IEEE, 2025.
+
+\bibitem{bertuzzo2025coverage}
+M.~Bertuzzo, A.~Ravagnani, and E.~Yaakobi, ``The {DNA} coverage depth problem:
+  Duality, weight distributions, and applications,'' arXiv:2603.06489 [cs.IT],
+  2026, preprint.
 
 \bibitem{kashanna2026reliability}
 S.~{Kas Hanna}, ``On the reliability of information retrieval from {MDS} coded

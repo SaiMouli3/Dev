@@ -429,12 +429,48 @@ generic prior; the optional ``calibrated'' belief now uses only the calibration 
 %=====================================================================
 \subsection{Safety of verified stopping}
 \input{tables/safety}
+Table~\ref{tab:safety} reports the safety record and, next to it, the dependence structure behind it.
+Across \SafeN{} end-to-end retrievals no output file differed from the stored file in a single byte, and
+in \SafeAtt{} fragment decode attempts no wrong payload passed inner RS decoding, the CRC-16 and the
+address check.  These retrievals are \emph{not} independent experiments: they come from \SafeUnits{}
+distinct synthesis replicates, about 83 retrievals per replicate (10 read orders $\times$ several
+policies and models on the same simulated DNA), and the decode attempts inside one retrieval share the
+same reads.  A Clopper--Pearson bound that treats 23{,}160 retrievals as Bernoulli trials would
+therefore overstate what has been shown.  We report both ends: per retrieval the upper limit is
+\SafeWUB{}, and treating one synthesis replicate as one unit --- the conservative reading, which
+discards the information in repeated read orders --- it is \SafeWUBc{}.  The false-accept limits are
+\SafeFUB{} per attempt and \SafeFUBc{} per synthesis replicate.  The honest summary is therefore
+qualitative as well as numerical: in every configuration we ran, verification-gated stopping never
+returned a wrong file, and the bound that does not assume independence is of order $10^{-2}$ per
+synthesis, not $10^{-4}$.  A false accept would need a wrong payload to pass a 4-symbol RS code, a
+CRC-16 and an address byte, then the stripe CRC-32 and the file SHA-256; the cryptographic hash is the
+backstop, and no experiment of this size can bound its failure rate.
 Table~\ref{tab:safety} pools every digital-twin retrieval run for this paper.  No retrieval
 returned a file that differed from the stored one, and no wrong payload passed the inner
 RS + CRC-16 + address checks.  The bounds are those of zero events in the given number of
 trials; they are statements about this archive geometry, these error rates and this code
 stack, not about DNA storage in general.  Unsuccessful retrievals (one or two failed
 containers) ended by exhausting the streams and reported failure instead of returning a file.
+
+\subsection{Reads consumed versus capacity reserved}\label{sec:res-actual}
+\input{tables/r4_actual}
+The largest effect in this paper is the difference between reads that are \emph{consumed} and capacity
+that must be \emph{reserved}, and it is easy to misattribute, so we separate it first
+(Table~\ref{tab:actual}).  In the baseline digital twin, round-robin with verified stopping consumed
+3.49k reads on average (95\% CI 3.37--3.60k), while the same uniform read proportions without stopping
+must reserve 5.15k to succeed on 99\% of retrievals, and the best static plan in the family must
+reserve 4.80k.  Stopping converts a 4.80--5.15k reservation into a 3.49k average bill: a 27--32\%
+reduction, depending on which plan the reservation is taken from, and it needs no model of the
+containers.
+
+Allocation is a separate and much smaller effect.  When the static plans run \emph{with} the same
+verified stopping --- the only fair policy-versus-policy comparison --- the hindsight-tuned proportions
+$\alpha{=}1$ consume 3.34k reads, 4.2\% \emph{less} than round-robin's 3.49k, and the model-based rules
+consume 3.75--18.87k, 7--441\% \emph{more}.  In the baseline the ranking is therefore: a hindsight
+static plan with stopping is best by a few percent, round-robin with stopping next, and every online
+rule we tried worse.  Our earlier revision quoted the 27\% figure in a way that could be read as an
+allocation result; it is not one, and the comparison it does make (consumed versus reserved) is the one
+that carries the recommendation of Section~\ref{sec:disc}.
 
 \subsection{Policy comparison on the digital twin}
 \input{tables/dt_main}
@@ -461,6 +497,21 @@ policy and none of the four static plans recovered the file: every retrieval rea
 with no wrong output.  Like the two-failure case, this is a boundary of the archive design (inner
 code strength, redundancy and the 60-reads-per-strand stream) under that synthesis model, not a
 policy result; we did not test deeper streams or a stronger inner code.
+
+\subsection{What the gain after a container failure buys}\label{sec:res-uncond}
+\input{tables/r4_uncond}
+The one setting in which the online rules won is a container that failed outright, and that result
+needs its denominator stated (Table~\ref{tab:uncond}).  With one failed container 34\% of retrievals
+succeeded, and \emph{the success probability was identical for every policy and every static plan}:
+whether the file can be recovered at all is decided by which fragments survive in the five remaining
+containers, not by the reading order.  Among the 102 retrievals that succeeded, UCB used 15.49k reads
+against round-robin's 20.31k, 24\% fewer.  Counting all 300 attempts, including the 66\% that read the
+whole 72k-read stream and failed, UCB used 52.79k against round-robin's 54.43k, a 3\% reduction.  Both
+numbers are correct and they answer different questions: a user who retries until success pays the
+conditional number, a user who pays per attempt pays the unconditional one.  We therefore state the
+result as: \emph{after an outright failure, posterior rules cut the cost of the retrievals that succeed
+by up to 24\%, without improving the probability of success, and with a 3\% effect on the cost per
+attempt.}
 
 \subsection{Why adaptive allocation loses under dropout}\label{sec:res-misspec}
 The controller models a container by one efficiency multiplier $\theta_j$ that scales every
@@ -515,42 +566,69 @@ multiplier is a fair description of the worst container.
 \label{fig:sweep}
 \end{figure}
 
-\subsection{Tail and static plans}
-No allocation rule lowers the 0.99-quantile.  In the baseline, round-robin with verified
-stopping has q99 5.15k; the adaptive rules have 6.45k (Thompson) to 9.6k (pivotal) and the
-tail-aware rule, designed for the bottleneck stripes, 7.15k.  At one copy per strand in the
-sweep, q99 is 5.65k for round-robin and 10.1k for coverage-greedy.  The tail is therefore not
-fixed, and we reframe the claim: the benefit of this paper's machinery is a lower \emph{mean}
-cost, which matters to a pay-per-read user.  That benefit comes from verified stopping, not
-from allocation.  The static plans have to reserve their q99 on every retrieval: 5.15k for
-uniform fixed depth and 4.80k for the best hindsight-tuned proportions ($\alpha{=}1$), whose
-weights were measured on the evaluated syntheses and are therefore an optimistic baseline.
-Round-robin with verified stopping costs 3.49k on average, 27\% less than the best static
-reservation, while needing no knowledge of the containers.  A user who must reserve capacity
-gains nothing from stopping early unless unused capacity is refunded; for that user the q99 of
-round-robin (5.15k) equals the uniform static budget, and the tuned static plan is the
-better choice.  In the homogeneous control the static plans reserve 2.85k against a round-robin mean of
-2.26k ($-$21\%).  With failed containers no static plan can be sized: it either reads the whole
-stream or fails, and its q99 is the full 72k reads.
+\subsection{Tail metrics and the static family}\label{sec:res-tail}
+\input{tables/r4_tails}
+No allocation rule lowered the 0.99-quantile, but the precision of that statement needs care.  A q99
+estimated from 300 retrievals is driven by its three most expensive observations, and those sit in a few
+synthesis replicates, so we report cluster-bootstrap intervals over syntheses
+(Table~\ref{tab:r4tails}).  In the frozen design round-robin has q99 5.15k (95\% CI 4.75--5.65k),
+Thompson sampling 6.45k (5.30--7.16k), tail-aware 7.15k (5.75--7.76k), UCB 8.15k (6.25--8.60k),
+coverage-greedy 9.05k (5.80--9.50k) and pivotal 9.60k (9.10--9.91k).  The intervals of coverage-greedy
+and Thompson sampling overlap round-robin's, so for those two rules the direction is clear from the
+means but the q99 gap is not resolved by this design; pivotal, learn-then-commit and info-greedy are
+separated from round-robin at q99 as well as in the mean.  The tail-aware rule, built to attack the
+bottleneck stripes, is worse than round-robin at q99 in every design we ran: the heuristic did not
+work.  We therefore make only the claim the evidence supports --- \emph{no rule we tested lowered q99,
+and none of this machinery should be sold as tail-risk reduction} --- and we report q95 beside q99
+because it is the better-determined tail statistic at this sample size.
 
-\subsection{Calibration and completion forecast}\label{sec:res-calib}
-On the ten selection replicates, 90\% credible-interval coverage of $\theta^\ast$ rose with
-$\rho_U$ from 0.45 (binomial) through 0.63, 0.73 and 0.80 to 0.87 at $\rho_U{=}0.1$, the edge of the
-grid; we kept the pre-specified grid and selected 0.1.  On the 30 held-out replicates the
-selected value gave the same overall coverage, 0.87 (0.84 at the earlier and 0.89 at the later
-read count), and 1.00 for five of the six containers but 0.20 for the near-dead one, whose
-target the generic model cannot fit (Fig.~\ref{fig:calib}).  With the binomial likelihood
-held-out coverage is 0.54.
+The static family deserves the same caution.  Its members are $w_j\propto e_j^{\alpha}$, and the frozen
+protocol tested only $\alpha\in\{0,0.5,1,2\}$, so ``best static plan'' means the best of those four,
+not the optimal fixed allocation.  Revision~4 adds $\alpha\in\{0.25,0.75,1.25,1.5,3\}$ on the same
+replicates so that the family is sampled finely around its optimum, and, because the hindsight weights
+are measured on the evaluated syntheses and are therefore optimistic, a \emph{calibration-estimated}
+static plan whose $e_j$ come from the ten disjoint calibration replicates and which sees no evaluation
+data at all (Table~\ref{tab:actual}).  A user who must reserve capacity gains nothing from stopping
+unless unused capacity is refunded; for that user the relevant comparison is between reservations, and
+a tuned static plan is the better choice.  In the homogeneous control the static plans must reserve
+2.85k against a round-robin consumed mean of 2.26k.  With a failed container no static plan can be
+sized at all: it either reads the whole stream or fails, so its reservation is the full 72k reads.
 
-The completion forecast was evaluated on 1{,}127 checkpoints from 300 baseline retrievals with
-a budget of 3.75k reads (the median coverage-greedy cost); 52\% of retrievals finished within
-it.  Both forecasts were over-confident (mean forecast 0.86 vs.\ 0.52 observed at 30\% of the
-budget).  The posterior-simulation forecast was better than the analytic one on every metric
-(ECE 0.29 vs.\ 0.34; Brier 0.30, 95\% CI 0.27--0.34, vs.\ 0.34, 0.29--0.38; AUC 0.73, 0.69--0.78,
-vs.\ 0.69, 0.65--0.73; cluster bootstrap), but both Brier scores are worse than the 0.25 of a
-constant forecast at the observed base rate.  The forecasts rank retrievals
-usefully late in a retrieval (AUC 0.82 at 85\% of the budget) but should not be used as
-probabilities.  Futility stopping, which would rely on them, stays disabled.
+\subsection{Calibration of the posterior, and a negative forecast result}\label{sec:res-calib}
+\input{tables/r4_calib}
+Two calibration questions must be kept apart: whether the posterior over $\theta_j$ is calibrated, and
+whether the completion forecast is.  Neither is, and the first failure is specific.
+
+\emph{Posterior intervals.}  On the ten selection replicates, 90\% credible-interval coverage of
+$\theta^\ast$ rose with $\rho_U$ from 0.45 (binomial) through 0.63, 0.73 and 0.80 to 0.87 at
+$\rho_U{=}0.1$, the edge of the pre-specified grid, which we kept and selected; on the 30 held-out
+replicates it gave 0.87 overall (0.84 at the earlier and 0.89 at the later read count), 1.00 for five
+containers and 0.20 for the near-dead one.  That selection has two defects: it used prior sd $s{=}1$
+while every policy run uses $s{=}0.5$, and the selected value sat at the grid boundary.  Revision~4
+repeats it with $s{=}0.5$ and an extended grid $\{0,0.003,0.01,0.03,0.1,0.2,0.3,0.5\}$
+(Table~\ref{tab:r4calib}), and the outcome corrects the original selection in two ways.  First, under
+the prior actually used the best value is $\rho_U{=}0.03$ (selection coverage 0.81, held out 0.83)
+rather than 0.1 (0.81 and 0.82), so the frozen default is not the best member of its own family,
+although the difference is within noise.  Second, extending the grid does not rescue calibration:
+coverage flattens near 0.80 for $\rho_U\in[0.03,0.3]$ and collapses to 0.60 at 0.5, so no value in this
+likelihood family reaches the 0.90 target.  The reason is visible per container: at every $\rho_U$ the
+five healthy containers are covered 0.92--1.00 of the time and the near-dead container 0.00--0.03 of the
+time.  Widening a likelihood cannot fix a container whose behaviour the model cannot express, which is
+the same misspecification that makes allocation lose (Section~\ref{sec:res-misspec}).  We therefore do
+not describe this controller as calibrated: its posterior is reliable for healthy containers and wrong
+for near-dead ones, which is precisely the case that matters.
+
+\emph{Completion forecast (negative, secondary).}  The forecast carries no claim in this paper and no
+policy depends on it; we report it because it was pre-specified and because its failure is informative.
+On 1{,}127 checkpoints from 300 baseline retrievals with a budget of 3.75k reads (the median
+coverage-greedy cost), of which 52\% finished within the budget, both forecasts were over-confident
+(mean forecast 0.86 against 0.52 observed at 30\% of the budget).  The posterior-simulation forecast
+beat the analytic one on every metric (ECE 0.29 vs.\ 0.34; Brier 0.30, 95\% CI 0.27--0.34, vs.\ 0.34,
+0.29--0.38; AUC 0.73, 0.69--0.78, vs.\ 0.69, 0.65--0.73), yet both Brier scores are worse than the 0.25
+of a constant forecast at the observed base rate, so neither beats climatology.  They rank retrievals
+usefully only late in a retrieval (AUC 0.82 at 85\% of the budget).  Futility stopping, which would
+rely on them, is disabled in every run, and we make no claim that these numbers are usable
+probabilities.
 \begin{figure*}[t]
 \centering
 \includegraphics[width=0.66\textwidth]{fig_dt_calibration.pdf}\hfill
@@ -592,7 +670,7 @@ consensus success on held-out strands of the other with mean absolute error 0.08
 for an i.i.d.\ model.  This motivates over-dispersed models but does not enter the controller.
 
 %=====================================================================
-\section{Discussion}
+\section{Discussion}\label{sec:disc}
 %=====================================================================
 \textbf{What helps, and whom.}  The robust gain in our experiments is verified stopping:
 reading until every stripe, its CRC-32 and the file hash verify, and then stopping.  It needs no

@@ -1,0 +1,57 @@
+\begin{table}[!t]
+\centering
+\caption{Ablation of the three modelling choices (digital twin, paired against round-robin on jointly successful retrievals, cluster-bootstrap 95\% intervals).  $\theta$: one efficiency multiplier per container (frozen model); $\theta{+}d$: efficiency and a dropout fraction.  Negative is cheaper than round-robin.  ``Share'' is the fraction of reads given to the near-dead container (baseline) or to the failed one (fail1).}
+\label{tab:r4abl}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}llllrrr@{}}
+\toprule
+Scen. & Model & $\rho_U$ & $s$ & Policy & vs.\ RR [95\% CI] & Share \\
+\midrule
+baseline & theta & 0.1 & 0.5 & Coverage-greedy & $+15$ [$+10$, $+21$] & 0.27 \\
+ & theta & 0.1 & 0.5 & Info-greedy & $+441$ [$+409$, $+471$] & 0.66 \\
+ & theta & 0.1 & 0.5 & Learn-then-commit & $+45$ [$+40$, $+49$] & 0.41 \\
+ & theta & 0.1 & 0.5 & Pivotal & $+49$ [$+39$, $+60$] & 0.40 \\
+ & theta & 0.1 & 0.5 & Round-robin + verified stop & $+0$ [$+0$, $+0$] & 0.16 \\
+ & theta & 0.1 & 0.5 & Tail-aware & $+13$ [$+9$, $+18$] & 0.25 \\
+ & theta & 0.1 & 0.5 & Thompson sampling & $+7$ [$+4$, $+11$] & 0.23 \\
+ & theta & 0.1 & 0.5 & UCB & $+15$ [$+11$, $+20$] & 0.27 \\
+ & theta & 0.0 & 0.5 & Coverage-greedy & $-4$ [$-6$, $-3$] & 0.15 \\
+ & theta & 0.0 & 0.5 & Pivotal & $+4$ [$+2$, $+7$] & 0.21 \\
+ & theta & 0.0 & 0.5 & Tail-aware & $-3$ [$-5$, $-1$] & 0.15 \\
+ & theta & 0.0 & 0.5 & Thompson sampling & $-4$ [$-5$, $-2$] & 0.16 \\
+\midrule
+fail1 & theta & 0.1 & 0.5 & Coverage-greedy & $-17$ [$-23$, $-9$] & 0.12 \\
+ & theta & 0.1 & 0.5 & Info-greedy & $+81$ [$+51$, $+126$] & 0.12 \\
+ & theta & 0.1 & 0.5 & Learn-then-commit & $+8$ [$+3$, $+14$] & 0.19 \\
+ & theta & 0.1 & 0.5 & Pivotal & $-15$ [$-21$, $-6$] & 0.12 \\
+ & theta & 0.1 & 0.5 & Round-robin + verified stop & $+0$ [$+0$, $+0$] & 0.17 \\
+ & theta & 0.1 & 0.5 & Tail-aware & $+2$ [$-7$, $+14$] & 0.11 \\
+ & theta & 0.1 & 0.5 & Thompson sampling & $-9$ [$-15$, $-2$] & 0.12 \\
+ & theta & 0.1 & 0.5 & UCB & $-24$ [$-28$, $-17$] & 0.12 \\
+ & theta & 0.0 & 0.5 & Coverage-greedy & $-15$ [$-20$, $-10$] & 0.11 \\
+ & theta & 0.0 & 0.5 & Pivotal & $-8$ [$-14$, $-2$] & 0.11 \\
+ & theta & 0.0 & 0.5 & Tail-aware & $-25$ [$-30$, $-21$] & 0.11 \\
+ & theta & 0.0 & 0.5 & Thompson sampling & $-20$ [$-23$, $-17$] & 0.11 \\
+\midrule
+homog & theta & 0.1 & 0.5 & Coverage-greedy & $-3$ [$-4$, $-2$] & 0.16 \\
+ & theta & 0.1 & 0.5 & Info-greedy & $-0$ [$-1$, $+0$] & 0.17 \\
+ & theta & 0.1 & 0.5 & Learn-then-commit & $-3$ [$-4$, $-2$] & 0.16 \\
+ & theta & 0.1 & 0.5 & Pivotal & $-4$ [$-4$, $-3$] & 0.16 \\
+ & theta & 0.1 & 0.5 & Round-robin + verified stop & $+0$ [$+0$, $+0$] & 0.16 \\
+ & theta & 0.1 & 0.5 & Tail-aware & $-2$ [$-4$, $-1$] & 0.16 \\
+ & theta & 0.1 & 0.5 & Thompson sampling & $-3$ [$-4$, $-2$] & 0.17 \\
+ & theta & 0.1 & 0.5 & UCB & $-4$ [$-5$, $-3$] & 0.16 \\
+\midrule
+sweep_cov3 & theta & 0.1 & 0.5 & Coverage-greedy & $+15$ [$+12$, $+19$] & 0.26 \\
+ & theta & 0.1 & 0.5 & Round-robin + verified stop & $+0$ [$+0$, $+0$] & 0.16 \\
+ & theta & 0.1 & 0.5 & Tail-aware & $+15$ [$+12$, $+19$] & 0.25 \\
+ & theta & 0.1 & 0.5 & Thompson sampling & $+7$ [$+6$, $+9$] & 0.23 \\
+\midrule
+sweep_cov1 & theta & 0.1 & 0.5 & Coverage-greedy & $+13$ [$+9$, $+18$] & 0.25 \\
+ & theta & 0.1 & 0.5 & Round-robin + verified stop & $+0$ [$+0$, $+0$] & 0.16 \\
+ & theta & 0.1 & 0.5 & Tail-aware & $+7$ [$+4$, $+12$] & 0.21 \\
+ & theta & 0.1 & 0.5 & Thompson sampling & $+8$ [$+6$, $+11$] & 0.24 \\
+\bottomrule
+\end{tabular}
+\end{table}

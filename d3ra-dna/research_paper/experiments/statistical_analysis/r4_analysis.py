@@ -324,8 +324,8 @@ PRICES = {  # per read, per sequencing round (batch), per container library prep
 
 def cost_model():
     rows = []
-    for f in ("dt_baseline.csv", "dt_baseline_static.csv", "dt_baseline_r4drop.csv", "dt_fail1.csv",
-              "dt_baseline_cleanrepro.csv"):
+    for f in ("dt_baseline_r4ext.csv", "dt_baseline_static_r4ext.csv", "dt_baseline_r4ext_drop.csv",
+              "dt_baseline.csv", "dt_baseline_static.csv", "dt_baseline_r4drop.csv", "dt_fail1.csv"):
         d = load(f)
         if d is None:
             continue

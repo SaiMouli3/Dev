@@ -1,18 +1,25 @@
 \begin{table}[!t]
 \centering
-\caption{Safety of verification-gated stopping over every digital-twin retrieval run for this paper (all scenarios, policies, static plans and ablations; the forecast-evaluation runs are excluded).  Upper limits of exact two-sided 95\% Clopper--Pearson intervals.}
+\caption{Safety of verification-gated stopping over every digital-twin retrieval of this paper, with the dependence between retrievals made explicit.  Retrievals that share a synthesis replicate are not independent, so we also report the bound that treats one synthesis as one unit.  Upper limits of exact two-sided 95\% Clopper--Pearson intervals.}
 \label{tab:safety}
-\footnotesize
+\scriptsize
 \begin{tabular}{@{}lr@{}}
 \toprule
-End-to-end retrievals & 23{,}160 \\
-\quad output byte-identical to stored file & 16{,}032 \\
-\quad reported as not recovered (no output) & 7{,}128 \\
-\quad wrong output (file returned, not identical) & 0 \\
-Wrong-output rate, 95\% upper bound & 1.6e-04 \\
+Quantity & Value \\
+\midrule
+Retrievals (all scenarios{,} policies{,} geometries) & 23{,}160 \\
+\quad wrong output files & 0 \\
+Independent synthesis replicates & 280 \\
+\quad retrievals per replicate (mean) & 83 \\
+\quad synthesis replicates with a wrong output & 0 \\
+Wrong-output rate per retrieval, 95\% upper limit & $1.6\times10^{-4}$ \\
+\quad per synthesis replicate (conservative) & $1.3\times10^{-2}$ \\
+\midrule
 Fragment decode attempts & 30{,}164{,}044 \\
 \quad false accepts (wrong payload passed inner checks) & 0 \\
-False-accept rate per attempt, 95\% upper bound & 1.2e-07 \\
+\quad attempts per synthesis replicate (mean) & 107{,}729 \\
+False-accept rate per attempt, 95\% upper limit & $1.2\times10^{-7}$ \\
+\quad per synthesis replicate (conservative) & $1.3\times10^{-2}$ \\
 \bottomrule
 \end{tabular}
 \end{table}

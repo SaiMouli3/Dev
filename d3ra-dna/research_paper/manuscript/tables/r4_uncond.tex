@@ -1,0 +1,24 @@
+\begin{table}[!t]
+\centering
+\caption{One failed container: cost conditional on success and over all attempts (300 retrievals per row, 72k-read stream).  Every policy has the same success probability, so the conditional saving does not buy a better chance of recovery, and failures dominate the unconditional mean.  Thousands of reads.}
+\label{tab:uncond}
+\scriptsize
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Allocation & $p_{\text{ok}}$ & $\bar r_{\text{ok}}$ & vs.\ RR & $\bar r_{\text{all}}$ \\
+\midrule
+Round-robin + verified stop & 0.34 & 20.31 & -- & 54.42 \\
+UCB & 0.34 & 15.49 & $-24$ & 52.79 \\
+Static $\alpha{=}1$ & 0.34 & 15.70 & $-23$ & 52.86 \\
+Static $\alpha{=}0.5$ & 0.34 & 16.10 & $-21$ & 52.99 \\
+Static $\alpha{=}2$ & 0.34 & 16.25 & $-20$ & 53.05 \\
+Coverage-greedy & 0.34 & 16.86 & $-17$ & 53.25 \\
+Static $\alpha{=}0$ (fixed depth) & 0.34 & 16.91 & $-17$ & 53.27 \\
+Pivotal & 0.34 & 17.30 & $-15$ & 53.40 \\
+Thompson sampling & 0.34 & 18.43 & $-9$ & 53.79 \\
+Tail-aware & 0.34 & 20.63 & $+2$ & 54.53 \\
+Learn-then-commit & 0.34 & 21.91 & $+8$ & 54.97 \\
+Info-greedy & 0.34 & 36.68 & $+81$ & 59.99 \\
+\bottomrule
+\end{tabular}
+\end{table}

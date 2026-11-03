@@ -1,0 +1,25 @@
+\begin{table}[!t]
+\centering
+\caption{Reads are not the only cost.  Three charging models applied to the same baseline retrievals: reads only; a multiplexed run (50 read-equivalents per batch of 50 reads, 500 per container library); and a separate sequencing run per batch (2{,}000 per batch).  Costs in read-equivalents (thousands).  Switching containers every batch is free in the first model and dominant in the third.}
+\label{tab:r4cost}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+Allocation & Reads & Batches & Switches & reads only & multiplexed run  & separate run per batch \\
+\midrule
+Static $\alpha{=}1$ & 3.34 & 67 & -- & 3.34 & 9.69 & 140.07 \\
+Static $\alpha{=}2$ & 3.36 & 67 & -- & 3.36 & 9.72 & 140.73 \\
+Static $\alpha{=}0.5$ & 3.40 & 68 & -- & 3.40 & 9.80 & 142.48 \\
+Round-robin + verified stop & 3.49 & 70 & -- & 3.49 & 9.98 & 146.10 \\
+Static $\alpha{=}0$ (fixed depth) & 3.49 & 70 & -- & 3.49 & 9.98 & 146.10 \\
+Thompson sampling & 3.75 & 75 & -- & 3.75 & 10.50 & 156.71 \\
+Tail-aware & 3.94 & 79 & -- & 3.94 & 10.88 & 164.49 \\
+Coverage-greedy & 4.02 & 80 & -- & 4.02 & 11.04 & 167.72 \\
+UCB & 4.02 & 80 & -- & 4.02 & 11.05 & 167.98 \\
+Learn-then-commit & 5.05 & 101 & -- & 5.05 & 13.10 & 209.95 \\
+Pivotal & 5.21 & 104 & -- & 5.21 & 13.42 & 216.58 \\
+Info-greedy & 18.87 & 377 & -- & 18.87 & 40.73 & 776.54 \\
+\bottomrule
+\end{tabular}
+\end{table}

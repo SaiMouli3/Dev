@@ -98,6 +98,20 @@ def analyse(scen):
             row[f"q99diff_vs_{key}"] = q99(x) - q99(R.ravel())
             lo, hi = boot(lambda a, r: q99(a) - q99(r), [Mx, R], rng)
             row[f"q99diff_vs_{key}_lo"], row[f"q99diff_vs_{key}_hi"] = lo, hi
+        # paired vs round-robin + verified stop, on cells where both recovered the file
+        # (success is identical across policies in every scenario we ran; cost only compared where both paid to success)
+        if not is_static and pol != "round_robin_stop" and "round_robin_stop" in mats:
+            R = mats["round_robin_stop"]
+            both = np.isfinite(Mx) & np.isfinite(R)
+            row["n_joint_success"] = int(both.sum())
+            if both.any():
+                def st_rr(a, r):
+                    m = np.isfinite(a) & np.isfinite(r)
+                    return float(np.mean(a[m]) / np.mean(r[m]) - 1) if m.any() else np.nan
+                row["rel_vs_rr"] = st_rr(Mx.ravel(), R.ravel())
+                lo, hi = np.nanpercentile([st_rr(*(m[ix].ravel() for m in (Mx, R)))
+                                           for ix in (rng.integers(0, Mx.shape[0], Mx.shape[0]) for _ in range(B))], [2.5, 97.5])
+                row["rel_vs_rr_lo"], row["rel_vs_rr_hi"] = lo, hi
         rows.append(row)
     return rows
 
@@ -111,5 +125,6 @@ if __name__ == "__main__":
     out = pd.DataFrame(rows)
     out.to_csv(RES / "dt_summary.csv", index=False)
     pd.set_option("display.width", 250)
-    print(out[["scenario", "policy", "success", "wrong_outputs", "mean_reads", "q99_reads",
-               "diff_vs_beststatic", "diff_vs_beststatic_lo", "diff_vs_beststatic_hi"]].round(3).to_string())
+    cols = ["scenario", "policy", "success", "wrong_outputs", "mean_reads", "q99_reads",
+            "diff_vs_beststatic", "rel_vs_rr", "rel_vs_rr_lo", "rel_vs_rr_hi"]
+    print(out[[c for c in cols if c in out]].round(3).to_string())

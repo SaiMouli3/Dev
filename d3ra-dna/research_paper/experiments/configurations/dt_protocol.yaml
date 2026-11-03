@@ -72,3 +72,10 @@ deviations:
   - when: rho_U selection
     what: none -- rule applied as frozen; selected rho_U = 0.1 is the largest grid value and its calibration
          coverage (0.87) is still below 0.90; reported as a limitation, grid not extended post hoc.
+  - when: secondary replay (Twist), discovered at analysis time
+    what: the first Twist replay_v3 run imported the controller before the rho_U default was changed and therefore
+         ran with rho_U = 0 (binomial); its file is kept as results/replay_v3_rho0.csv (labelled ablation) and the
+         Twist replay is re-run with the frozen default rho_U = 0.1 (results/replay_v3.csv).
+  - when: digital-twin runs
+    what: one cached replicate (homog rep 28) was truncated by an interrupted generation job; it was regenerated from
+         its fixed seed (writes are now atomic) and the homog scenario re-run in full.

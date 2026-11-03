@@ -134,8 +134,10 @@ def gen_rep(args):
         seqs = [lib.fragments[i].strand for i in idx]
         streams.append(simulate_container(seqs, conds[j], READS_PER_STRAND * len(seqs), _rep_seed(scen, rep, j)))
     out.parent.mkdir(parents=True, exist_ok=True)
-    with gzip.open(out, "wb") as fh:
+    tmp = out.with_suffix(".tmp")
+    with gzip.open(tmp, "wb") as fh:   # write-then-rename: an interrupted run never leaves a truncated cache
         pickle.dump(streams, fh)
+    tmp.replace(out)
     return str(out), "new"
 
 

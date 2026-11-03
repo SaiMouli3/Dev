@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.11.2)  3 NOV 2026 10:57
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.11.2)  3 NOV 2026 10:59
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -750,7 +750,10 @@ Package pdftex.def Info: figures/fig_forecast.pdf  used on input line 714.
 LaTeX Font Warning: Font shape `OT1/ptm/m/scit' undefined
 (Font)              using `OT1/ptm/m/it' instead on input line 3.
 
-) [12] [13 <./figures/fig_dt_calibration.pdf> <./figures/fig_forecast.pdf>]
+) [12]
+Underfull \vbox (badness 1297) has occurred while \output is active []
+
+ [13 <./figures/fig_dt_calibration.pdf> <./figures/fig_forecast.pdf>]
 (./tables/limitations.tex
 Underfull \hbox (badness 7907) in paragraph at lines 11--11
 []|\OT1/ptm/m/n/7 Computational only (dig-i-tal
@@ -805,94 +808,94 @@ Underfull \hbox (badness 10000) in paragraph at lines 25--25
 )
 
 LaTeX Warning: Citation `barlev2024binned' on page 14 undefined on input line 8
-44.
+55.
 
 
-Underfull \hbox (badness 5359) in paragraph at lines 838--847
+Underfull \hbox (badness 5359) in paragraph at lines 849--858
 []\OT1/ptm/b/n/10 Artifact. \OT1/ptm/m/n/10 Code, con-fig-u-ra-tion, ev-ery re-
 sult file and
  []
 
 
-Underfull \hbox (badness 4429) in paragraph at lines 838--847
+Underfull \hbox (badness 4429) in paragraph at lines 849--858
 \OT1/ptm/m/n/10 the scripts that build ev-ery ta-ble and fig-ure are in
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 838--847
+Underfull \hbox (badness 10000) in paragraph at lines 849--858
 \OT1/ptm/m/n/10 the pub-lic repos-i-tory $https : / / github . com / SaiMouli3 
 / Dev$
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 838--847
+Underfull \hbox (badness 10000) in paragraph at lines 849--858
 \OT1/ptm/m/n/10 (di-rec-tory \OT1/pcr/m/n/10 d3ra-dna\OT1/ptm/m/n/10 ), at the 
 com-mit recorded in
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 838--847
+Underfull \hbox (badness 10000) in paragraph at lines 849--858
 \OT1/pcr/m/n/10 research_paper/final/COMMIT.txt \OT1/ptm/m/n/10 of that
  []
 
 
-Underfull \hbox (badness 3281) in paragraph at lines 838--847
+Underfull \hbox (badness 3281) in paragraph at lines 849--858
 \OT1/ptm/m/n/10 2.5.3, SciPy 1.18.1, pan-das 3.0.5 and DT4DDS 1.1.0
  []
 
 
-Underfull \hbox (badness 2005) in paragraph at lines 838--847
+Underfull \hbox (badness 2005) in paragraph at lines 849--858
 \OT1/ptm/m/n/10 (pinned in \OT1/pcr/m/n/10 requirements.txt\OT1/ptm/m/n/10 ); t
 he pub-lic data are
  []
 
 
-Underfull \hbox (badness 2020) in paragraph at lines 838--847
+Underfull \hbox (badness 2020) in paragraph at lines 849--858
 \OT1/ptm/m/n/10 ENA PR-JEB65931 [45] (Il-lu-mina) and the DNAformer
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 848--858
+Underfull \hbox (badness 10000) in paragraph at lines 859--869
 \OT1/ptm/m/n/10 are driven by \OT1/pcr/m/n/10 experiments/dt_experiments.py
  []
 
 
-Underfull \hbox (badness 7851) in paragraph at lines 848--858
+Underfull \hbox (badness 7851) in paragraph at lines 859--869
 \OT1/ptm/m/n/10 (sub-commands \OT1/pcr/m/n/10 gen\OT1/ptm/m/n/10 , \OT1/pcr/m/n
 /10 run\OT1/ptm/m/n/10 , \OT1/pcr/m/n/10 runx\OT1/ptm/m/n/10 , \OT1/pcr/m/n/10 
 static\OT1/ptm/m/n/10 , \OT1/pcr/m/n/10 calib\OT1/ptm/m/n/10 ,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 848--858
+Underfull \hbox (badness 10000) in paragraph at lines 859--869
 \OT1/pcr/m/n/10 calib_eval\OT1/ptm/m/n/10 , \OT1/pcr/m/n/10 forecast\OT1/ptm/m/
 n/10 , \OT1/pcr/m/n/10 posthoc_rho0\OT1/ptm/m/n/10 ), the
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 848--858
+Underfull \hbox (badness 10000) in paragraph at lines 859--869
 \OT1/ptm/m/n/10 re-play by \OT1/pcr/m/n/10 experiments/paper_experiments.py
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 848--858
+Underfull \hbox (badness 10000) in paragraph at lines 859--869
 \OT1/ptm/m/n/10 (\OT1/pcr/m/n/10 replay_v3\OT1/ptm/m/n/10 , \OT1/pcr/m/n/10 rep
 lay_calcost\OT1/ptm/m/n/10 ); statis-tics by
  []
 
 
-Underfull \hbox (badness 1565) in paragraph at lines 848--858
+Underfull \hbox (badness 1565) in paragraph at lines 859--869
 \OT1/pcr/m/n/10 dt_analysis.py \OT1/ptm/m/n/10 and \OT1/pcr/m/n/10 r4_analysis.
 py\OT1/ptm/m/n/10 ; ta-bles and
  []
 
 
-Underfull \hbox (badness 2318) in paragraph at lines 848--858
+Underfull \hbox (badness 2318) in paragraph at lines 859--869
 \OT1/pcr/m/n/10 dt_protocol.yaml \OT1/ptm/m/n/10 and \OT1/pcr/m/n/10 dt_protoco
 l_rev4.yaml
  []
 
-(./tables/evidence.tex
+[14] (./tables/evidence.tex
 LaTeX Font Info:    Trying to load font information for OMS+pcr on input line 1
 5.
 
@@ -920,7 +923,7 @@ Overfull \hbox (32.71167pt too wide) in paragraph at lines 16--16
  []
 
 
-LaTeX Warning: Reference `tab:r4abl' on page 14 undefined on input line 18.
+LaTeX Warning: Reference `tab:r4abl' on page 15 undefined on input line 18.
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 18--18
@@ -928,7 +931,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 18--18
  []
 
 
-LaTeX Warning: Reference `tab:r4fail' on page 14 undefined on input line 26.
+LaTeX Warning: Reference `tab:r4fail' on page 15 undefined on input line 26.
 
 
 Overfull \hbox (39.89278pt too wide) in paragraph at lines 26--26
@@ -937,7 +940,7 @@ common\OMS/cmsy/m/n/7 g\OT1/pcr/m/n/7 *|
  []
 
 
-LaTeX Warning: Reference `tab:r4geom' on page 14 undefined on input line 27.
+LaTeX Warning: Reference `tab:r4geom' on page 15 undefined on input line 27.
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 27--27
@@ -945,7 +948,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 27--27
  []
 
 
-LaTeX Warning: Reference `tab:r4cap' on page 14 undefined on input line 28.
+LaTeX Warning: Reference `tab:r4cap' on page 15 undefined on input line 28.
 
 
 Overfull \hbox (15.70615pt too wide) in paragraph at lines 29--29
@@ -954,7 +957,7 @@ m/n/7 gf\OT1/pcr/m/n/7 ,_static\OMS/cmsy/m/n/7 g\OT1/pcr/m/n/7 .csv|
  []
 
 
-LaTeX Warning: Reference `tab:r4cost' on page 14 undefined on input line 30.
+LaTeX Warning: Reference `tab:r4cost' on page 15 undefined on input line 30.
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 31--31
@@ -962,7 +965,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 31--31
  []
 
 
-LaTeX Warning: Reference `tab:r4calcost' on page 14 undefined on input line 32.
+LaTeX Warning: Reference `tab:r4calcost' on page 15 undefined on input line 32.
 
 
 
@@ -975,7 +978,7 @@ Overfull \hbox (2.76848pt too wide) in paragraph at lines 10--38
  [][] 
  []
 
-) [14] (./tables/leak_appendix.tex
+) (./tables/leak_appendix.tex
 
 LaTeX Font Warning: Font shape `OT1/ptm/m/scit' undefined
 (Font)              using `OT1/ptm/m/it' instead on input line 3.
@@ -995,11 +998,15 @@ en-er-ated) are kept in
  []
 
 )
-Underfull \hbox (badness 1394) in paragraph at lines 922--932
+Underfull \hbox (badness 1394) in paragraph at lines 943--953
 \OT1/ptm/m/n/10 against $\OT1/cmr/m/n/10 +$\OT1/ptm/m/n/10 15.1% at $\OML/cmm/m
 /it/10 ^^Z[][]\OT1/cmr/m/n/10 0\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 1$\OT1/ptm/m/n
 /10 ), Thomp-son sam-pling 3.37k
  []
+
+[15]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
 
 (./main.bbl
 Underfull \hbox (badness 1360) in paragraph at lines 29--33
@@ -1007,12 +1014,12 @@ Underfull \hbox (badness 1360) in paragraph at lines 29--33
  low-
  []
 
-
+[16]
 Underfull \hbox (badness 2626) in paragraph at lines 46--52
 []\OT1/ptm/m/n/8 L. Or-gan-ick, S. D. Ang, Y.-J. Chen, R. Lopez, S. Yekhanin,
  []
 
-[15] [16])
+[17])
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -1024,7 +1031,9 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-[17] (./main.aux)
+[18
+
+] (./main.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
@@ -1035,11 +1044,11 @@ LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 16007 strings out of 476106
- 324686 string characters out of 5793933
+ 16008 strings out of 476106
+ 324693 string characters out of 5793933
  1966975 words of memory out of 5000000
  37678 multiletter control sequences out of 15000+600000
- 608449 words of font info for 130 fonts, out of 8000000 for 9000
+ 609585 words of font info for 131 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
  84i,14n,87p,822b,823s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></us
@@ -1066,10 +1075,10 @@ rr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/
 share/texlive/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive/
 texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/font
 s/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (17 pages, 508372 bytes).
+Output written on main.pdf (18 pages, 511650 bytes).
 PDF statistics:
- 331 PDF objects out of 1000 (max. 8388607)
- 185 compressed objects within 2 object streams
+ 334 PDF objects out of 1000 (max. 8388607)
+ 187 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
  33 words of extra memory for PDF output out of 10000 (max. 10000000)
 

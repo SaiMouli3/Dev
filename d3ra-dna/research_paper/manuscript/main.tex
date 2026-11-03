@@ -751,21 +751,26 @@ for an i.i.d.\ model.  This motivates over-dispersed models but does not enter t
 %=====================================================================
 \section{Discussion}\label{sec:disc}
 %=====================================================================
-\textbf{What helps, and whom.}  The robust gain in our experiments is verified stopping:
-reading until every stripe, its CRC-32 and the file hash verify, and then stopping.  It needs no
-model, never returned a wrong file, and costs a pay-per-read user 27\% less on average than the
-best hindsight-tuned static plan in the baseline digital twin.  It does not reduce the reads a
-user must reserve.  Choosing \emph{which} container to read with a posterior model helped only
-where the model fits: an outright failure, which the posterior detects within a few batches, or
-mild heterogeneity.  With a near-dead container, every model-based rule we tried, including
-standard bandit and experimental-design rules, was costlier than round-robin.
+\textbf{What helps, and whom.}  The robust gain in our experiments is verified stopping: reading until
+every stripe, its CRC-32 and the file hash verify, and then stopping.  It needs no model of the
+containers, never returned a wrong file, and converts the capacity a static plan must reserve into a
+bill 27--32\% smaller for a user who pays per read.  It does \emph{not} reduce the capacity a user must
+reserve, because the q99 is unchanged.  Choosing \emph{which} container to read next is a second-order
+effect in every configuration we tested: at best 3.5\% (UCB with a dropout-aware container model, or
+4.2\% for a hindsight static plan that already knows the answer), and strongly negative when the
+container model cannot express what is wrong with a container.  If one sentence has to carry the
+paper's practical content, it is that the decision worth engineering is \emph{when to stop}, and the
+decision worth engineering next is the \emph{container model}, not the allocation rule on top of it.
 
-\textbf{Calibration versus cost.}  The likelihood that gave the best-calibrated intervals
-($\rho_U{=}0.1$) also gave the costlier allocations, and the binomial likelihood, whose intervals
-covered only 54\%, gave the cheaper ones.  Calibrating the uncertainty of a misspecified model does
-not make its decisions better; the misspecification (one multiplier for a container with
-dropout) is the problem to fix.  We therefore present the controller as online-adaptive, not
-self-calibrating, and do not recommend its forecasts as probabilities.
+\textbf{Calibration versus cost, and model versus likelihood.}  The likelihood that gave the
+best-calibrated intervals ($\rho_U{=}0.1$) also gave the costlier allocations, and the binomial
+likelihood, whose intervals covered only 54\%, gave cheaper ones.  Calibrating the uncertainty of a
+misspecified model does not make its decisions better.  Our revision-4 experiments go one step further
+and say which part was at fault: re-selecting $\rho_U$ with the prior actually used and on a wider grid
+still cannot cover the near-dead container at any value, while adding a dropout parameter to the
+container model fixes most of the cost penalty.  The lesson we draw is about priorities --- repair the
+container model before tuning the posterior over it --- and we therefore present the controller as
+online-adaptive, not self-calibrating, and do not offer its forecasts as probabilities.
 
 \textbf{Digital twin versus replay.}  The two settings agree that stopping is the main saving and that no rule lowers q99; on
 allocation with the generic prior they agree where the conditions match.  On the Twist pool, whose
@@ -780,17 +785,23 @@ container, through calibration reads, turned allocation into a large saving.
 \textbf{Practical recommendation (multi-container retrieval).}
 \begin{enumerate}
 \setlength{\itemsep}{1pt}
-\item Read the containers in turn and \textbf{stop on verification} (every stripe, its CRC-32 and the
-file hash).  This is the robust saving and needs no model.
-\item \textbf{Switch a container off} once it is clearly failed (no verified fragment after a probe);
-here posterior rules helped (up to $-$24\%).
-\item Do \textbf{not} rely on model-based allocation when a container may be near-dead: every rule we
-tried read more than round-robin.  Use it only with a container model that represents dropout,
-or when calibration reads already identify the weak container ($-$16\% on the Genscript replay),
-and check it against round-robin on a digital twin first.
-\item If capacity must be \textbf{reserved}, budget the q99 of round-robin; no rule lowered it.
-\item Size the archive's redundancy for the failures you must survive: two failed containers out
-of six, or a noisier synthesis, made the file unrecoverable whatever the policy.
+\item Read the containers in turn and \textbf{stop on verification} (every stripe against its CRC-32,
+the file against its hash).  This is the robust saving, 27--32\% of a reserved budget, and it needs no
+model.  Never return an unverified file.
+\item If you \textbf{reserve} capacity rather than pay per read, expect no saving at all from any of
+this: budget the q99 of round-robin, and prefer a tuned static allocation.
+\item \textbf{Switch a container off} once it is clearly failed (no verified fragment after a probe).
+Posterior rules cut the cost of the retrievals that still succeed by up to 24\%, but they do not make
+recovery more likely.
+\item Do \textbf{not} put a model-based allocation rule in front of a container model that cannot
+represent dropout: every such rule we tried read more than round-robin, by 7--441\%.  With efficiency
+\emph{and} dropout, the best rule gained 3.5\%; decide whether that is worth the complexity.
+\item If calibration reads of the same containers are available, spend them: a prior fitted on
+held-out reads identified the weak container in advance and saved 16\% on one real-read pool, which is
+the largest allocation effect we measured.
+\item \textbf{Size redundancy for the failures you must survive.}  With $(32,48)$ over six containers,
+two lost containers leave exactly $K$ fragments per stripe and no margin; and a noisier synthesis model
+made the file unrecoverable in our design whatever the policy.
 \end{enumerate}}}
 \caption{Practical recommendation derived from Section~\ref{sec:results}.}
 \label{fig:recommend}
@@ -916,8 +927,18 @@ computing its paired difference, because some trials never completed (infinite c
 saved.  We fixed the bug, ran the other Genscript conditions in parallel processes with the same
 per-condition seeds (they reproduced every value logged by the sequential run), and re-started
 information-greedy; it had not finished when this version was built, so Table~\ref{tab:replay} has no
-information-greedy row for Genscript.  The fact that some of its trials did not complete within the
-read stream is the only information-greedy result we report for this pool.
+information-greedy row for Genscript.  What we know about that condition is reportable and we report
+only that: in the sequential run its 200 trials finished, and more than 1\% of them never recovered the
+file within the available reads, which is why the 0.99 budget was infinite and the paired statistic
+overflowed.  We treat the condition as \emph{censored} --- excluded from every average and comparison,
+marked as not completed in Table~\ref{tab:replay} --- and we make no claim anywhere that every policy
+completed every real-read condition.  (vii) Revision~4 adds the pre-registered secondary analyses of
+\texttt{dt\_protocol\_rev4.yaml}: the dropout-aware container model, the $2\times2\times2$ ablation,
+the $\rho_U$ re-selection at $s{=}0.5$ on an extended grid, prior sensitivity, five further failure
+modes, six further archive geometries, consensus caps of 12 and 48, finer and calibration-estimated
+static families, an extended baseline replicate set, the full-design photolithographic run, the replay
+calibration-cost experiment and the cost model.  The frozen revision-3 settings remain the primary
+configuration; every revision-4 result is secondary and is reported whatever its direction.
 
 \textbf{Post-hoc analyses} (not pre-specified).  With the binomial likelihood ($\rho_U{=}0$), on the
 same 300 baseline retrievals, coverage-greedy used 3.34k reads ($-$4.4\% vs.\ round-robin, against

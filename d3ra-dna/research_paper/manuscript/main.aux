@@ -114,7 +114,7 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-B}}Reads consumed versus capacity reserved}{8}{}\protected@file@percent }
 \newlabel{sec:res-actual}{{\mbox  {VI-B}}{8}{}{}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-C}}Policy comparison on the digital twin}{8}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {V}{\ignorespaces Reads \emph  {consumed} with verified stopping versus capacity that must be \emph  {reserved} without it (digital twin, 300 retrievals per row). All rows stop on verification, so the comparison between rows is allocation only; the last column is the budget the same read proportions would need without stopping. Thousands of reads; mean over all attempts with a cluster-bootstrap 95\% interval.}}{9}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {V}{\ignorespaces Reads \emph  {consumed} with verified stopping versus capacity that must be \emph  {reserved} without it (digital twin, 300 retrievals per row). All rows stop on verification, so the comparison between rows is allocation only; the last column is the budget the same read proportions would need without stopping, which coincides with q99 wherever every retrieval succeeds. Thousands of reads; mean over all attempts with a cluster-bootstrap 95\% interval.}}{9}{}\protected@file@percent }
 \newlabel{tab:actual}{{V}{9}{}{}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-D}}What the gain after a container failure buys}{9}{}\protected@file@percent }
 \newlabel{sec:res-uncond}{{\mbox  {VI-D}}{9}{}{}{}}
@@ -128,11 +128,11 @@
 \newlabel{fig:dt}{{2}{11}{}{}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {VII}{\ignorespaces One failed container: cost conditional on success and over all attempts (300 retrievals per row, 72k-read stream). Every policy has the same success probability, so the conditional saving does not buy a better chance of recovery, and failures dominate the unconditional mean. Thousands of reads.}}{11}{}\protected@file@percent }
 \newlabel{tab:uncond}{{VII}{11}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-G}}Failed containers and severity sweep}{11}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Severity sweep: mean reads consumed as the degraded container's copy number falls from 200 to 1 (300 retrievals per point and policy, 95\% cluster-bootstrap intervals; the axis runs from mild to severe degradation). Every retrieval at every level returned the correct file, so the success probability is 1.00 throughout and is not plotted. Adaptive rules are cheaper than round-robin only at the mild end.}}{12}{}\protected@file@percent }
-\newlabel{fig:sweep}{{3}{12}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-G}}Failed containers and severity sweep}{12}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-H}}Tail metrics and the static family}{12}{}\protected@file@percent }
 \newlabel{sec:res-tail}{{\mbox  {VI-H}}{12}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Severity sweep: mean reads consumed as the degraded container's copy number falls from 200 to 1 (300 retrievals per point and policy, 95\% cluster-bootstrap intervals; the axis runs from mild to severe degradation). Every retrieval at every level returned the correct file, so the success probability is 1.00 throughout and is not plotted. Adaptive rules are cheaper than round-robin only at the mild end.}}{12}{}\protected@file@percent }
+\newlabel{fig:sweep}{{3}{12}{}{}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-I}}Calibration of the posterior, and a negative forecast result}{12}{}\protected@file@percent }
 \newlabel{sec:res-calib}{{\mbox  {VI-I}}{12}{}{}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-J}}Secondary evidence: real read streams}{13}{}\protected@file@percent }
@@ -157,13 +157,13 @@
 \@writefile{toc}{\contentsline {section}{\numberline {IX}Reproducibility and Availability}{16}{}\protected@file@percent }
 \newlabel{sec:repro}{{IX}{16}{}{}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {X}Conclusion}{16}{}\protected@file@percent }
-\bibstyle{IEEEtran}
-\bibdata{references}
-\bibcite{church2012next}{1}
 \@writefile{toc}{\contentsline {section}{Appendix\nobreakspace  A: Upper bound with evaluation leakage}{17}{}\protected@file@percent }
 \newlabel{app:leak}{{A}{17}{}{}{}}
 \@writefile{toc}{\contentsline {section}{Appendix\nobreakspace  B: Protocol deviations and post-hoc analyses}{17}{}\protected@file@percent }
 \newlabel{app:dev}{{B}{17}{}{}{}}
+\bibstyle{IEEEtran}
+\bibdata{references}
+\bibcite{church2012next}{1}
 \bibcite{goldman2013towards}{2}
 \bibcite{grass2015robust}{3}
 \bibcite{erlich2017fountain}{4}
@@ -203,8 +203,8 @@
 \bibcite{batu2004reconstructing}{38}
 \bibcite{srinivasavaradhan2021trellis}{39}
 \bibcite{sabary2024reconstruction}{40}
-\bibcite{rashtchian2017clustering}{41}
 \@writefile{toc}{\contentsline {section}{References}{18}{}\protected@file@percent }
+\bibcite{rashtchian2017clustering}{41}
 \bibcite{barlev2025deep}{42}
 \bibcite{delahaye2021sequencing}{43}
 \bibcite{wick2019performance}{44}

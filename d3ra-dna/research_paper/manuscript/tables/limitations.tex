@@ -12,7 +12,7 @@ Computational only (digital twin + replay) & no wet-lab confirmation; DT4DDS fid
 Single efficiency multiplier $\theta_j$ in the frozen model & cannot represent dropout; adaptive allocators over-read near-dead containers.  $\dagger$~A two-parameter model (efficiency and dropout) removes most of the penalty (Section~\ref{sec:res-dropout}) \\
 $\rho_U$ at the edge of its grid; selected with $s{=}1$ while runs use $s{=}0.5$ & $\dagger$~re-selected with $s{=}0.5$ on an extended grid: no value reaches 0.90 coverage and the near-dead container is never covered (Table~\ref{tab:r4calib}) \\
 Calibration-optimal vs.\ cost-optimal $\rho_U$ differ & a better-calibrated posterior allocated worse; the ablation separates likelihood, prior and model (Table~\ref{tab:r4abl}) \\
-Gains are in the mean, not the tail & $\dagger$~no rule lowered q99; tail intervals are wide and reported (Table~\ref{tab:r4tails}) \\
+Gains are in the mean, not the tail & $\dagger$~no \emph{adaptive} rule lowered q99 (a hindsight static plan did, by about 9\%); tail intervals are wide and reported (Table~\ref{tab:r4tails}) \\
 Failures simulated & real failure modes and rates unknown; $\dagger$~partial loss, low yield, contamination and common-cause degradation are now tested (Table~\ref{tab:r4fail}), but their rates are still assumed \\
 One archive geometry in the primary design & $\dagger$~six further geometries tested (Table~\ref{tab:r4geom}); conclusions outside those remain untested \\
 Consensus cap of 24 reads per cluster & $\dagger$~caps of 12 and 48 tested (Table~\ref{tab:r4cap}); decoder configuration does affect the recovery boundaries \\

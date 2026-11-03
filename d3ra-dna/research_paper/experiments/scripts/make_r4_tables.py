@@ -68,7 +68,8 @@ def actual_vs_reserved():
            r"\caption{Reads \emph{consumed} with verified stopping versus capacity that must be \emph{reserved} "
            r"without it (digital twin, 300 retrievals per row).  All rows stop on verification, so the comparison "
            r"between rows is allocation only; the last column is the budget the same read proportions would need "
-           r"without stopping.  Thousands of reads; mean over all attempts with a cluster-bootstrap 95\% interval.}",
+           r"without stopping, which coincides with q99 wherever every retrieval succeeds.  "
+           r"Thousands of reads; mean over all attempts with a cluster-bootstrap 95\% interval.}",
            r"\label{tab:actual}", r"\scriptsize", r"\setlength{\tabcolsep}{3pt}",
            r"\begin{tabular}{@{}llrrrrr@{}}", r"\toprule",
            r"Scen. & Allocation & $p_{\text{ok}}$ & $\bar r_{\text{all}}$ [95\% CI] & q95 & q99 & $B_{0.99}$ \\",

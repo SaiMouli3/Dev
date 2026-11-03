@@ -310,7 +310,9 @@ the policies compared, and it says nothing about the cost of failures.
 verified file within the stream.
 \item \textbf{Tail quantiles} q95 and q99 of the consumed reads, with cluster-bootstrap intervals.
 \item \textbf{Reserved capacity} $B_{0.99}$: the budget a plan must commit \emph{in advance} to
-succeed on 99\% of retrievals, i.e.\ the q99 of its read requirement.  A user who reserves a flowcell
+succeed on 99\% of retrievals, i.e.\ the q99 of its read requirement.  Where every retrieval succeeds,
+$B_{0.99}$ coincides numerically with (4); the two differ in who pays it --- a reserving user pays
+$B_{0.99}$ every time, a pay-per-read user pays (1).  A user who reserves a flowcell
 pays this on every retrieval, whether or not the retrieval needed it.
 \end{enumerate}
 Verified stopping converts the reserved capacity $B_{0.99}$ into the consumed mean $\bar r_{\text{all}}$:
@@ -831,8 +833,8 @@ round-robin with verified stopping used 58.6k reads on average against the 65.7k
 hindsight-tuned static plan ($-$11\%), and the model-based rules used 56.6--57.2k, 2--3\% fewer
 than round-robin; coverage-greedy was 9.0k (95\% CI 8.5--19.3k) below the hindsight static budget.
 Information-greedy reduced to coverage-greedy after the first probes (identical results), and
-the leak-free calibrated belief changed coverage-greedy by $-$0.2\%.  As on the digital twin, no rule
-lowered q99 materially: 65.6--67.2k for the model-based rules against the 65.7k static budget.  Stopping supplies most of the gain
+the leak-free calibrated belief changed coverage-greedy by $-$0.2\%.  As on the digital twin, no \emph{adaptive}
+rule lowered q99 materially: 65.6--67.2k for the model-based rules against the 65.7k static budget.  Stopping supplies most of the gain
 (about 7.1k of 9.0k reads).
 On the Genscript pool, whose PCR-30-cycle container is near-dead, verified stopping with
 round-robin used 637k reads against 852k for fixed depth ($-$25\%), but 1\% more than the 631k of

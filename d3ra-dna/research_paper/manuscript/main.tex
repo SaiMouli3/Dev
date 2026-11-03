@@ -770,7 +770,61 @@ used 533k ($-$16\% vs.\ round-robin; $-$97.9k, 95\% CI $-$161.6 to $-$90.0k, vs.
 budget).  Allocation therefore pays when the weak container is identified \emph{before} retrieval,
 not when the controller must learn it online.  q99 was 820--853k for the generic-prior rules and 676k
 with the calibrated belief, against the 631k static budget.  The information-greedy run on this pool
-did not complete in time (Appendix~\ref{app:dev}).
+did not complete in time and is treated as censored (Appendix~\ref{app:dev}).
+
+\input{tables/r4_calcost}
+\emph{What the calibrated prior costs.}  That 16\% is the largest allocation effect in this paper, and
+it is not free: the calibrated belief is fitted on the first 300{,}000 reads of each of the six runs,
+1.8M reads in total, which is 2.8 times what one retrieval costs.  Table~\ref{tab:r4calcost} charges
+them.  Beliefs built from 1k, 3k or 10k reads per container (counts only, generic consensus curves)
+save nothing measurable --- 640k, 638k and 636k reads against round-robin's 637k --- and 30k per
+container is actually worse (658k), because a half-informative estimate of a container's abundance
+distribution misleads the allocator more than no estimate at all.  Only at 100k reads per container
+(577k, 600k calibration reads) and at the full 300k (533k, 1.8M calibration reads) does the saving
+appear.  Dividing the calibration reads by the per-retrieval saving gives the break-even point: about
+10 retrievals for the 100k belief and 17 for the full one.  Calibration therefore pays only for an
+archive that will be read repeatedly, and for a single retrieval it costs several times what it saves.
+This is the clearest case in the paper where a saving that looks large per retrieval is small or
+negative once the information it depends on is charged for.
+
+\subsection{Robustness: what does and does not change the conclusions}\label{sec:res-robust}
+\input{tables/r4_cap}
+\emph{Prior assumptions.}  The controller starts from fixed generic assumptions, so we varied them one
+at a time on the baseline (30 syntheses $\times$ 3 read orders each): the prior probability of outright
+failure ($10^{-2}$, $10^{-1}$ against the frozen $10^{-3}$), the prior dropout (0, 5\% against 0.5\%),
+the negative-binomial shape (3, 30 against 10), the $\theta$ grid (40 points over $[0.001,10]$ and 10
+points over $[0.01,5]$ against 25 over $[0.01,5]$), the prior width ($s{=}0.25$, $1.0$ against $0.5$)
+and the consensus-success curve (scaled by 0.5 and 2.0).  Under the one-parameter model the penalty is
+remarkably insensitive: coverage-greedy stays between $+$10.9\% and $+$20.6\% against round-robin in
+every setting except the tighter prior $s{=}0.25$, where it rises to $+$56.4\% --- a prior that holds
+$\theta$ near 1 is the worst thing one can do here.  Changing the failure prior by two orders of
+magnitude changes nothing at all ($+$17.2\% either way), because the failure atom is not what is
+mismodelled.  Under the two-parameter model the same sweep stays between $-$0.3\% and $+$3.4\%.  So
+neither the negative result nor its repair is an artefact of the prior.
+
+\emph{Decoder configuration.}  The consensus cap (reads per cluster used to form a consensus, frozen at
+24) is not binding in the baseline: caps of 12, 24 and 48 give the same means to within 10 reads and the
+same q99 (Table~\ref{tab:r4cap}), because clusters there rarely accumulate more than a dozen reads
+before the fragment decodes.  It can only matter where a stream is read to exhaustion, which is the
+failure and photolithographic scenarios, and we report it there.
+
+\subsection{Reads are not the only cost}\label{sec:res-cost}
+\input{tables/r4_cost}
+Our frozen metric is reads, which is the right unit for a pay-per-read service and the wrong one for a
+laboratory that pays per run.  Table~\ref{tab:r4cost} reprices the same baseline retrievals under three
+charging models: reads only; a multiplexed run that charges 50 read-equivalents per batch of 50 reads
+and 500 per container library preparation; and a separate sequencing run per batch at 2{,}000
+read-equivalents.  Two things follow.  The ranking of the policies is unchanged --- round-robin and the
+tuned static plans stay cheapest, information-greedy stays catastrophic --- because every policy's batch
+count is proportional to its read count, so a per-batch charge scales all of them together.  But the
+\emph{margin} that allocation is competing for shrinks relative to the fixed charges: under the
+per-batch-run model the whole spread between round-robin and the best adaptive rule is a few percent of
+a bill dominated by run setup.  We also record container switches, which the frozen runs did not: at a
+batch size of 50 the adaptive rules switch container 54--61 times per retrieval and round-robin 63
+times, so no policy here is switch-frugal, and a setting where switching is expensive would need a
+larger batch or an explicit switch penalty in the score.  We did not model instrument time, minimum run
+sizes, reagent costs or the cost of the calibration reads used by the replay's calibrated belief, which
+Section~\ref{sec:res-replay} charges separately.
 
 \subsection{Supporting channel result (real nanopore reads)}
 On two independent nanopore flowcells of DNAformer reads~\cite{barlev2025deep,technion2025dnaformerreads},

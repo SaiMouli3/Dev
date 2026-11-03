@@ -308,4 +308,13 @@ T.~Gneiting and A.~E. Raftery, ``Strictly proper scoring rules, prediction, and
   [Online]. Available: \url{https://doi.org/10.5281/zenodo.17473983}
 \BIBentrySTDinterwordspacing
 
+\bibitem{barlev2024binned}
+\BIBentryALTinterwordspacing
+D.~Bar-Lev, I.~Orr, O.~Sabary, T.~Etzion, and E.~Yaakobi, ``Prepared binned
+  {DNA} data storage datasets for reconstruction benchmarking,'' Zenodo
+  dataset, 2024, re-packaging that includes the clustered nanopore reads
+  released with Srinivasavaradhan et al. (ISIT 2021). [Online]. Available:
+  \url{https://doi.org/10.5281/zenodo.14296588}
+\BIBentrySTDinterwordspacing
+
 \end{thebibliography}

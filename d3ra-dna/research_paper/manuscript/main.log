@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.11.2)  3 NOV 2026 11:03
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.11.2)  3 NOV 2026 12:59
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -646,56 +646,53 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 45.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-) [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texm
-f-dist/fonts/enc/dvips/base/8r.enc}
+)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf
+-dist/fonts/enc/dvips/base/8r.enc}
 
 
-] [2] (./tables/literature_comparison.tex) (./tables/notation.tex
+] [2] (./tables/literature_comparison.tex)
+(./tables/notation.tex
 LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 3
 .
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
-))
-
-LaTeX Warning: Reference `sec:res-cost' on page 3 undefined on input line 296.
-
-[3]
-Underfull \hbox (badness 10000) in paragraph at lines 324--326
+)) [3]
+Underfull \hbox (badness 10000) in paragraph at lines 329--331
 []\OT1/ptm/m/it/10 Coverage-greedy\OT1/ptm/m/n/10 : $[]$ = pos-te-rior mean; re
 ads
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 326--328
+Underfull \hbox (badness 10000) in paragraph at lines 331--333
 []\OT1/ptm/m/it/10 Pivotal\OT1/ptm/m/n/10 : weights each frag-ment by a normal-
 
  []
 
 
-Underfull \hbox (badness 3118) in paragraph at lines 326--328
+Underfull \hbox (badness 3118) in paragraph at lines 331--333
 \OT1/ptm/m/n/10 approximation sen-si-tiv-ity of its stripe's com-ple-tion
  []
 
 
-Underfull \vbox (badness 1354) has occurred while \output is active []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [4]
-
-LaTeX Warning: Reference `sec:res-cost' on page 5 undefined on input line 366.
-
 (./tables/algorithms.tex) [5]
-Underfull \hbox (badness 10000) in paragraph at lines 428--437
+Underfull \hbox (badness 10000) in paragraph at lines 433--442
 []\OT1/ptm/m/n/10 Design, poli-cies, met-rics, statis-tics, pre-specified
  []
 
 
-Underfull \hbox (badness 4168) in paragraph at lines 428--437
+Underfull \hbox (badness 4168) in paragraph at lines 433--442
 \OT1/ptm/m/n/10 com-par-isons and the cal-i-bra-tion rule were writ-ten to
  []
 
 
-Underfull \hbox (badness 1424) in paragraph at lines 428--437
+Underfull \hbox (badness 1424) in paragraph at lines 433--442
 \OT1/ptm/m/n/10 syn-the-ses of all six con-tain-ers $\OMS/cmsy/m/n/10 ^^B$ \OT1
 /ptm/m/n/10 10 read or-ders (300
  []
@@ -713,51 +710,54 @@ LaTeX Font Warning: Font shape `OT1/ptm/m/scit' undefined
 <figures/fig_dt_policies.pdf, id=54, 498.663pt x 144.54pt>
 File: figures/fig_dt_policies.pdf Graphic file (type pdf)
 <use figures/fig_dt_policies.pdf>
-Package pdftex.def Info: figures/fig_dt_policies.pdf  used on input line 534.
+Package pdftex.def Info: figures/fig_dt_policies.pdf  used on input line 539.
 (pdftex.def)             Requested size: 516.0pt x 149.57477pt.
- (./tables/r4_uncond.tex) [8]
-
-LaTeX Warning: Reference `tab:r4abl' on page 9 undefined on input line 592.
-
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
+ [8]
+(./tables/r4_uncond.tex)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
  [9]
-Underfull \hbox (badness 1968) in paragraph at lines 599--611
-\OT1/ptm/m/n/10 frac-tion --- a joint pos-te-rior over $\OT1/cmr/m/n/10 (\OML/c
-mm/m/it/10 ^^R[]; d[]\OT1/cmr/m/n/10 )$ \OT1/ptm/m/n/10 with $\OML/cmm/m/it/10 
-d[] \OMS/cmsy/m/n/10 2
+(./tables/r4_ablation.tex
+Overfull \hbox (17.00261pt too wide) in paragraph at lines 7--121
+ [][] 
  []
 
-[10 <./figures/fig_dt_policies.pdf>]
+
+LaTeX Warning: Float too large for page by 287.3696pt on input line 121.
+
+) [10 <./figures/fig_dt_policies.pdf>]
 <figures/fig_dt_sweep.pdf, id=101, 498.663pt x 122.85901pt>
 File: figures/fig_dt_sweep.pdf Graphic file (type pdf)
 <use figures/fig_dt_sweep.pdf>
-Package pdftex.def Info: figures/fig_dt_sweep.pdf  used on input line 650.
+Package pdftex.def Info: figures/fig_dt_sweep.pdf  used on input line 674.
 (pdftex.def)             Requested size: 252.0pt x 62.08734pt.
- (./tables/r4_tails.tex)
-(./tables/r4_calib.tex)
-<figures/fig_dt_calibration.pdf, id=102, 498.663pt x 122.85901pt>
+ (./tables/r4_tails.tex) [11 <./figures/fig_dt_sweep.pdf>] (./tables/r4_calib.t
+ex)
+<figures/fig_dt_calibration.pdf, id=128, 498.663pt x 122.85901pt>
 File: figures/fig_dt_calibration.pdf Graphic file (type pdf)
 <use figures/fig_dt_calibration.pdf>
-Package pdftex.def Info: figures/fig_dt_calibration.pdf  used on input line 720
+Package pdftex.def Info: figures/fig_dt_calibration.pdf  used on input line 744
 .
 (pdftex.def)             Requested size: 340.56189pt x 83.9067pt.
-<figures/fig_forecast.pdf, id=103, 249.3315pt x 144.54pt>
+<figures/fig_forecast.pdf, id=129, 249.3315pt x 144.54pt>
 File: figures/fig_forecast.pdf Graphic file (type pdf)
 <use figures/fig_forecast.pdf>
-Package pdftex.def Info: figures/fig_forecast.pdf  used on input line 721.
+Package pdftex.def Info: figures/fig_forecast.pdf  used on input line 745.
 (pdftex.def)             Requested size: 170.28094pt x 98.71375pt.
- [11 <./figures/fig_dt_sweep.pdf>] (./tables/replay.tex
+ (./tables/replay.tex
 
 LaTeX Font Warning: Font shape `OT1/ptm/m/scit' undefined
 (Font)              using `OT1/ptm/m/it' instead on input line 3.
 
-)
-Underfull \vbox (badness 10000) has occurred while \output is active []
+) (./tables/r4_calcost.tex) [12] (./tables/r4_cap.tex) (./tables/r4_cost.tex
+Overfull \hbox (93.01512pt too wide) in paragraph at lines 7--27
+ [][] 
+ []
 
- [12]
-[13 <./figures/fig_dt_calibration.pdf> <./figures/fig_forecast.pdf>]
+) [13 <./figures/fig_dt_calibration.pdf> <./figures/fig_forecast.pdf>]
 (./tables/limitations.tex
 Underfull \hbox (badness 7907) in paragraph at lines 11--11
 []|\OT1/ptm/m/n/7 Computational only (dig-i-tal
@@ -780,19 +780,10 @@ Underfull \hbox (badness 2961) in paragraph at lines 14--14
  []
 
 
-LaTeX Warning: Reference `tab:r4abl' on page 14 undefined on input line 14.
-
-
 LaTeX Warning: Reference `tab:r4fail' on page 14 undefined on input line 16.
 
 
 LaTeX Warning: Reference `tab:r4geom' on page 14 undefined on input line 17.
-
-
-LaTeX Warning: Reference `tab:r4cap' on page 14 undefined on input line 18.
-
-
-LaTeX Warning: Reference `tab:r4cost' on page 14 undefined on input line 21.
 
 
 Underfull \hbox (badness 6559) in paragraph at lines 22--22
@@ -810,96 +801,91 @@ Underfull \hbox (badness 10000) in paragraph at lines 25--25
  []
 
 )
-
-LaTeX Warning: Citation `barlev2024binned' on page 14 undefined on input line 8
-62.
-
-
-Underfull \hbox (badness 5359) in paragraph at lines 856--865
+Underfull \hbox (badness 5359) in paragraph at lines 934--943
 []\OT1/ptm/b/n/10 Artifact. \OT1/ptm/m/n/10 Code, con-fig-u-ra-tion, ev-ery re-
 sult file and
  []
 
 
-Underfull \hbox (badness 4429) in paragraph at lines 856--865
+Underfull \hbox (badness 4429) in paragraph at lines 934--943
 \OT1/ptm/m/n/10 the scripts that build ev-ery ta-ble and fig-ure are in
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 856--865
+Underfull \hbox (badness 10000) in paragraph at lines 934--943
 \OT1/ptm/m/n/10 the pub-lic repos-i-tory $https : / / github . com / SaiMouli3 
 / Dev$
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 856--865
+Underfull \hbox (badness 10000) in paragraph at lines 934--943
 \OT1/ptm/m/n/10 (di-rec-tory \OT1/pcr/m/n/10 d3ra-dna\OT1/ptm/m/n/10 ), at the 
 com-mit recorded in
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 856--865
+Underfull \hbox (badness 10000) in paragraph at lines 934--943
 \OT1/pcr/m/n/10 research_paper/final/COMMIT.txt \OT1/ptm/m/n/10 of that
  []
 
 
-Underfull \hbox (badness 3281) in paragraph at lines 856--865
+Underfull \hbox (badness 3281) in paragraph at lines 934--943
 \OT1/ptm/m/n/10 2.5.3, SciPy 1.18.1, pan-das 3.0.5 and DT4DDS 1.1.0
  []
 
 
-Underfull \hbox (badness 2005) in paragraph at lines 856--865
+Underfull \hbox (badness 2005) in paragraph at lines 934--943
 \OT1/ptm/m/n/10 (pinned in \OT1/pcr/m/n/10 requirements.txt\OT1/ptm/m/n/10 ); t
 he pub-lic data are
  []
 
 
-Underfull \hbox (badness 2020) in paragraph at lines 856--865
+Underfull \hbox (badness 2020) in paragraph at lines 934--943
 \OT1/ptm/m/n/10 ENA PR-JEB65931 [45] (Il-lu-mina) and the DNAformer
  []
 
-[14]
-Underfull \hbox (badness 10000) in paragraph at lines 866--876
+
+Underfull \hbox (badness 10000) in paragraph at lines 944--954
 \OT1/ptm/m/n/10 are driven by \OT1/pcr/m/n/10 experiments/dt_experiments.py
  []
 
 
-Underfull \hbox (badness 7851) in paragraph at lines 866--876
+Underfull \hbox (badness 7851) in paragraph at lines 944--954
 \OT1/ptm/m/n/10 (sub-commands \OT1/pcr/m/n/10 gen\OT1/ptm/m/n/10 , \OT1/pcr/m/n
 /10 run\OT1/ptm/m/n/10 , \OT1/pcr/m/n/10 runx\OT1/ptm/m/n/10 , \OT1/pcr/m/n/10 
 static\OT1/ptm/m/n/10 , \OT1/pcr/m/n/10 calib\OT1/ptm/m/n/10 ,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 866--876
+Underfull \hbox (badness 10000) in paragraph at lines 944--954
 \OT1/pcr/m/n/10 calib_eval\OT1/ptm/m/n/10 , \OT1/pcr/m/n/10 forecast\OT1/ptm/m/
 n/10 , \OT1/pcr/m/n/10 posthoc_rho0\OT1/ptm/m/n/10 ), the
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 866--876
+Underfull \hbox (badness 10000) in paragraph at lines 944--954
 \OT1/ptm/m/n/10 re-play by \OT1/pcr/m/n/10 experiments/paper_experiments.py
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 866--876
+Underfull \hbox (badness 10000) in paragraph at lines 944--954
 \OT1/ptm/m/n/10 (\OT1/pcr/m/n/10 replay_v3\OT1/ptm/m/n/10 , \OT1/pcr/m/n/10 rep
 lay_calcost\OT1/ptm/m/n/10 ); statis-tics by
  []
 
 
-Underfull \hbox (badness 1565) in paragraph at lines 866--876
+Underfull \hbox (badness 1565) in paragraph at lines 944--954
 \OT1/pcr/m/n/10 dt_analysis.py \OT1/ptm/m/n/10 and \OT1/pcr/m/n/10 r4_analysis.
 py\OT1/ptm/m/n/10 ; ta-bles and
  []
 
 
-Underfull \hbox (badness 2318) in paragraph at lines 866--876
+Underfull \hbox (badness 2318) in paragraph at lines 944--954
 \OT1/pcr/m/n/10 dt_protocol.yaml \OT1/ptm/m/n/10 and \OT1/pcr/m/n/10 dt_protoco
 l_rev4.yaml
  []
 
-(./tables/evidence.tex
+[14] (./tables/evidence.tex
 LaTeX Font Info:    Trying to load font information for OMS+pcr on input line 1
 5.
 
@@ -927,9 +913,6 @@ Overfull \hbox (32.71167pt too wide) in paragraph at lines 16--16
  []
 
 
-LaTeX Warning: Reference `tab:r4abl' on page 15 undefined on input line 18.
-
-
 Underfull \hbox (badness 10000) in paragraph at lines 18--18
 []|\OT1/pcr/m/n/7 dt_*_r4drop.csv $\OMS/cmsy/m/n/7 !$
  []
@@ -952,25 +935,15 @@ Underfull \hbox (badness 10000) in paragraph at lines 27--27
  []
 
 
-LaTeX Warning: Reference `tab:r4cap' on page 15 undefined on input line 28.
-
-
 Overfull \hbox (15.70615pt too wide) in paragraph at lines 29--29
 []|\OT1/pcr/m/n/7 dt_\OMS/cmsy/m/n/7 f\OT1/pcr/m/n/7 homog,photolitho\OMS/cmsy/
 m/n/7 gf\OT1/pcr/m/n/7 ,_static\OMS/cmsy/m/n/7 g\OT1/pcr/m/n/7 .csv| 
  []
 
 
-LaTeX Warning: Reference `tab:r4cost' on page 15 undefined on input line 30.
-
-
 Underfull \hbox (badness 10000) in paragraph at lines 31--31
 []|\OT1/pcr/m/n/7 paper_experiments.py
  []
-
-
-LaTeX Warning: Reference `tab:r4calcost' on page 15 undefined on input line 32.
-
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 32--32
@@ -1001,23 +974,13 @@ en-script num-bers (com-puted be-fore the per-strand con-sen-sus cache was re-g
 en-er-ated) are kept in
  []
 
-)
-Underfull \vbox (badness 3838) has occurred while \output is active []
-
- [15]
-Underfull \hbox (badness 1394) in paragraph at lines 950--960
+) [15]
+Underfull \hbox (badness 1394) in paragraph at lines 1028--1038
 \OT1/ptm/m/n/10 against $\OT1/cmr/m/n/10 +$\OT1/ptm/m/n/10 15.1% at $\OML/cmm/m
 /it/10 ^^Z[][]\OT1/cmr/m/n/10 0\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 1$\OT1/ptm/m/n
 /10 ), Thomp-son sam-pling 3.37k
  []
 
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [16]
 (./main.bbl
 Underfull \hbox (badness 1360) in paragraph at lines 29--33
 \OT1/ptm/m/n/8 B. Sipos, and E. Bir-ney, ``To-wards prac-ti-cal, high-capacity,
@@ -1029,7 +992,7 @@ Underfull \hbox (badness 2626) in paragraph at lines 46--52
 []\OT1/ptm/m/n/8 L. Or-gan-ick, S. D. Ang, Y.-J. Chen, R. Lopez, S. Yekhanin,
  []
 
-[17])
+[16])
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -1041,9 +1004,10 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-[18
+[17] [18] [19] [20
 
-] (./main.aux)
+
+] [21] (./main.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
@@ -1054,10 +1018,10 @@ LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 16008 strings out of 476106
- 324693 string characters out of 5793933
- 1967975 words of memory out of 5000000
- 37678 multiletter control sequences out of 15000+600000
+ 16041 strings out of 476106
+ 325465 string characters out of 5793933
+ 2064975 words of memory out of 5000000
+ 37699 multiletter control sequences out of 15000+600000
  609585 words of font info for 131 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
  84i,14n,87p,822b,823s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -1085,10 +1049,10 @@ rr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/
 share/texlive/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive/
 texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/font
 s/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (18 pages, 512598 bytes).
+Output written on main.pdf (21 pages, 525367 bytes).
 PDF statistics:
- 334 PDF objects out of 1000 (max. 8388607)
- 187 compressed objects within 2 object streams
+ 344 PDF objects out of 1000 (max. 8388607)
+ 194 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
  33 words of extra memory for PDF output out of 10000 (max. 10000000)
 

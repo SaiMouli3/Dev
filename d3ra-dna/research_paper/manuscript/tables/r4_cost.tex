@@ -8,18 +8,20 @@
 \toprule
 Allocation & Reads & Batches & Switches & reads only & multiplexed run  & separate run per batch \\
 \midrule
-Static $\alpha{=}1$ & 3.34 & 67 & -- & 3.34 & 9.69 & 140.07 \\
-Static $\alpha{=}2$ & 3.36 & 67 & -- & 3.36 & 9.72 & 140.73 \\
-Static $\alpha{=}0.5$ & 3.40 & 68 & -- & 3.40 & 9.80 & 142.48 \\
-Round-robin + verified stop & 3.49 & 70 & -- & 3.49 & 9.98 & 146.10 \\
-Static $\alpha{=}0$ (fixed depth) & 3.49 & 70 & -- & 3.49 & 9.98 & 146.10 \\
-Thompson sampling & 3.75 & 75 & -- & 3.75 & 10.50 & 156.71 \\
-Tail-aware & 3.94 & 79 & -- & 3.94 & 10.88 & 164.49 \\
-Coverage-greedy & 4.02 & 80 & -- & 4.02 & 11.04 & 167.72 \\
-UCB & 4.02 & 80 & -- & 4.02 & 11.05 & 167.98 \\
-Learn-then-commit & 5.05 & 101 & -- & 5.05 & 13.10 & 209.95 \\
-Pivotal & 5.21 & 104 & -- & 5.21 & 13.42 & 216.58 \\
-Info-greedy & 18.87 & 377 & -- & 18.87 & 40.73 & 776.54 \\
+Static $\alpha{=}1$ & 3.31 & 66 & 65 & 3.31 & 9.62 & 138.72 \\
+UCB\,+\,dropout model & 3.37 & 67 & 57 & 3.37 & 9.74 & 141.09 \\
+Static $\alpha{=}0$ (fixed depth) & 3.48 & 70 & 69 & 3.48 & 9.96 & 145.69 \\
+Round-robin + verified stop & 3.48 & 70 & 63 & 3.48 & 9.96 & 145.69 \\
+Thompson sampling\,+\,dropout model & 3.52 & 70 & 54 & 3.52 & 10.03 & 147.15 \\
+Coverage-greedy\,+\,dropout model & 3.55 & 71 & 57 & 3.55 & 10.09 & 148.40 \\
+Thompson sampling & 3.72 & 74 & 56 & 3.72 & 10.45 & 155.66 \\
+Pivotal\,+\,dropout model & 3.75 & 75 & 56 & 3.75 & 10.49 & 156.63 \\
+Tail-aware\,+\,dropout model & 3.82 & 76 & 38 & 3.82 & 10.64 & 159.72 \\
+Tail-aware & 3.92 & 78 & 38 & 3.92 & 10.85 & 163.88 \\
+Learn-then-commit\,+\,dropout model & 3.93 & 79 & 59 & 3.93 & 10.87 & 164.29 \\
+Coverage-greedy & 3.95 & 79 & 61 & 3.95 & 10.89 & 164.78 \\
+UCB & 4.00 & 80 & 54 & 4.00 & 11.00 & 166.96 \\
+Info-greedy\,+\,dropout model & 24.84 & 497 & 44 & 24.84 & 52.68 & 1021.42 \\
 \bottomrule
 \end{tabular}
 \end{table}

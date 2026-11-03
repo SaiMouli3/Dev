@@ -198,7 +198,9 @@ def ablation():
     for sc, g in d.groupby("scenario", sort=False):
         first = True
         for r in g.itertuples():
-            out.append(f"{sc if first else ''} & {r.model} & {r.rho_U} & {r.prior_sd} & {name(r.policy)} & "
+            lab = sc.replace("_", "\\_")
+            mdl = {"theta": "$\\theta$", "theta+d": "$\\theta{+}d$"}.get(r.model, r.model)
+            out.append(f"{lab if first else ''} & {mdl} & {r.rho_U} & {r.prior_sd} & {name(r.policy)} & "
                        f"{pct(r.rel_vs_rr)} [{pct(r.lo)}, {pct(r.hi)}] & {r.share_worst:.2f} \\\\")
             first = False
         out.append(r"\midrule")
@@ -228,6 +230,30 @@ def settings_table(src, fn, label, caption):
     out[-1] = r"\bottomrule"
     out += [r"\end{tabular}", r"\end{table}"]
     write(fn, out, "")
+
+
+# ----------------------------------------------------------------------------- R4.11 consensus cap
+def cap_table():
+    d = load("r4_consensus_cap.csv")
+    if d is None:
+        return
+    out = [r"\begin{table}[!t]", r"\centering",
+           r"\caption{Sensitivity to the consensus cap, the number of reads per cluster used to form a "
+           r"consensus (frozen value 24).  On the baseline the cap is not binding: clusters rarely reach a "
+           r"dozen reads before the fragment decodes.  Thousands of reads.}",
+           r"\label{tab:r4cap}", r"\scriptsize", r"\setlength{\tabcolsep}{3pt}",
+           r"\begin{tabular}{@{}llrrrr@{}}", r"\toprule",
+           r"Scen. & Allocation & Cap & $p_{\text{ok}}$ & $\bar r_{\text{ok}}$ & q99 \\", r"\midrule"]
+    for (sc, pol), g in d.groupby(["scenario", "policy"], sort=False):
+        first = True
+        for r in g.sort_values("cap").itertuples():
+            out.append(f"{sc if first else ''} & {name(pol) if first else ''} & {r.cap} & {r.success:.2f} & "
+                       f"{k(r.mean_success)} & {k(r.q99)} \\\\")
+            first = False
+        out.append(r"\midrule")
+    out[-1] = r"\bottomrule"
+    out += [r"\end{tabular}", r"\end{table}"]
+    write("r4_cap.tex", out, "")
 
 
 # ----------------------------------------------------------------------------- R4.7 recalibration
@@ -325,9 +351,7 @@ if __name__ == "__main__":
                    r"\texttt{big}: 10 $\times$ 3).  \texttt{m3}/\texttt{m12}: 3 and 12 containers; \texttt{n40}/"
                    r"\texttt{n64}: $(32,40)$ and $(32,64)$; \texttt{k16}: $(16,24)$; \texttt{big}: a four times "
                    r"larger file.  Thousands of reads.")
-    settings_table("r4_consensus_cap.csv", "r4_cap.tex", "tab:r4cap",
-                   r"Sensitivity to the consensus cap (reads per cluster used to form a consensus).  The frozen "
-                   r"runs use 24.  Thousands of reads.")
+    cap_table()
     recalibration()
     calcost()
     cost_model()

@@ -1,0 +1,26 @@
+\begin{table}[!t]
+\centering
+\caption{Sensitivity to the consensus cap, the number of reads per cluster used to form a consensus (frozen value 24).  On the baseline the cap is not binding: clusters rarely reach a dozen reads before the fragment decodes.  Thousands of reads.}
+\label{tab:r4cap}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}llrrrr@{}}
+\toprule
+Scen. & Allocation & Cap & $p_{\text{ok}}$ & $\bar r_{\text{ok}}$ & q99 \\
+\midrule
+baseline & Coverage-greedy & 12 & 1.00 & 4.13 & 9.13 \\
+ &  & 24 & 1.00 & 4.14 & 9.13 \\
+ &  & 48 & 1.00 & 4.13 & 9.13 \\
+\midrule
+baseline & Coverage-greedy\,+\,dropout model & 12 & 1.00 & 3.56 & 5.18 \\
+ &  & 24 & 1.00 & 3.57 & 5.18 \\
+ &  & 48 & 1.00 & 3.57 & 5.18 \\
+\midrule
+baseline & Round-robin + verified stop & 12 & 1.00 & 3.53 & 5.18 \\
+ &  & 24 & 1.00 & 3.53 & 5.18 \\
+ &  & 48 & 1.00 & 3.53 & 5.18 \\
+\midrule
+fail1 & Round-robin + verified stop & 24 & 0.34 & 20.31 & 72.00 \\
+\bottomrule
+\end{tabular}
+\end{table}

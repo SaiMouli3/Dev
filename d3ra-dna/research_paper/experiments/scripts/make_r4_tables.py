@@ -186,7 +186,7 @@ def ablation():
     d = load("r4_ablation.csv")
     if d is None:
         return
-    out = [r"\begin{table}[!t]", r"\centering",
+    out = [r"\begin{table*}[!t]", r"\centering",
            r"\caption{Ablation of the three modelling choices (digital twin, paired against round-robin on jointly "
            r"successful retrievals, cluster-bootstrap 95\% intervals).  $\theta$: one efficiency multiplier per "
            r"container (frozen model); $\theta{+}d$: efficiency and a dropout fraction.  Negative is cheaper than "
@@ -205,7 +205,7 @@ def ablation():
             first = False
         out.append(r"\midrule")
     out[-1] = r"\bottomrule"
-    out += [r"\end{tabular}", r"\end{table}"]
+    out += [r"\end{tabular}", r"\end{table*}"]
     write("r4_ablation.tex", out, "")
 
 
@@ -214,7 +214,7 @@ def settings_table(src, fn, label, caption):
     d = load(src)
     if d is None or "setting" not in d:
         return
-    out = [r"\begin{table}[!t]", r"\centering", r"\caption{" + caption + "}", r"\label{" + label + "}",
+    out = [r"\begin{table*}[!t]", r"\centering", r"\caption{" + caption + "}", r"\label{" + label + "}",
            r"\scriptsize", r"\setlength{\tabcolsep}{3pt}", r"\begin{tabular}{@{}llrrrrr@{}}", r"\toprule",
            r"Setting & Allocation & $n$ & $p_{\text{ok}}$ & $\bar r_{\text{ok}}$ & vs.\ RR & q99 \\", r"\midrule"]
     for st, g in d.groupby("setting", sort=False):
@@ -228,7 +228,7 @@ def settings_table(src, fn, label, caption):
             first = False
         out.append(r"\midrule")
     out[-1] = r"\bottomrule"
-    out += [r"\end{tabular}", r"\end{table}"]
+    out += [r"\end{tabular}", r"\end{table*}"]
     write(fn, out, "")
 
 
@@ -323,9 +323,11 @@ def cost_model():
            r"and a separate sequencing run per batch (2{,}000 per batch).  Costs in read-equivalents (thousands).  "
            r"Switching containers every batch is free in the first model and dominant in the third.}",
            r"\label{tab:r4cost}", r"\scriptsize", r"\setlength{\tabcolsep}{3pt}",
-           r"\begin{tabular}{@{}lrrr" + "r" * len(cols) + r"@{}}", r"\toprule",
-           r"Allocation & Reads & Batches & Switches & " +
-           " & ".join(c[5:-1].replace("(shared flow cell)", "") for c in cols) + r" \\", r"\midrule"]
+           r"\begin{tabular}{@{}p{26mm}rrr" + "r" * len(cols) + r"@{}}", r"\toprule",
+           r"Allocation & Reads & Batch. & Sw. & " +
+           " & ".join({"reads only": "reads", "multiplexed run (shared flow cell)": "multiplexed",
+                       "separate run per batch": "run/batch"}.get(c[5:-1], c[5:-1]) for c in cols) + r" \\",
+           r"\midrule"]
     for _, r in d.sort_values("reads").iterrows():
         sw = "--" if not np.isfinite(r.switches) else f"{r.switches:.0f}"
         vals = " & ".join(k(r[c]) for c in cols)

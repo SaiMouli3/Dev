@@ -626,18 +626,22 @@ shares: coverage-greedy's share of the near-dead container falls from 0.27 to 0.
 to 0.17, against round-robin's 0.16.  Information-greedy gets worse ($+$441\% to $+$612\%), which is
 consistent --- a richer model gives a pure-information rule more uncertainty to chase.  In the
 homogeneous control, where there is no dropout to detect, the two models agree within 0.5\% on every
-rule, so the second parameter costs nothing when it is not needed.  The clearest benefit is after an
-outright failure: with the dropout model and the binomial likelihood, the conditional saving in the
-one-failed-container scenario grows from $-$17\% to $-$45\% for coverage-greedy, and all four rules land
-between $-$42\% and $-$45\%.
+rule, so the second parameter costs nothing when it is not needed.  The clearest benefits are in the scenarios the one-parameter model
+mis-reads worst.  After an outright failure, keeping the frozen likelihood, the conditional saving grows
+from $-$17.0\% to $-$35.0\% for coverage-greedy, from $-$9.2\% to $-$36.2\% for Thompson sampling and
+from $+$1.6\% to $-$38.5\% for tail-aware, with the success probability unchanged at 0.34; adding the
+binomial likelihood as well takes all four rules to between $-$42\% and $-$45\%.  Under partial physical
+loss and common-cause degradation the two-parameter model turns penalties of $+$77\% and $+$47\% into
+savings of $-$6\% and $-$34\% (Section~\ref{sec:res-robust}).
 
 Three qualifications keep this from being a positive headline.  First, as the ablation shows, the
 dropout model is not uniquely responsible: the binomial likelihood alone does as much on the baseline.
 Second, the tail does not move: the paired q99 difference for UCB with the dropout model is $-$450 reads
 with a 95\% interval of $-$1{,}147 to $+$150, so even the best rule is not resolved as better than
-round-robin at q99, and the statement that no rule lowered q99 survives the better model.  Third, the
-size: the best allocation result anywhere in this paper is a 3.5--4.5\% mean saving, against the
-27--32\% that verified stopping delivers with no model at all.  The right reading of our negative result
+round-robin at q99, and the statement that no rule lowered q99 survives the better model.  Third, the size depends entirely on the scenario: in the baseline the best allocation result is a
+3.5--4.5\% mean saving, against the 27--32\% that verified stopping delivers with no model at all; it is
+only in the dropout-dominated scenarios (partial loss, common-cause degradation, a failed container)
+that allocation reaches 6--45\%, and there it is repairing a problem the frozen model created.  The right reading of our negative result
 is therefore not ``adaptive allocation does not work'' but \emph{``a controller that is slow to
 recognise a bad container makes allocation actively harmful, several independent modelling choices cause
 that slowness, and fixing any of them buys a few percent --- not the bulk of the saving''}.
@@ -802,11 +806,48 @@ magnitude changes nothing at all ($+$17.2\% either way), because the failure ato
 mismodelled.  Under the two-parameter model the same sweep stays between $-$0.3\% and $+$3.4\%.  So
 neither the negative result nor its repair is an artefact of the prior.
 
-\emph{Decoder configuration.}  The consensus cap (reads per cluster used to form a consensus, frozen at
-24) is not binding in the baseline: caps of 12, 24 and 48 give the same means to within 10 reads and the
-same q99 (Table~\ref{tab:r4cap}), because clusters there rarely accumulate more than a dozen reads
-before the fragment decodes.  It can only matter where a stream is read to exhaustion, which is the
-failure and photolithographic scenarios, and we report it there.
+\emph{Decoder configuration, and a boundary that is partly ours.}  The consensus cap (reads per cluster
+used to form a consensus, frozen at 24) is not binding in the baseline: caps of 12, 24 and 48 give the
+same means to within 10 reads and the same q99 (Table~\ref{tab:r4cap}), because clusters there rarely
+accumulate more than a dozen reads before the fragment decodes.  Where a stream is read to exhaustion it
+does bind, and it moves the thing we had called an archive-design boundary.  With one failed container,
+round-robin recovers the file in 31.3\% of retrievals at a cap of 12, 34.0\% at 24 and 35.7\% at 48, with
+no wrong output at any setting.  So part of what we reported as the redundancy limit of the archive is a
+limit of \emph{our decoder configuration}: a deeper consensus extracts more fragments from the surviving
+containers.  The honest statement about every zero- or partial-success result in this paper is therefore
+that it holds for this code, this placement, this consensus cap and this stream length, and that a more
+patient decoder shifts the boundary.
+
+\emph{Failure modes beyond total loss.}
+\input{tables/r4_fail}
+Simulated total loss is the easiest failure to model and the least interesting, so we added four modes
+(Table~\ref{tab:r4fail}): half of one container's designs physically lost before storage; a quarter lost
+in each of two containers; one container whose reads are 90\% not derived from stored strands; another at
+50\%; and a common-cause scenario in which every container is aged two further half-lives and amplified
+harder.  Three results stand out.  First, partial physical loss is where the one-parameter model fails
+hardest: coverage-greedy costs $+$76.6\% against round-robin, tail-aware $+$92.0\%, UCB $+$59.7\% --- far
+worse than the $+$15\% of the baseline --- which is exactly what the dropout explanation predicts, since a
+container missing half its designs is pure dropout.  Second, the two-parameter model does not merely
+recover: coverage-greedy with dropout reaches $-$6.0\% under partial loss and $-$33.6\% under common-cause
+degradation, the largest allocation savings anywhere in our digital-twin experiments.  Third, success
+probability again does not depend on the policy (0.95 with two quarter-lost containers, 0.87 under
+common-cause degradation, identical across rules), and no configuration produced a wrong output.  Low
+yield and contamination are mild by comparison ($+$9.3\% and $+$14.6\% under the one-parameter model,
+$-$3.2\% and $+$2.4\% with dropout).
+
+\emph{Other archive geometries.}
+\input{tables/r4_geoms}
+Our primary design is one geometry, so we repeated the baseline conditions on six others
+(Table~\ref{tab:r4geom}): 3 and 12 containers, $(32,40)$, $(32,64)$ and $(16,24)$ codes, and a file four
+times larger.  Every qualitative conclusion survives all six.  Coverage-greedy under the frozen model is
+never cheaper than round-robin (from $+$1.1\% at $(32,64)$ to $+$93.5\% with three containers); with the
+dropout model it is never materially worse ($-$27.9\% to $+$2.4\%); the hindsight static plan with
+stopping is cheaper than round-robin everywhere ($-$4.0\% to $-$10.7\%); and there was no wrong output in
+any geometry.  The magnitudes vary strongly and sensibly: with high redundancy $(32,64)$ the whole
+allocation question nearly vanishes ($+$1.1\%, and only 3.4k reads of stream are ever needed), while with
+three containers --- a third of the archive near-dead instead of a sixth --- it is largest.  Recoverability
+also varies: success is 1.00 in four geometries but 0.82 with three containers and 0.83 at $(32,40)$,
+uniformly across policies, which is the redundancy effect and not a policy effect.
 
 \subsection{Reads are not the only cost}\label{sec:res-cost}
 \input{tables/r4_cost}

@@ -13,9 +13,9 @@ Claim & Command (\texttt{dt\_experiments.py} unless noted) & Result file (\textt
 \midrule
 No wrong output, no false accept; cluster-aware bounds (Table~\ref{tab:safety}) & all DT runs & \texttt{dt\_*.csv} $\to$ \texttt{r4\_safety.csv} & DT \\
 Stopping converts a 4.80--5.15k reservation into a 3.49k bill (Table~\ref{tab:actual}) & \texttt{run}/\texttt{static baseline} & \texttt{dt\_baseline\{,\_static\}.csv} $\to$ \texttt{r4\_actual\_vs\_reserved.csv} & DT \\
-Hindsight static with stopping beats round-robin by 4.2\% & \texttt{static baseline} (+\,\texttt{\_r4fine}, \texttt{\_r4cal}) & \texttt{dt\_baseline\_static\{,\_r4fine,\_r4cal\}.csv} & DT \\
+Hindsight static with stopping beats round-robin by 4.2\% & \texttt{static baseline} (+\,\texttt{\_r4fine}, \texttt{\_r4cal}) & \texttt{dt\_baseline\_static}\allowbreak\texttt{\{,\_r4fine,\_r4cal\}.csv} & DT \\
 Model-based rules costlier than round-robin under the frozen model & \texttt{run baseline} & \texttt{dt\_summary.csv} & DT, negative \\
-Cause is the one-parameter model: adding dropout removes most of the penalty (Table~\ref{tab:r4abl}) & \texttt{runx SCEN \_r4drop} & \texttt{dt\_*\_r4drop.csv} $\to$ \texttt{r4\_ablation.csv} & DT \\
+Cause is the one-parameter model: adding dropout removes most of the penalty (Table~\ref{tab:r4abl}) & \texttt{runx SCEN \_r4drop} & \texttt{dt\_*\_r4drop.csv} $\to$\allowbreak{} \texttt{r4\_ablation.csv} & DT \\
 Likelihood, prior and model separated by ablation & \texttt{runx baseline \_r4abl\_*} & \texttt{dt\_*\_r4abl\_*.csv} & DT \\
 After an outright failure: $-$24\% on successes, $-$3\% per attempt, success unchanged (Table~\ref{tab:uncond}) & \texttt{run fail1} & \texttt{dt\_fail1\{,\_static\}.csv} & DT, simulated failure \\
 Crossover with severity of the worst container & \texttt{run sweep\_cov*} & \texttt{dt\_sweep\_cov*.csv} & DT \\
@@ -23,10 +23,10 @@ No rule lowers q99; wide tail intervals (Table~\ref{tab:r4tails}) & all DT runs,
 $\rho_U$ re-selected at $s{=}0.5$ on an extended grid; near-dead never covered (Table~\ref{tab:r4calib}) & \texttt{calib}, \texttt{calib\_eval} ($s{=}0.5$) & \texttt{dt\_calibration\_*\_r4sd05.csv} & DT, negative \\
 Forecasts over-confident, worse than climatology & \texttt{forecast baseline} & \texttt{dt\_forecast\_baseline.csv} & DT, negative \\
 Prior sensitivity (failure rate, dropout, shape, grid, $s$, $\varphi$) & \texttt{runx baseline \_r4prior\_*} & \texttt{r4\_prior\_sensitivity.csv} & DT \\
-Failure modes: partial loss, low yield, contamination, common cause (Table~\ref{tab:r4fail}) & \texttt{runx \{partial,lowyield,contam,common\}*} & \texttt{r4\_failure\_modes.csv} & DT, simulated \\
+Failure modes: partial loss, low yield, contamination, common cause (Table~\ref{tab:r4fail}) & \texttt{runx \{partial,}\allowbreak\texttt{lowyield,contam,common\}*} & \texttt{r4\_failure\_modes.csv} & DT, simulated \\
 Six further archive geometries (Table~\ref{tab:r4geom}) & \texttt{D3RA\_GEOM=... runx baseline \_r4} & \texttt{r4\_geometries.csv} & DT \\
 Consensus cap 12/24/48 (Table~\ref{tab:r4cap}) & \texttt{runx ... \_r4cap\{12,48\}} & \texttt{r4\_consensus\_cap.csv} & DT \\
-Homogeneous control; photolithographic boundary & \texttt{run homog}, \texttt{run photolitho} & \texttt{dt\_\{homog,photolitho\}\{,\_static\}.csv} & DT \\
+Homogeneous control; photolithographic boundary & \texttt{run homog}, \texttt{run photolitho} & \texttt{dt\_\{homog,}\allowbreak\texttt{photolitho\}\{,\_static\}.csv} & DT \\
 Cost model with per-batch and per-container charges (Table~\ref{tab:r4cost}) & from committed per-retrieval rows & \texttt{r4\_cost\_model.csv} & DT, assumed prices \\
 Leak-free real-read replay, both pools & \texttt{paper\_experiments.py replay\_v3} & \texttt{replay\_v3\{,\_genscript\}.csv} & Replay \\
 Calibrated prior pays for itself after $\sim$1 retrieval (Table~\ref{tab:r4calcost}) & \texttt{paper\_experiments.py replay\_calcost} & \texttt{r4\_replay\_calcost.csv} & Replay \\

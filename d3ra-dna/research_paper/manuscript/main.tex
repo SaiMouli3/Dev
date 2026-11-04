@@ -982,10 +982,13 @@ tuned static plans stay cheapest, information-greedy stays catastrophic --- beca
 count is proportional to its read count, so a per-batch charge scales all of them together.  But the
 \emph{margin} that allocation is competing for shrinks relative to the fixed charges: under the
 per-batch-run model the whole spread between round-robin and the best adaptive rule is a few percent of
-a bill dominated by run setup.  We also record container switches, which the frozen runs did not: at a
-batch size of 50 the adaptive rules switch container 54--61 times per retrieval and round-robin 63
-times, so no policy here is switch-frugal, and a setting where switching is expensive would need a
-larger batch or an explicit switch penalty in the score.  Three quantities must stay separate and we never equate them: reads \emph{consumed} (what a policy
+a bill dominated by run setup.  We also record container switches, which the frozen runs did
+not.  At a batch size of 50 the adaptive rules switch container 38--61 times per retrieval (tail-aware
+fewest at 38, coverage-greedy most at 61), round-robin 63 times, and the fixed-proportion plans most of
+all (65 for $\alpha{=}1$, 69 for uniform), because they cycle to hold their proportions.  No policy
+here is switch-frugal by design, and a setting where switching is expensive would need a larger batch
+or an explicit switch penalty in the score; the rule that happens to switch least, tail-aware, is also
+among the costliest in reads, so nothing here trades switches for reads deliberately.  Three quantities must stay separate and we never equate them: reads \emph{consumed} (what a policy
 spends), capacity \emph{reserved} (what a non-stopping plan must commit in advance), and laboratory
 \emph{expenditure} (what an invoice says).  Our 27--32\% figure is the first against the second, and it
 is \emph{not} a demonstrated 27--32\% reduction in the cost of sequencing: converting it would require

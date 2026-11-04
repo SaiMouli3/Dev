@@ -21,7 +21,7 @@
 
 \begin{document}
 
-\title{Verified Stopping, Not Adaptive Allocation, Saves Reads in Multi-Container DNA Storage: A Leak-Free Computational Study on a Digital Twin and Real Read Streams}
+\title{Verified Stopping Dominates Adaptive Allocation in Multi-Container DNA Storage: A Leak-Free Computational Study on a Digital Twin and Real Read Streams}
 
 \author{\IEEEauthorblockN{Sai Mouli}
 \IEEEauthorblockA{saimouli12345678@gmail.com}
@@ -496,6 +496,25 @@ with $t$ drawn from per-strand consensus curves estimated from real reads; decod
 therefore an \emph{oracle} event and the replay is semi-empirical (read orders and counts real,
 containers emulated by subsetting runs of one synthesis batch).  200 read permutations, paired bootstrap.
 
+\textbf{What is real here and what is not.}  The replay is \emph{semi-empirical} and we state the
+division explicitly, because it is the single most important qualification on our real-read results.
+\emph{Taken from the sequencing data}: the reads themselves, their number, which designed strand each
+read came from, the per-container yield and abundance profile that follows from those counts, the
+fraction of reads that map to no design, and the order in which reads arrive (we permute the real
+evaluation reads rather than generating arrivals from a model).  \emph{Supplied by us}: the
+partitioning of one pool's runs into ``containers''; the erasure-coded layout of 250 stripes over those
+containers, which was never physically synthesised; and, most importantly, \emph{the decision that a
+fragment has been recovered}.  That last is an \emph{oracle} event: a fragment counts as recovered when
+the consensus of its reads equals the designed strand, with the number of reads needed drawn from
+per-strand consensus curves estimated from real reads.  Our inner Reed--Solomon code, the CRC-16, the
+address check, the outer code, the CRC-32 and the SHA-256 \emph{are not executed} on this path, and no
+bytes are compared.  The replay therefore cannot support any statement about wrong outputs, false
+accepts or byte-exact retrieval; those come only from the digital twin, where the whole decode chain
+runs.  Nor is it a physical demonstration of the system: nothing here was synthesised, and the
+containers are aliquot runs of one batch.  What the replay does support is the comparison of
+\emph{allocation and stopping policies} over read streams with real arrival statistics, which is why we
+use it as secondary evidence on the ranking of policies and for nothing else.
+
 \textbf{Leakage audit of the replay.}  Each run is read once and split by position: the first
 300{,}000 reads are the calibration split and the next 900{,}000 the evaluation split, so no read is in
 both.  Everything that generates a recovery event in the evaluation comes from the evaluation split
@@ -529,9 +548,16 @@ discards the information in repeated read orders --- it is \SafeWUBc{}.  The fal
 \SafeFUB{} per attempt and \SafeFUBc{} per synthesis replicate.  The honest summary is therefore
 qualitative as well as numerical: in every configuration we ran, verification-gated stopping never
 returned a wrong file, and the bound that does not assume independence is two orders of magnitude weaker
-than the per-retrieval one.  A false accept would need a wrong payload to pass a 4-symbol RS code, a
-CRC-16 and an address byte, then the stripe CRC-32 and the file SHA-256; the cryptographic hash is the
-backstop, and no experiment of this size can bound its failure rate.
+than the per-retrieval one.  Two things this table does \emph{not} establish.  First, zero observed errors is not evidence of zero
+error \emph{probability}: it is consistent with any rate below the bounds above, which is why we quote
+them rather than the observed zero, and the bounds are of order $10^{-4}$ per retrieval and
+$10^{-2}$ per independent synthesis --- far from a guarantee.  Second, the bounds apply to
+\emph{this} archive configuration only: this code and rate, this placement, this decoder with its
+24-read consensus cap, DT4DDS's error model, and the scenarios we ran.  They say nothing about DNA
+storage in general, nor about an archive with a weaker inner code or a different verification chain.
+Mechanistically, a false accept would need a wrong payload to pass a 4-symbol RS code, a CRC-16 and an
+address byte, then the stripe CRC-32 and the file SHA-256; the cryptographic hash is the backstop, and
+no experiment of this size can bound \emph{its} failure rate.
 Table~\ref{tab:safety} pools every digital-twin retrieval run for this paper.  No retrieval
 returned a file that differed from the stored one, and no wrong payload passed the inner
 RS + CRC-16 + address checks.  The bounds are those of zero events in the given number of
@@ -790,7 +816,11 @@ replicates it gave 0.87 overall (0.84 at the earlier and 0.89 at the later read 
 containers and 0.20 for the near-dead one.  That selection has two defects: it used prior sd $s{=}1$
 while every policy run uses $s{=}0.5$, and the selected value sat at the grid boundary.  Revision~4
 repeats it with $s{=}0.5$ and an extended grid $\{0,0.003,0.01,0.03,0.1,0.2,0.3,0.5\}$
-(Table~\ref{tab:r4calib}), and the outcome corrects the original selection in two ways.  First, under
+(Table~\ref{tab:r4calib}), and the outcome corrects the original selection in two ways.  Before the numbers, which experiment
+uses which: \emph{every policy run in this paper, including all primary results and all revision-4
+scenarios, uses the originally selected $\rho_U{=}0.1$}; the re-selection is a \emph{sensitivity
+experiment} that re-runs the selection procedure only, changes no policy run, and replaces no reported
+result.  The original selection and its two defects stay on the record in Appendix~\ref{app:dev}.  First, under
 the prior actually used the best value is $\rho_U{=}0.03$ (selection coverage 0.81, held out 0.83)
 rather than 0.1 (0.81 and 0.82), so the frozen default is not the best member of its own family,
 although the difference is within noise.  Second, extending the grid does not rescue calibration:
@@ -798,9 +828,14 @@ coverage flattens near 0.80 for $\rho_U\in[0.03,0.3]$ and collapses to 0.60 at 0
 likelihood family reaches the 0.90 target.  The reason is visible per container: at every $\rho_U$ the
 five healthy containers are covered 0.92--1.00 of the time and the near-dead container 0.00--0.03 of the
 time.  Widening a likelihood cannot fix a container whose behaviour the model cannot express, which is
-the same misspecification that makes allocation lose (Section~\ref{sec:res-misspec}).  We therefore do
-not describe this controller as calibrated: its posterior is reliable for healthy containers and wrong
-for near-dead ones, which is precisely the case that matters.
+the same misspecification that makes allocation lose (Section~\ref{sec:res-misspec}).  We therefore do not describe this controller as calibrated: its posterior is reliable for healthy
+containers and wrong for near-dead ones, which is precisely the case that matters.  No primary
+conclusion changes as a result.  The re-selected value, $\rho_U{=}0.03$, differs from the frozen 0.1 by
+less than the noise in the selection statistic, and the ablation of Table~\ref{tab:r4abl} already
+reports what happens across the likelihood axis: the allocation penalty depends on $\rho_U$ as one of
+three interacting choices, which is reported as a finding rather than corrected away.  Had we re-tuned
+$\rho_U$ and re-run the primary experiments on the re-tuned value, the frozen protocol would no longer
+have been frozen; we kept it.
 
 \emph{Completion forecast (negative, secondary).}  The forecast carries no claim in this paper and no
 policy depends on it; we report it because it was pre-specified and because its failure is informative.
@@ -950,9 +985,17 @@ per-batch-run model the whole spread between round-robin and the best adaptive r
 a bill dominated by run setup.  We also record container switches, which the frozen runs did not: at a
 batch size of 50 the adaptive rules switch container 54--61 times per retrieval and round-robin 63
 times, so no policy here is switch-frugal, and a setting where switching is expensive would need a
-larger batch or an explicit switch penalty in the score.  We did not model instrument time, minimum run
-sizes, reagent costs or the cost of the calibration reads used by the replay's calibrated belief, which
-Section~\ref{sec:res-replay} charges separately.
+larger batch or an explicit switch penalty in the score.  Three quantities must stay separate and we never equate them: reads \emph{consumed} (what a policy
+spends), capacity \emph{reserved} (what a non-stopping plan must commit in advance), and laboratory
+\emph{expenditure} (what an invoice says).  Our 27--32\% figure is the first against the second, and it
+is \emph{not} a demonstrated 27--32\% reduction in the cost of sequencing: converting it would require
+per-read pricing with no fixed component, which no laboratory we know of offers.  We did not model
+instrument time, reagent costs, library preparation, minimum run sizes, flow-cell granularity, or the
+cost of the calibration reads used by the replay's calibrated belief (charged separately in
+Section~\ref{sec:res-replay}).  Under the only charging models we did examine, the fixed components
+dominate: with a per-batch run charge the whole spread between policies is a few per cent of a bill
+set by run setup.  A reader should take the read counts as the measured quantity and the monetary
+columns as an illustration of how little of a read saving may survive contact with a price list.
 
 \subsection{Supporting channel result (real nanopore reads)}
 On two independent nanopore flowcells of DNAformer reads~\cite{barlev2025deep,technion2025dnaformerreads},

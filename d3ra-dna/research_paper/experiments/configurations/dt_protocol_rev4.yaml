@@ -1,0 +1,50 @@
+# Revision-4 protocol addendum (written before any of the runs below; the primary revision-3 protocol
+# in dt_protocol.yaml is unchanged and its results are not re-selected).  Only a 4-replicate smoke test
+# of the dropout model (baseline, rep 0-3, read order 0) was seen before this file was written.
+frozen_on: 2026-11-03
+code_changes:
+  - container model with efficiency AND dropout (AdaptiveConfig.dropout_model; DROP grid 0..0.9, prior P(d=0)=0.6);
+    the default path (dropout_model=False) reproduces every committed retrieval bit for bit (rerun_check 0/12)
+  - digital-twin container options loss_frac (permanent loss of a fraction of designs) and junk_frac (reads not
+    derived from stored strands); StreamRetriever records container switches
+  - geometry switch D3RA_GEOM (m3, m12, n40, n64, k16, big); replicate ranges; calibration-estimated static plan
+analyses:
+  R4.1_actual_vs_reserved:  {data: existing, report: [mean reads with stopping for every static plan and policy,
+                             q95, q99, reservation = q99 of the plan without stopping]}
+  R4.2_unconditional_cost:  {data: existing fail1/fail2, report: [mean over all attempts, mean over successes, success]}
+  R4.3_cluster_safety:      {unit: distinct synthesis (scenario, geometry, rep), report: [retrieval-level and
+                             synthesis-level Clopper-Pearson upper limits]}
+  R4.4_extra_replicates:    {scenario: baseline, reps: 30-99, read_orders: 3,
+                             policies: [round_robin_stop, coverage, thompson, ucb, tail_aware, coverage+dropout],
+                             static: [alpha 0, alpha 1 hindsight], tail: [q95, q99 with synthesis-cluster bootstrap]}
+  R4.5_dropout_model:       {scenarios: [baseline, homog, sweep_cov3, sweep_cov1, fail1], design: 30x10,
+                             policies: [coverage, thompson, pivotal, ucb, learn_then_commit, tail_aware, info_greedy]}
+  R4.6_ablation:            {factors: {model: [theta, theta+dropout], rho_U: [0, 0.1], prior_sd: [0.5, 1.0]},
+                             policies: [coverage, thompson, pivotal, tail_aware],
+                             scenarios: {baseline: 30x10, fail1: 30x3}}
+  R4.7_recalibration:       {prior_sd: 0.5, rho_grid: [0, 0.003, 0.01, 0.03, 0.1, 0.2, 0.3, 0.5],
+                             select_on: calibration reps 1000-1009, validate_on: reps 0-29, report: per container}
+  R4.8_prior_sensitivity:   {scenario: baseline, design: 30x3, policies: [coverage, thompson, coverage+dropout],
+                             settings: {failure: [0.01, 0.1], dropout: [0.0, 0.05], shape: [3, 30],
+                                        theta_grid: [[0.001, 10, 40], [0.01, 5, 10]], prior_sd: [0.25, 1.0],
+                                        phi_scale: [0.5, 2.0]}}
+  R4.9_failure_modes:       {scenarios: [partial_c0_50, partial_c0c3_25, lowyield_c0, contam_c2, common_cause],
+                             design: 20x3, policies: [round_robin_stop, coverage, thompson, ucb, tail_aware,
+                             coverage+dropout, thompson+dropout], static: [alpha 0, alpha 1 hindsight]}
+  R4.10_geometries:         {geometries: [m3, m12, n40, n64, k16, big], scenario: baseline conditions,
+                             design: 20x3 (big: 10x3), policies: [round_robin_stop, coverage, thompson,
+                             tail_aware, coverage+dropout], static: [alpha 0, alpha 1 hindsight]}
+  R4.11_consensus_cap:      {caps: [12, 48], baseline: {design: 30x3, policies: [round_robin_stop, coverage,
+                             coverage+dropout]}, fail1: {design: 30x10, policies: [round_robin_stop]}}
+  R4.12_static_family:      {scenario: baseline, alphas_hindsight: [0.25, 0.75, 1.25, 1.5, 3.0],
+                             calibration_estimated: {eff_from: calibration reps 1000-1009, alphas: [0.5, 1, 2]}}
+  R4.13_photolitho_full:    {design: 30x10, policies: [round_robin_stop]}
+  R4.14_replay_calibration_cost: {pool: genscript, beliefs: [counts from 1k, 3k, 10k, 30k, 100k reads/container,
+                             full 300k calibration], policy: coverage, report: [retrieval, calibration, total,
+                             break-even number of retrievals]}
+  R4.15_cost_model:         {from: per-retrieval reads, rounds, switches, containers touched;
+                             prices: three scenarios stated in the paper}
+decision_rules:
+  - primary claims keep the revision-3 frozen settings (theta model, rho_U = 0.1, prior_sd = 0.5);
+    revision-4 results are reported as pre-specified secondary analyses, whatever their direction
+  - a claim is reported as general only if it holds in every geometry and failure mode tested

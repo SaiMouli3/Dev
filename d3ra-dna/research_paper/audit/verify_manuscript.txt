@@ -1,0 +1,131 @@
+Numeric verification of the manuscript against committed result files.
+Checks: 125, failures: 0.
+
+    section        quantity                                               recomputed   in paper
+ok  Abstract / VI-A retrievals                                              6.231e+04  6.231e+04
+ok  Abstract / VI-A wrong outputs                                                   0          0
+ok  Abstract / VI-A false accepts                                                   0          0
+ok  Abstract / VI-A decode attempts (millions)                                  77.29       77.3
+ok  Abstract / VI-A synthesis replicates                                          580        580
+ok  Abstract / VI-A wrong-output UL per retrieval (1e-5)                         5.92        5.9
+ok  Abstract / VI-A wrong-output UL per synthesis (1e-3)                         6.34        6.3
+ok  Abstract / VI-A false-accept UL per attempt (1e-8)                          4.773        4.8
+ok  VI-B           round-robin mean reads (k)                                   3.49       3.49
+ok  VI-B           round-robin mean CI lo (k)                                  3.375       3.37
+ok  VI-B           round-robin mean CI hi (k)                                  3.601        3.6
+ok  VI-B           uniform reservation q99 (k)                                 5.153       5.15
+ok  VI-B           best pre-specified reservation q99 (k)                      4.803        4.8
+ok  VI-B           stopping saving vs best reservation (%)                     27.33       27.3
+ok  VI-B           stopping saving vs uniform reservation (%)                  32.27       32.2
+ok  VI-B           static_a1.0 vs round-robin (%)                             -4.212      -4.21
+ok  VI-B           static_a1.5 vs round-robin (%)                             -4.565      -4.57
+ok  VI-B           static_cal_a1.0 vs round-robin (%)                          -4.35      -4.35
+ok  VI-B           static alpha=1 mean (k)                                     3.343      3.343
+ok  VI-B           calibration-estimated mean (k)                              3.338      3.338
+ok  VI-C           thompson vs round-robin (%)                                     7          7
+ok  VI-C           tail_aware vs round-robin (%)                                  13         13
+ok  VI-C           coverage vs round-robin (%)                                    15         15
+ok  VI-C           ucb vs round-robin (%)                                         15         15
+ok  VI-C           learn_then_commit vs round-robin (%)                           45         45
+ok  VI-C           pivotal vs round-robin (%)                                     49         49
+ok  VI-C           info_greedy vs round-robin (%)                                441        441
+ok  VI-C           round-robin near-dead read share                           0.1595       0.16
+ok  VI-C           info-greedy near-dead read share                            0.656       0.66
+ok  VI-D           fail1 success (all policies)                                 0.34       0.34
+ok  VI-D           fail1 distinct success values                                   1          1
+ok  VI-D           fail1 round-robin mean on successes (k)                     20.31      20.31
+ok  VI-D           fail1 UCB mean on successes (k)                             15.49      15.49
+ok  VI-D           fail1 UCB vs round-robin, conditional (%)                  -23.74        -24
+ok  VI-D           fail1 UCB mean over all attempts (k)                        52.79      52.79
+ok  VI-D           fail1 round-robin mean over all attempts (k)                54.42      54.43
+ok  VI-D           fail1 UCB vs round-robin, unconditional (%)                -3.012         -3
+ok  VI-E           coverage theta rho=0.1 s=0.5 (%)                            15.11       15.1
+ok  VI-E           coverage theta rho=0.0 s=0.5 (%)                           -4.427       -4.4
+ok  VI-E           coverage theta rho=0.1 s=1.0 (%)                          -0.5587       -0.6
+ok  VI-E           coverage theta+d rho=0.1 s=0.5 (%)                          1.609        1.6
+ok  VI-F           UCB+dropout vs round-robin (%)                               -3.5       -3.5
+ok  VI-F           UCB+dropout CI lo (%)                                      -4.859       -4.9
+ok  VI-F           UCB+dropout CI hi (%)                                      -2.157       -2.2
+ok  VI-F           coverage+dropout near-dead share                           0.1972        0.2
+ok  VI-F           UCB+dropout near-dead share                                0.1658       0.17
+ok  VI-F           fail1 coverage+dropout vs round-robin (%)                  -35.01        -35
+ok  VI-J (lik.)    coverage at rho=0.03 (%)                                  -0.4393       -0.4
+ok  VI-J (lik.)    coverage at rho=0.03 CI lo (%)                             -2.455       -2.5
+ok  VI-J (lik.)    coverage at rho=0.03 CI hi (%)                              1.695        1.7
+ok  VI-J (lik.)    coverage at rho=0.03 interval contains zero                     1          1
+ok  VI-J (lik.)    thompson at rho=0.03 (%)                                   0.2626        0.3
+ok  VI-J (lik.)    thompson at rho=0.03 CI lo (%)                             -1.703       -1.7
+ok  VI-J (lik.)    thompson at rho=0.03 CI hi (%)                              2.412        2.4
+ok  VI-J (lik.)    thompson at rho=0.03 interval contains zero                     1          1
+ok  VI-J (lik.)    ucb at rho=0.03 (%)                                         1.514        1.5
+ok  VI-J (lik.)    ucb at rho=0.03 CI lo (%)                                 -0.4782       -0.5
+ok  VI-J (lik.)    ucb at rho=0.03 CI hi (%)                                   3.791        3.8
+ok  VI-J (lik.)    ucb at rho=0.03 interval contains zero                          1          1
+ok  VI-J (lik.)    tail_aware at rho=0.03 (%)                                 -1.237       -1.2
+ok  VI-J (lik.)    tail_aware at rho=0.03 CI lo (%)                           -3.171       -3.2
+ok  VI-J (lik.)    tail_aware at rho=0.03 CI hi (%)                           0.6357        0.6
+ok  VI-J (lik.)    tail_aware at rho=0.03 interval contains zero                   1          1
+ok  VI-J (lik.)    pivotal at rho=0.03 (%)                                     12.22       12.2
+ok  VI-J (lik.)    pivotal at rho=0.03 still costlier                              1          1
+ok  VI-J (lik.)    learn_then_commit at rho=0.03 (%)                           34.89       34.9
+ok  VI-J (lik.)    learn_then_commit at rho=0.03 still costlier                    1          1
+ok  VI-J (lik.)    info_greedy at rho=0.03 (%)                                 576.1      576.1
+ok  VI-J (lik.)    info_greedy at rho=0.03 still costlier                          1          1
+ok  VI-J (lik.)    homog min at rho=0.03 (%)                                  -3.703       -3.7
+ok  VI-J (lik.)    homog max at rho=0.03 (%)                                  -2.766       -2.8
+ok  VI-J (lik.)    fail1 coverage at rho=0.03 (%)                             -8.742       -8.7
+ok  VI-J (lik.)    fail1 ucb at rho=0.03 (%)                                  -2.288       -2.3
+ok  VI-J (lik.)    fail1 tail_aware at rho=0.03 (%)                           -16.74      -16.7
+ok  VI-J (lik.)    fail1 learn_then_commit at rho=0.03 (%)                    -17.75      -17.8
+ok  VI-J (lik.)    round-robin identical across likelihoods                        1          1
+ok  VI-H           100-synthesis replicate count                                 100        100
+ok  VI-H           100-synthesis round-robin q99 (k)                            5.15       5.15
+ok  VI-H           100-synthesis static alpha=1 q99 (k)                          4.7        4.7
+ok  VI-H           static alpha=1 paired q99 difference (reads)               -449.5       -450
+ok  VI-H           static q99 difference CI excludes zero (hi<0)                   1          1
+ok  VI-H           UCB+dropout paired q99 difference (reads)                  -449.5       -450
+ok  VI-H           UCB+dropout q99 CI contains zero (hi>0)                         1          1
+ok  VI-H           UCB+dropout q99 numerical change (%)                       -8.723       -8.7
+ok  VI-I           held-out coverage at rho=0.1                               0.8667       0.87
+ok  VI-I           near-dead coverage at rho=0.1                                 0.2        0.2
+ok  VI-I           best re-selected coverage (s=0.5)                          0.8306      0.831
+ok  VI-I           re-selected best rho                                         0.03       0.03
+ok  VI-I           near-dead coverage max over extended grid                 0.03333      0.033
+ok  VI-I           forecast checkpoints                                         1127       1127
+ok  VI-I           forecast base rate                                         0.4925       0.49
+ok  VI-J           Twist stopping vs fixed depth (%)                           13.95       13.9
+ok  VI-J           Genscript stopping vs fixed depth (%)                       25.27       25.3
+ok  VI-J           Twist round-robin mean (k)                                  58.63       58.6
+ok  VI-J           Genscript round-robin mean (k)                              636.9        637
+ok  VI-J           calibrated replay mean (k)                                  533.2        533
+ok  VI-J           calibration reads total (M)                                   1.8        1.8
+ok  VI-J           break-even retrievals (full)                                17.35       17.3
+ok  VI-J           break-even retrievals (100k/container)                      9.991         10
+ok  VI-J           30k/container is worse than generic (reads k)               658.2        658
+ok  VI-C           photolithographic retrievals                                  660        660
+ok  VI-C           photolithographic successes                                     0          0
+ok  VI-K           fail1 round-robin success at cap 12                        0.3133      0.313
+ok  VI-K           fail1 round-robin success at cap 24                          0.34       0.34
+ok  VI-K           fail1 round-robin success at cap 48                        0.3567      0.357
+ok  VI-K           partial_c0_50 coverage vs round-robin (%)                   76.62       76.6
+ok  VI-K           partial_c0_50 coverage+dropout vs round-robin (%)          -6.018         -6
+ok  VI-K           common_cause coverage vs round-robin (%)                    46.89       46.9
+ok  VI-K           common_cause coverage+dropout vs round-robin (%)           -33.62      -33.6
+ok  VI-K           geometry min coverage penalty (%)                           1.145        1.1
+ok  VI-K           geometry max coverage penalty (%)                           93.51       93.5
+ok  VI-L           min adaptive container switches                             37.71         38
+ok  VI-L           max adaptive container switches                             61.26         61
+ok  VI-L           round-robin container switches                               62.6         63
+ok  VI-L           max static container switches                                68.6         69
+ok  PDF text       abstract 3.49k                                                  1          1
+ok  PDF text       abstract 27--32%                                                1          1
+ok  PDF text       no bit-for-bit overclaim                                        1          1
+ok  PDF text       no wet-lab claim                                                1          1
+ok  PDF text       oracle decodability stated                                      1          1
+ok  PDF text       near-dead 0.20 preserved                                        1          1
+ok  PDF text       17 retrievals break-even                                        1          1
+ok  PDF text       per-synthesis bound present                                     1          1
+ok  PDF text       no TBD markers                                                  1          1
+ok  PDF text       no unresolved refs                                              1          1
+
+ALL CHECKS PASS

@@ -1,0 +1,25 @@
+setting,container,reads_per_stored_strand,operating_point,true_relative_efficiency,truly_degraded,posterior_mean_median,ci90_coverage,flag_rate,overdispersion
+real genscript (belief = fresh pool),Aging_0d,2.48,1x R*,1.0,False,1.3698664573217645,0.0,0.0,0.0
+real genscript (belief = fresh pool),Aging_0d,4.96,2x R*,1.0,False,1.3698856624826645,0.0,0.0,0.0
+real genscript (belief = fresh pool),Aging_2d,2.48,1x R*,0.8273626195493597,False,1.0572469751487823,0.065,0.0,0.0
+real genscript (belief = fresh pool),Aging_2d,4.96,2x R*,0.8273626195493597,False,1.0573762790170818,0.0,0.0,0.0
+real genscript (belief = fresh pool),Aging_7d,2.48,1x R*,0.9423929098966026,False,1.085901826635061,0.0,0.0,0.0
+real genscript (belief = fresh pool),Aging_7d,4.96,2x R*,0.9423929098966026,False,1.3263718312755115,0.0,0.0,0.0
+real genscript (belief = fresh pool),PCR_15c,2.48,1x R*,1.172973801133752,False,1.7494456866499188,0.0,0.0,0.0
+real genscript (belief = fresh pool),PCR_15c,4.96,2x R*,1.172973801133752,False,1.7745389766310362,0.0,0.0,0.0
+real genscript (belief = fresh pool),PCR_30c,2.48,1x R*,4.870229007633588,False,0.29007984127122205,0.0,1.0,0.0
+real genscript (belief = fresh pool),PCR_30c,4.96,2x R*,4.870229007633588,False,0.17255824101473266,0.0,1.0,0.0
+real genscript (belief = fresh pool),Aging_0d_repB,2.48,1x R*,0.8094734616197927,False,1.0563075493485476,0.0,0.0,0.0
+real genscript (belief = fresh pool),Aging_0d_repB,4.96,2x R*,0.8094734616197927,False,1.0573779461404382,0.0,0.0,0.0
+real genscript (belief = fresh pool),Aging_0d,2.48,1x R*,1.0,False,1.3536397139741476,0.73,0.0,0.01
+real genscript (belief = fresh pool),Aging_0d,4.96,2x R*,1.0,False,1.3999788637763122,0.6,0.0,0.01
+real genscript (belief = fresh pool),Aging_2d,2.48,1x R*,0.8273626195493597,False,1.0359640146379183,1.0,0.0,0.01
+real genscript (belief = fresh pool),Aging_2d,4.96,2x R*,0.8273626195493597,False,1.1024122769864328,1.0,0.0,0.01
+real genscript (belief = fresh pool),Aging_7d,2.48,1x R*,0.9423929098966026,False,1.2005739149693488,1.0,0.0,0.01
+real genscript (belief = fresh pool),Aging_7d,4.96,2x R*,0.9423929098966026,False,1.2692738560752734,1.0,0.0,0.01
+real genscript (belief = fresh pool),PCR_15c,2.48,1x R*,1.172973801133752,False,1.619391963210874,1.0,0.0,0.01
+real genscript (belief = fresh pool),PCR_15c,4.96,2x R*,1.172973801133752,False,1.7504200873932554,0.97,0.0,0.01
+real genscript (belief = fresh pool),PCR_30c,2.48,1x R*,4.870229007633588,False,0.33907069688645797,0.0,1.0,0.01
+real genscript (belief = fresh pool),PCR_30c,4.96,2x R*,4.870229007633588,False,0.19745827357775814,0.0,1.0,0.01
+real genscript (belief = fresh pool),Aging_0d_repB,2.48,1x R*,0.8094734616197927,False,1.0136658453375513,0.97,0.0,0.01
+real genscript (belief = fresh pool),Aging_0d_repB,4.96,2x R*,0.8094734616197927,False,1.1049841549516102,0.22,0.0,0.01

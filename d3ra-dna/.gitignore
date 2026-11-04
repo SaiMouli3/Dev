@@ -15,3 +15,6 @@ data/processed/realdata_genscript/
 results/*_log*.txt
 results/run_meta*.json
 results/baselines_part*.csv
+data/processed/realdata_v3/
+data/processed/realdata_genscript_v3/
+data/processed/dt/

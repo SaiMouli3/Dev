@@ -38,16 +38,20 @@ class RunData:
     pairs_sample: list = field(default_factory=list, repr=False)    # (ref, read) for error profiling
     phi_strand: np.ndarray | None = None     # (strands, len(N_GRID)) success probability
     phi_strand_h2: np.ndarray | None = None
+    calib_by_ref: dict = field(default_factory=dict, repr=False)   # calibration reads per strand (trimmed)
+    phi_calib: np.ndarray | None = None      # (len(N_GRID),) pooled phi from CALIBRATION reads only (leak-free)
 
 
 def load_run(name: str, path, mapper: KmerMapper, n_calib: int, n_eval: int, L: int,
-             keep_reads_per_ref: int = 24, n_pairs: int = 20000, seed: int = 0) -> RunData:
+             keep_reads_per_ref: int = 24, n_pairs: int = 20000, seed: int = 0,
+             keep_calib_per_ref: int = 16) -> RunData:
     rng = np.random.default_rng(seed)
     S = len(mapper.refs)
     calib = np.zeros(S, dtype=np.int64)
     calib_mapped = 0
     refs_eval = np.full(n_eval, -1, dtype=np.int32)
     by_ref: dict[int, list[str]] = {}
+    calib_by_ref: dict[int, list[str]] = {}
     pairs = []
     for t, rec in enumerate(read_fastq(path, limit=n_calib + n_eval)):
         seq = trim_adapter(rec.seq)
@@ -56,6 +60,9 @@ def load_run(name: str, path, mapper: KmerMapper, n_calib: int, n_eval: int, L: 
             if m.ref >= 0:
                 calib[m.ref] += 1
                 calib_mapped += 1
+                cl = calib_by_ref.setdefault(m.ref, [])
+                if len(cl) < keep_calib_per_ref:
+                    cl.append(seq[: L + 8])
                 if len(pairs) < n_pairs and rng.random() < 0.05:
                     pairs.append((mapper.refs[m.ref], seq))
             continue
@@ -65,7 +72,7 @@ def load_run(name: str, path, mapper: KmerMapper, n_calib: int, n_eval: int, L: 
             lst = by_ref.setdefault(m.ref, [])
             if len(lst) < keep_reads_per_ref:
                 lst.append(seq[: L + 8])
-    return RunData(name, refs_eval, calib, calib_mapped / max(n_calib, 1), by_ref, pairs)
+    return RunData(name, refs_eval, calib, calib_mapped / max(n_calib, 1), by_ref, pairs, calib_by_ref=calib_by_ref)
 
 
 def _hamming_ok(a: str, b: str, h: int) -> bool:
@@ -116,6 +123,11 @@ def estimate_phi(run: RunData, refs: list[str], seed: int = 0) -> None:
     for i in range(S):
         r = run.reads_by_ref.get(i, [])
         run.phi_strand[i], run.phi_strand_h2[i] = strand_phi(r, refs[i], rng)
+    # leak-free pooled curve for controller beliefs: calibration-split reads only, separate RNG stream
+    if run.calib_by_ref:
+        rng_c = np.random.default_rng([seed, 1])
+        cal = [strand_phi(run.calib_by_ref.get(i, []), refs[i], rng_c)[0] for i in range(S)]
+        run.phi_calib = np.mean(cal, axis=0)
 
 
 def grid_to_full(phi_grid: np.ndarray, n_max: int = NMAX) -> np.ndarray:

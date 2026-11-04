@@ -1,0 +1,54 @@
+\begin{table*}[!t]
+\centering
+\caption{Ablation of the three modelling choices (digital twin; paired mean reads against round-robin on jointly successful retrievals, per cent, negative is cheaper than round-robin).  $\theta$: one efficiency multiplier per container (the frozen model); $\theta{+}d$: efficiency and a dropout fraction.  $\rho_U$ is the beta-binomial correlation and $s$ the prior width; the frozen configuration is the first column.  The penalty is large only in that column: relaxing any one of the three choices moves every rule into a band a few per cent below round-robin.  Blank: not run.  Cluster-bootstrap intervals for every cell are in \texttt{results/r4\_ablation.csv}; those the text relies on are quoted there.}
+\label{tab:r4abl}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}llrrrrrrrr@{}}
+\toprule
+ & & \multicolumn{4}{c}{$\theta$ only} & \multicolumn{4}{c}{$\theta$ and dropout $d$} \\
+\cmidrule(lr){3-6}\cmidrule(lr){7-10}
+Scenario & Policy ($\rho_U$, $s$) & $0.1$, $0.5$ & $0.0$, $0.5$ & $0.1$, $1.0$ & $0.0$, $1.0$ & $0.1$, $0.5$ & $0.0$, $0.5$ & $0.1$, $1.0$ & $0.0$, $1.0$ \\
+\midrule
+baseline & Coverage-greedy & +15 & -4 & -1 & -5 & +2 & -4 & +1 & -2 \\
+ & Thompson sampling & +7 & -4 & +1 & -4 & +1 & -4 & -1 & -4 \\
+ & Tail-aware & +13 & -3 & -3 & -4 & +10 & -3 & -3 & -3 \\
+ & Pivotal & +49 & +4 & +12 & +4 & +7 & +3 & +8 & +5 \\
+ & UCB & +15 &  &  &  & -4 &  &  &  \\
+ & Learn-then-commit & +45 &  &  &  & +13 &  &  &  \\
+ & Info-greedy & +441 &  &  &  & +612 &  &  &  \\
+\midrule
+fail1 & Coverage-greedy & -17 & -15 & +2 &  & -35 & -45 & -31 &  \\
+ & Thompson sampling & -9 & -20 & -7 &  & -36 & -43 & -29 &  \\
+ & Tail-aware & +2 & -25 & -23 &  & -39 & -42 & -22 &  \\
+ & Pivotal & -15 & -8 & +16 &  & -34 & -45 & -30 &  \\
+ & UCB & -24 &  &  &  & -35 &  &  &  \\
+ & Learn-then-commit & +8 &  &  &  &  &  &  &  \\
+ & Info-greedy & +81 &  &  &  &  &  &  &  \\
+\midrule
+homog & Coverage-greedy & -3 &  &  &  & -3 &  &  &  \\
+ & Thompson sampling & -3 &  &  &  & -3 &  &  &  \\
+ & Tail-aware & -2 &  &  &  & -2 &  &  &  \\
+ & Pivotal & -4 &  &  &  & -4 &  &  &  \\
+ & UCB & -4 &  &  &  & -4 &  &  &  \\
+ & Learn-then-commit & -3 &  &  &  & -3 &  &  &  \\
+ & Info-greedy & -0 &  &  &  & -0 &  &  &  \\
+\midrule
+sweep-cov3 & Coverage-greedy & +15 &  &  &  & +3 &  &  &  \\
+ & Thompson sampling & +7 &  &  &  & +1 &  &  &  \\
+ & Tail-aware & +15 &  &  &  & +11 &  &  &  \\
+ & Pivotal &  &  &  &  & +10 &  &  &  \\
+ & UCB &  &  &  &  & -3 &  &  &  \\
+ & Learn-then-commit &  &  &  &  & +15 &  &  &  \\
+ & Info-greedy &  &  &  &  & +678 &  &  &  \\
+\midrule
+sweep-cov1 & Coverage-greedy & +13 &  &  &  & -5 &  &  &  \\
+ & Thompson sampling & +8 &  &  &  & -5 &  &  &  \\
+ & Tail-aware & +7 &  &  &  & +2 &  &  &  \\
+ & Pivotal &  &  &  &  & -0 &  &  &  \\
+ & UCB &  &  &  &  & -11 &  &  &  \\
+ & Learn-then-commit &  &  &  &  & +10 &  &  &  \\
+ & Info-greedy &  &  &  &  & +679 &  &  &  \\
+\bottomrule
+\end{tabular}
+\end{table*}

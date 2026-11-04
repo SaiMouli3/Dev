@@ -1,0 +1,29 @@
+setting,container,reads_per_stored_strand,operating_point,true_relative_efficiency,truly_degraded,posterior_mean_median,ci90_coverage,flag_rate
+"simulated s7 (containers 0,2 degraded)",C0,1.165003131090151,1x R*,0.1365757524104721,True,0.05692999498952069,0.02,1.0
+"simulated s7 (containers 0,2 degraded)",C0,2.330006262180302,2x R*,0.1365757524104721,True,0.055942908410103166,0.0,1.0
+"simulated s7 (containers 0,2 degraded)",C1,1.1829715246196775,1x R*,1.0202749121085433,False,1.0290359790476953,0.79,0.0
+"simulated s7 (containers 0,2 degraded)",C1,2.365943049239355,2x R*,1.0202749121085433,False,1.0292282251497376,0.62,0.0
+"simulated s7 (containers 0,2 degraded)",C2,1.6604769697867212,1x R*,0.14200240424099037,True,0.04975086918850867,0.0,1.0
+"simulated s7 (containers 0,2 degraded)",C2,3.3209539395734424,2x R*,0.14200240424099037,True,0.05041724176784531,0.0,1.0
+"simulated s7 (containers 0,2 degraded)",C3,2.119244643152467,1x R*,1.020664999745601,False,1.0091990805237745,0.73,0.0
+"simulated s7 (containers 0,2 degraded)",C3,4.238489286304934,2x R*,1.020664999745601,False,1.0350564448124007,0.58,0.0
+"simulated s7 (containers 0,2 degraded)",C4,3.525630050399865,1x R*,1.0029636608933858,False,1.0290200023905727,0.63,0.0
+"simulated s7 (containers 0,2 degraded)",C4,7.05126010079973,2x R*,1.0029636608933858,False,1.033217088222056,0.52,0.0
+"simulated s7 (containers 0,2 degraded)",C5,2.199779159019712,1x R*,0.9602414608648263,False,1.018397662633302,0.83,0.0
+"simulated s7 (containers 0,2 degraded)",C5,4.399558318039424,2x R*,0.9602414608648263,False,1.026598981459535,0.7,0.0
+"simulated s7 (containers 0,2 degraded)",C6,5.455675157811395,1x R*,0.9996673672568916,False,1.0384044926435791,0.63,0.0
+"simulated s7 (containers 0,2 degraded)",C6,10.91135031562279,2x R*,0.9996673672568916,False,1.0316654990657819,0.67,0.0
+"simulated s7 (containers 0,2 degraded)",C7,8.965718829640895,1x R*,0.9964997723561767,False,1.0278242381611609,0.64,0.0
+"simulated s7 (containers 0,2 degraded)",C7,17.93143765928179,2x R*,0.9964997723561767,False,1.0340874874526873,0.69,0.0
+real Twist (belief = fresh pool),Aging_0d,1.0785,1x R*,1.0,False,1.0573560763161045,0.05,0.0
+real Twist (belief = fresh pool),Aging_0d,2.157,2x R*,1.0,False,1.0573712634253127,0.0,0.0
+real Twist (belief = fresh pool),Aging_2d,1.0785,1x R*,0.7615444821288808,False,0.8101515009682052,0.37,0.1
+real Twist (belief = fresh pool),Aging_2d,2.157,2x R*,0.7615444821288808,False,0.8161502641663222,0.04,0.01
+real Twist (belief = fresh pool),Aging_7d,1.0785,1x R*,0.901760889712697,False,0.81615106733061,0.03,0.0
+real Twist (belief = fresh pool),Aging_7d,2.157,2x R*,0.901760889712697,False,0.8184766145430584,0.26,0.0
+real Twist (belief = fresh pool),PCR_15c,1.0785,1x R*,1.0321782178217822,False,1.057371260547101,0.0,0.0
+real Twist (belief = fresh pool),PCR_15c,2.157,2x R*,1.0321782178217822,False,1.0573712634401895,0.0,0.0
+real Twist (belief = fresh pool),PCR_60c,1.0785,1x R*,0.7538739669421488,False,0.6315762280762176,0.31,0.73
+real Twist (belief = fresh pool),PCR_60c,2.157,2x R*,0.7538739669421488,False,0.8161506270424308,0.02,0.0
+real Twist (belief = fresh pool),PCR_90c,1.0785,1x R*,0.3365617433414044,True,0.2762630807481783,0.0,1.0
+real Twist (belief = fresh pool),PCR_90c,2.157,2x R*,0.3365617433414044,True,0.28969553589525054,0.0,1.0

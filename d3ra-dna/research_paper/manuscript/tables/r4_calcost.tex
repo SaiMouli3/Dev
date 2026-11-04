@@ -1,0 +1,20 @@
+\begin{table}[!t]
+\centering
+\caption{What the calibrated prior costs (Genscript replay, coverage-greedy).  Calibration reads are charged explicitly: they are the first reads of the same six sequencing runs, disjoint from the evaluation reads.  Break-even is the number of retrievals over which the calibration reads are repaid by the per-retrieval saving against round-robin.  Thousands of reads.}
+\label{tab:r4calcost}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+Belief & Calib./cont. & Calib.\ total & Retrieval & Saving vs.\ RR & Break-even \\
+\midrule
+generic & 0.00 & 0.00 & 639.29 & -2.35 & -- \\
+counts & 1.00 & 6.00 & 640.34 & -3.40 & -- \\
+counts & 3.00 & 18.00 & 637.74 & -0.80 & -- \\
+counts & 10.00 & 60.00 & 635.86 & 1.08 & 55.4 \\
+counts & 30.00 & 180.00 & 658.18 & -21.24 & -- \\
+counts & 100.00 & 600.00 & 576.89 & 60.05 & 10.0 \\
+full & 300.00 & 1800.00 & 533.18 & 103.76 & 17.3 \\
+\bottomrule
+\end{tabular}
+\end{table}

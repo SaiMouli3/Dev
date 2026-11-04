@@ -1,0 +1,24 @@
+\begin{table}[!t]
+\centering
+\caption{Change detection at the prior-predicted 40\%-recovery point $R^\star$ (200 trials). Flag: $\Prob(\theta_j<0.7)>0.9$.
+Cov.: coverage of the true value by the 90\% credible interval.}
+\label{tab:detect}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}llrrrrr@{}}
+\toprule
+Setting & Container & reads/strand & true eff. & post.\ mean & cov. & flag \\
+\midrule
+sim.\ s7 & C0 (degraded) & 1.17 & 0.14 & 0.06 & 0.02 & 1.00 \\
+sim.\ s7 & C2 (degraded) & 1.66 & 0.14 & 0.05 & 0.00 & 1.00 \\
+sim.\ s7 & C1 & 1.18 & 1.02 & 1.03 & 0.79 & 0.00 \\
+sim.\ s7 & C5 & 2.20 & 0.96 & 1.02 & 0.83 & 0.00 \\
+real Twist & Aging 0d & 1.08 & 1.00 & 1.06 & 0.05 & 0.00 \\
+real Twist & Aging 2d & 1.08 & 0.76 & 0.81 & 0.37 & 0.10 \\
+real Twist & Aging 7d & 1.08 & 0.90 & 0.82 & 0.03 & 0.00 \\
+real Twist & PCR 15c & 1.08 & 1.03 & 1.06 & 0.00 & 0.00 \\
+real Twist & PCR 60c & 1.08 & 0.75 & 0.63 & 0.31 & 0.73 \\
+real Twist & PCR 90c (degraded) & 1.08 & 0.34 & 0.28 & 0.00 & 1.00 \\
+\bottomrule
+\end{tabular}
+\end{table}

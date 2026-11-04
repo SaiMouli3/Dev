@@ -1,0 +1,27 @@
+\begin{table}[!t]
+\centering
+\caption{Reads are not the only cost.  Two further charging models applied to the same baseline retrievals; the reads-only model is the Reads column itself.  A multiplexed run charges 50 read-equivalents per batch of 50 reads and 500 per container library preparation; and a separate sequencing run per batch (2{,}000 per batch).  Costs in read-equivalents (thousands).  Switching containers every batch is free in the first model and dominant in the third.}
+\label{tab:r4cost}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}p{26mm}rrrrr@{}}
+\toprule
+Allocation & Reads & Batch. & Sw. & multiplexed & run/batch \\
+\midrule
+Static $\alpha{=}1$ & 3.31 & 66 & 65 & 9.62 & 138.72 \\
+UCB\,+\,dropout model & 3.37 & 67 & 57 & 9.74 & 141.09 \\
+Static $\alpha{=}0$ (fixed depth) & 3.48 & 70 & 69 & 9.96 & 145.69 \\
+Round-robin + verified stop & 3.48 & 70 & 63 & 9.96 & 145.69 \\
+Thompson sampling\,+\,dropout model & 3.52 & 70 & 54 & 10.03 & 147.15 \\
+Coverage-greedy\,+\,dropout model & 3.55 & 71 & 57 & 10.09 & 148.40 \\
+Thompson sampling & 3.72 & 74 & 56 & 10.45 & 155.66 \\
+Pivotal\,+\,dropout model & 3.75 & 75 & 56 & 10.49 & 156.63 \\
+Tail-aware\,+\,dropout model & 3.82 & 76 & 38 & 10.64 & 159.72 \\
+Tail-aware & 3.92 & 78 & 38 & 10.85 & 163.88 \\
+Learn-then-commit\,+\,dropout model & 3.93 & 79 & 59 & 10.87 & 164.29 \\
+Coverage-greedy & 3.95 & 79 & 61 & 10.89 & 164.78 \\
+UCB & 4.00 & 80 & 54 & 11.00 & 166.96 \\
+Info-greedy\,+\,dropout model & 24.84 & 497 & 44 & 52.68 & 1021.42 \\
+\bottomrule
+\end{tabular}
+\end{table}

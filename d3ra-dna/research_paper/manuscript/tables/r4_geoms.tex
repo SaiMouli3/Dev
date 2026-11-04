@@ -1,0 +1,60 @@
+\begin{table*}[!t]
+\centering
+\caption{Other archive geometries, baseline container conditions (20 syntheses $\times$ 3 read orders; \texttt{big}: 10 $\times$ 3).  \texttt{m3}/\texttt{m12}: 3 and 12 containers; \texttt{n40}/\texttt{n64}: $(32,40)$ and $(32,64)$; \texttt{k16}: $(16,24)$; \texttt{big}: a four times larger file.  Thousands of reads.}
+\label{tab:r4geom}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}llrrrrr@{}}
+\toprule
+Setting & Allocation & $n$ & $p_{\text{ok}}$ & $\bar r_{\text{ok}}$ & vs.\ RR & q99 \\
+\midrule
+m3 & Round-robin + verified stop & 60 & 0.82 & 8.39 & -- & 72.00 \\
+ & Coverage-greedy & 60 & 0.82 & 16.24 & $+94$ & 72.00 \\
+ & Coverage-greedy\,+\,dropout model & 60 & 0.82 & 8.09 & $-4$ & 72.00 \\
+ & Tail-aware & 60 & 0.82 & 20.27 & $+141$ & 72.00 \\
+ & Thompson sampling & 60 & 0.82 & 14.56 & $+73$ & 72.00 \\
+ & Static $\alpha{=}0$ (fixed depth) & 60 & 0.82 & 8.39 & $+0$ & 72.00 \\
+ & Static $\alpha{=}1$ & 60 & 0.82 & 7.50 & $-11$ & 72.00 \\
+\midrule
+m12 & Round-robin + verified stop & 60 & 1.00 & 3.48 & -- & 5.87 \\
+ & Coverage-greedy & 60 & 1.00 & 3.64 & $+5$ & 6.68 \\
+ & Coverage-greedy\,+\,dropout model & 60 & 1.00 & 3.36 & $-3$ & 4.85 \\
+ & Tail-aware & 60 & 1.00 & 3.63 & $+4$ & 6.23 \\
+ & Thompson sampling & 60 & 1.00 & 3.67 & $+5$ & 6.48 \\
+ & Static $\alpha{=}0$ (fixed depth) & 60 & 1.00 & 3.48 & $+0$ & 5.87 \\
+ & Static $\alpha{=}1$ & 60 & 1.00 & 3.27 & $-6$ & 5.33 \\
+\midrule
+n40 & Round-robin + verified stop & 60 & 0.83 & 11.07 & -- & 60.20 \\
+ & Coverage-greedy & 60 & 0.83 & 12.04 & $+9$ & 60.20 \\
+ & Coverage-greedy\,+\,dropout model & 60 & 0.83 & 7.98 & $-28$ & 60.20 \\
+ & Tail-aware & 60 & 0.83 & 13.55 & $+22$ & 60.20 \\
+ & Thompson sampling & 60 & 0.83 & 11.90 & $+7$ & 60.20 \\
+ & Static $\alpha{=}0$ (fixed depth) & 60 & 0.83 & 11.07 & $+0$ & 60.20 \\
+ & Static $\alpha{=}1$ & 60 & 0.83 & 10.59 & $-4$ & 60.20 \\
+\midrule
+n64 & Round-robin + verified stop & 60 & 1.00 & 2.26 & -- & 2.75 \\
+ & Coverage-greedy & 60 & 1.00 & 2.28 & $+1$ & 3.08 \\
+ & Coverage-greedy\,+\,dropout model & 60 & 1.00 & 2.24 & $-1$ & 2.82 \\
+ & Tail-aware & 60 & 1.00 & 2.32 & $+3$ & 2.95 \\
+ & Thompson sampling & 60 & 1.00 & 2.29 & $+1$ & 2.72 \\
+ & Static $\alpha{=}0$ (fixed depth) & 60 & 1.00 & 2.26 & $+0$ & 2.75 \\
+ & Static $\alpha{=}1$ & 60 & 1.00 & 2.17 & $-4$ & 2.60 \\
+\midrule
+k16 & Round-robin + verified stop & 60 & 1.00 & 4.52 & -- & 5.84 \\
+ & Coverage-greedy & 60 & 1.00 & 5.29 & $+17$ & 8.64 \\
+ & Coverage-greedy\,+\,dropout model & 60 & 1.00 & 4.42 & $-2$ & 6.12 \\
+ & Tail-aware & 60 & 1.00 & 5.11 & $+13$ & 8.06 \\
+ & Thompson sampling & 60 & 1.00 & 4.82 & $+7$ & 6.79 \\
+ & Static $\alpha{=}0$ (fixed depth) & 60 & 1.00 & 4.52 & $+0$ & 5.84 \\
+ & Static $\alpha{=}1$ & 60 & 1.00 & 4.22 & $-7$ & 5.41 \\
+\midrule
+big & Round-robin + verified stop & 30 & 1.00 & 15.26 & -- & 20.05 \\
+ & Coverage-greedy & 30 & 1.00 & 17.43 & $+14$ & 28.95 \\
+ & Coverage-greedy\,+\,dropout model & 30 & 1.00 & 15.62 & $+2$ & 19.39 \\
+ & Tail-aware & 30 & 1.00 & 17.16 & $+12$ & 27.61 \\
+ & Thompson sampling & 30 & 1.00 & 16.59 & $+9$ & 23.34 \\
+ & Static $\alpha{=}0$ (fixed depth) & 30 & 1.00 & 15.26 & $+0$ & 20.05 \\
+ & Static $\alpha{=}1$ & 30 & 1.00 & 14.49 & $-5$ & 18.42 \\
+\bottomrule
+\end{tabular}
+\end{table*}

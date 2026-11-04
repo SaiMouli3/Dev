@@ -1,0 +1,41 @@
+Scenario-level clean reproduction of the primary baseline scenario (all 8 policies and the
+4 static plans, 30 syntheses x 10 read orders each).  The repository was cloned at the commit
+in research_paper/final/COMMIT.txt and every DT4DDS replicate regenerated from its seed.
+
+1. OUTCOMES reproduce exactly.
+   status: identical, file_identical: identical, wrong_output: identical, false_accepts: identical, verification_rounds: identical.
+   Wrong outputs in both runs: 0 and 0.
+
+2. INDIVIDUAL READ COUNTS do not, and this is a property of the simulator, not of the
+   controller.  DT4DDS 1.1.0 is not deterministic given a seed: calling its synthesis ->
+   aging -> PCR -> sequencing chain twice in one process with the same seed produces
+   different read streams.  Regenerating the replicates therefore yields different streams,
+   and 3510 of 3600 retrievals consumed a different number of reads
+   (mean absolute difference 1269 reads).
+   The committed read streams are consequently part of the artifact; given them, retrieval is
+   bit-exact (see rerun_check.txt).
+
+3. CONCLUSIONS reproduce.  Mean reads per policy, with cluster-bootstrap 95% intervals over
+   syntheses, and the paired difference against round-robin:
+
+   policy                          committed           clean re-run    vs RR (committed)   vs RR (re-run)
+   ------------------------------------------------------------------------------------------------------
+   static_a1.0            3343 [ 3243,  3436]     3317 [ 3245,  3407]               -4.2%           -5.4%
+   static_a2.0            3359 [ 3273,  3437]     3352 [ 3283,  3429]               -3.8%           -4.5%
+   static_a0.5            3402 [ 3293,  3500]     3392 [ 3314,  3486]               -2.5%           -3.3%
+   static_a0.0            3490 [ 3371,  3605]     3508 [ 3422,  3607]               +0.0%           +0.0%
+   round_robin_stop       3490 [ 3364,  3596]     3508 [ 3426,  3607]               +0.0%           +0.0%
+   thompson               3749 [ 3575,  3945]     3716 [ 3584,  3872]               +7.4%           +5.9%
+   tail_aware             3939 [ 3705,  4177]     3895 [ 3720,  4096]              +12.9%          +11.0%
+   coverage               4018 [ 3743,  4281]     3938 [ 3729,  4182]              +15.1%          +12.2%
+   ucb                    4024 [ 3768,  4285]     3998 [ 3785,  4248]              +15.3%          +14.0%
+   learn_then_commit      5048 [ 4752,  5299]     5095 [ 4891,  5303]              +44.6%          +45.3%
+   pivotal                5209 [ 4778,  5701]     5133 [ 4687,  5626]              +49.3%          +46.3%
+   info_greedy           18867 [17329, 20312]    19205 [18176, 20317]             +440.6%         +447.5%
+
+   Every policy mean inside the other run's interval, in both directions: yes.
+   Policy ordering by mean reads identical: yes.
+
+Conclusion: the simulator is stochastic across regenerations, so individual retrievals are not
+reproducible from seeds alone; every claim this paper makes about means, paired comparisons and
+policy ordering is reproduced by an independent re-simulation from a clean checkout.

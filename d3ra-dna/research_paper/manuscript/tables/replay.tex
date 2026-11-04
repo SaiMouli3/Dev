@@ -1,0 +1,36 @@
+\begin{table}[!t]
+\centering
+\caption{Secondary evidence: semi-empirical replay of real Illumina read streams (ENA PRJEB65931), generic prior, no evaluation-split statistics.  Mean reads (thousands) and q99; $\Delta$: mean minus the hindsight-tuned static budget (paired bootstrap 95\% CI).  Decodability is an oracle event here (consensus equals the designed strand), so this is \emph{not} exact retrieval.}
+\label{tab:replay}
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{@{}llrrr@{}}
+\toprule
+Pool & Policy & Mean & q99 & $\Delta$ vs.\ static [95\% CI] \\
+\midrule
+Twist & Static, uniform (hindsight budget) & 68.1 & 68.1 &  \\
+ & Static, hindsight-tuned & 65.7 & 65.7 &  \\
+ & Round-robin + verified stop & 58.6 & 68.4 & -7.1 [-17.4, -6.5] \\
+ & Coverage-greedy & 56.7 & 66.0 & -9.0 [-19.3, -8.5] \\
+ & Pivotal & 56.6 & 67.2 & -9.1 [-19.4, -8.6] \\
+ & Thompson sampling & 56.9 & 66.0 & -8.9 [-19.1, -8.4] \\
+ & UCB & 56.7 & 66.6 & -9.0 [-19.2, -8.5] \\
+ & Learn-then-commit & 57.2 & 66.6 & -8.5 [-18.8, -8.0] \\
+ & Info-greedy & 56.7 & 66.0 & -9.0 [-19.3, -8.5] \\
+ & Tail-aware (LCB) & 56.7 & 65.6 & -9.0 [-19.3, -8.5] \\
+ & Coverage-greedy, leak-free calibrated & 56.6 & 67.6 & -9.1 [-19.4, -8.6] \\
+\midrule
+Genscript & Static, uniform (hindsight budget) & 852 & 852 &  \\
+ & Static, hindsight-tuned & 631 & 631 &  \\
+ & Round-robin + verified stop & 637 & 853 & +6.0 [-57.4, +15.1] \\
+ & Coverage-greedy & 639 & 820 & +8.2 [-54.9, +17.2] \\
+ & Pivotal & 639 & 820 & +8.2 [-54.9, +17.2] \\
+ & Thompson sampling & 654 & 831 & +23.4 [-39.4, +31.9] \\
+ & UCB & 637 & 830 & +6.0 [-57.8, +14.9] \\
+ & Learn-then-commit & 651 & 843 & +19.7 [-42.8, +29.2] \\
+ & Info-greedy & \multicolumn{3}{l}{not completed (Appendix~\ref{app:dev})} \\
+ & Tail-aware (LCB) & 644 & 827 & +12.9 [-51.0, +21.6] \\
+ & Coverage-greedy, leak-free calibrated & 533 & 676 & -97.9 [-161.6, -90.0] \\
+\bottomrule
+\end{tabular}
+\end{table}

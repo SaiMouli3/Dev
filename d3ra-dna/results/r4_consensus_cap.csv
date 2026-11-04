@@ -1,0 +1,13 @@
+cap,scenario,policy,n,success,mean_success,q99,wrong_outputs
+12,baseline,coverage,90,1.0,4135.0,9127.0,0
+12,baseline,coverage+dropout,90,1.0,3565.0,5177.0,0
+12,baseline,round_robin_stop,90,1.0,3532.777777777778,5183.0,0
+12,fail1,round_robin_stop,300,0.31333333333333335,20579.787234042553,72000.0,0
+24,baseline,coverage,90,1.0,4140.0,9127.0,0
+24,baseline,coverage+dropout,90,1.0,3566.1111111111113,5177.0,0
+24,baseline,round_robin_stop,90,1.0,3532.777777777778,5183.0,0
+24,fail1,round_robin_stop,300,0.34,20308.823529411766,72000.0,0
+48,baseline,coverage,90,1.0,4132.222222222223,9127.0,0
+48,baseline,coverage+dropout,90,1.0,3566.1111111111113,5177.0,0
+48,baseline,round_robin_stop,90,1.0,3532.777777777778,5183.0,0
+48,fail1,round_robin_stop,300,0.3566666666666667,21187.383177570093,72000.0,0

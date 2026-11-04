@@ -211,7 +211,9 @@ def test_controller_respects_cap(surrogate_setup):
 
 def test_posterior_is_distribution_and_detects_failure(surrogate_setup):
     L, ch = surrogate_setup
-    ctrl = AdaptiveController(L, ch, AdaptiveConfig(controller="pivotal"))
+    # binomial likelihood (rho=0): a silent container is quickly judged (near-)dead; with the
+    # overdispersed default (rho=0.1) zero recoveries remain plausible for longer (documented trade-off)
+    ctrl = AdaptiveController(L, ch, AdaptiveConfig(controller="pivotal", overdispersion=0.0))
     R = np.full((2, 4), 300.0)
     U = np.array([[12, 12, 12, 12], [12, 0, 12, 12]], dtype=float)
     post = ctrl.posterior(R, U)
@@ -220,3 +222,36 @@ def test_posterior_is_distribution_and_detects_failure(surrogate_setup):
     assert post[0, :, 0].max() < 1e-6                      # recovered fragments rule out failure
     mean = post @ THETA
     assert mean[1, 1] < 0.3 * mean[0, 1]                   # silent container looks (near-)dead
+
+
+def test_overdispersed_posterior_is_wider(surrogate_setup):
+    L, ch = surrogate_setup
+    R = np.full((1, 4), 300.0)
+    U = np.array([[12, 12, 12, 12]], dtype=float)
+    sd = []
+    for od in (0.0, 0.05):
+        post = AdaptiveController(L, ch, AdaptiveConfig(controller="pivotal", overdispersion=od)).posterior(R, U)
+        np.testing.assert_allclose(post.sum(2), 1.0)
+        lt = np.log(THETA[1:])
+        p = post[0, 0, 1:] / post[0, 0, 1:].sum()
+        sd.append(np.sqrt(p @ lt ** 2 - (p @ lt) ** 2))
+    assert sd[1] > sd[0]                                   # beta-binomial spreads the posterior
+
+
+@pytest.mark.parametrize("ctl_name", ["ts", "ucb", "ltc", "info", "tail", "tail_lcb"])
+def test_new_controllers_complete(surrogate_setup, ctl_name):
+    L, ch = surrogate_setup
+    ctl = AdaptiveController(L, ch, AdaptiveConfig(controller=ctl_name, explore_rounds=2))
+    r = ctl.run(20, np.random.default_rng(1))
+    assert r.success.mean() > 0.8
+    assert np.all(np.isfinite(r.cost[r.success]))
+
+
+def test_mc_forecast_is_probability(surrogate_setup):
+    L, ch = surrogate_setup
+    base = AdaptiveController(L, ch, AdaptiveConfig(controller="coverage")).run(10, np.random.default_rng(2))
+    cap = float(np.median(base.cost))
+    ctl = AdaptiveController(L, ch, AdaptiveConfig(controller="coverage", cap=cap, forecast="mc", forecast_draws=50))
+    r = ctl.run(10, np.random.default_rng(2), checkpoints=[0.6 * cap])
+    vals = [v for _, _, v in r.meta["checkpoints"]]
+    assert vals and all(0.0 <= v <= 1.0 for v in vals)

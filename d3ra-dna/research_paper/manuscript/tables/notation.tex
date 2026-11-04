@@ -1,0 +1,30 @@
+\begin{table}[!t]
+\centering
+\caption{Notation (code objects in package \texttt{d3ra}).}
+\label{tab:notation}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{13mm}>{\raggedright\arraybackslash}p{44mm}>{\raggedright\arraybackslash}p{22mm}@{}}
+\toprule
+Symbol & Meaning & Code \\
+\midrule
+$K,N,S,P$ & data / total fragments per stripe, stripes, payload bytes & \texttt{erasure\_codes} \\
+$M$, $j$ & number of containers, container index & \texttt{Layout} \\
+$n_j$ & fragments stored in container $j$ & \texttt{Layout} \\
+$b$ & batch size (reads per decision) & \texttt{AdaptiveConfig} \\
+$R_j$, $U_j$ & reads taken from $j$, verified fragments from $j$ & \texttt{StreamRetriever} \\
+$\theta_j$, $\Theta$, $s$ & efficiency multiplier, its grid, prior log-sd & \texttt{AdaptiveConfig} \\
+$f_j$ & prior probability that container $j$ failed & \texttt{ChannelParams} \\
+$\bar\pi_j$ & prior per-fragment read share of container $j$ & \texttt{Adaptive}\allowbreak\texttt{Controller} \\
+$k$, $d$, $\varphi(t)$ & NB shape, dropout, consensus-success curve & \texttt{ChannelParams} \\
+$Q(\mu)$ & P(fragment decodable) at mean coverage $\mu$ & \texttt{\_QTable} \\
+$\rho_U$ & beta-binomial ICC of recoveries in the likelihood & \texttt{overdispersion} \\
+$h_{ij}$ & hazard of recovery within the next batch & \texttt{scores} \\
+$q$ & posterior quantile for UCB ($q$) and tail-aware ($1{-}q$) & \texttt{quantile} \\
+$\nu_s$ & remaining need of stripe $s$ ($K$ minus verified) & \texttt{scores} \\
+$w_j$, $e_j$, $\alpha$ & static proportions, hindsight per-read recovery rate, exponent & \texttt{static\_family} \\
+$\theta^\ast_j$ & calibration target (best-fitting multiplier) & \texttt{\_theta\_star} \\
+q99 & 0.99-quantile of reads per retrieval & \texttt{dt\_analysis} \\
+\bottomrule
+\end{tabular}
+\end{table}

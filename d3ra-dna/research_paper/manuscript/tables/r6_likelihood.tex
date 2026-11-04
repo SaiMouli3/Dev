@@ -1,0 +1,36 @@
+\begin{table*}[!t]
+\centering
+\caption{The complete primary comparison repeated under each likelihood setting: the frozen $\rho_U{=}0.1$, the value the corrected selection picks ($\rho_U{=}0.03$, Section~\ref{sec:res-calib}) and the binomial ($\rho_U{=}0$).  All three use the full design (30 syntheses $\times$ 10 read orders per policy) and the frozen prior width $s{=}0.5$.  Entries are the paired difference in mean reads against round-robin on jointly successful retrievals, per cent, with cluster-bootstrap 95\% intervals; negative is cheaper than round-robin.  Round-robin never evaluates the posterior, so it is bit-identical across the three settings and is the common reference.  Success probability is unchanged by $\rho_U$ in every scenario.}
+\label{tab:r6lik}
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}llrrr@{}}
+\toprule
+Scenario & Policy & $\rho_U{=}0.1$ (frozen) & $\rho_U{=}0.03$ (re-selected) & $\rho_U{=}0$ (binomial) \\
+\midrule
+baseline & Coverage-greedy & +15 [+10, +21] & -0 [-2, +2] & -4 [-6, -3] \\
+ & Thompson sampling & +7 [+4, +11] & +0 [-2, +2] & -4 [-5, -2] \\
+ & UCB & +15 [+11, +20] & +2 [-0, +4] &  \\
+ & Tail-aware & +13 [+9, +17] & -1 [-3, +1] & -3 [-5, -1] \\
+ & Pivotal & +49 [+39, +60] & +12 [+9, +16] & +4 [+2, +7] \\
+ & Learn-then-commit & +45 [+40, +49] & +35 [+30, +40] &  \\
+ & Info-greedy & +441 [+408, +471] & +576 [+531, +617] &  \\
+\midrule
+homog & Coverage-greedy & -3 [-5, -2] & -4 [-5, -3] &  \\
+ & Thompson sampling & -3 [-4, -2] & -3 [-4, -2] &  \\
+ & UCB & -4 [-5, -3] & -4 [-5, -3] &  \\
+ & Tail-aware & -2 [-4, -1] & -3 [-4, -2] &  \\
+ & Pivotal & -4 [-5, -3] & -4 [-5, -3] &  \\
+ & Learn-then-commit & -3 [-4, -2] & -3 [-4, -3] &  \\
+ & Info-greedy & -0 [-1, +0] & -0 [-1, +0] &  \\
+\midrule
+fail1 & Coverage-greedy & -17 [-23, -9] & -9 [-13, -3] & -15 [-20, -10] \\
+ & Thompson sampling & -9 [-15, -1] & -11 [-15, -5] & -20 [-23, -17] \\
+ & UCB & -24 [-28, -17] & -2 [-9, +6] &  \\
+ & Tail-aware & +2 [-7, +13] & -17 [-22, -11] & -25 [-29, -21] \\
+ & Pivotal & -15 [-21, -6] & +1 [-6, +10] & -8 [-14, -2] \\
+ & Learn-then-commit & +8 [+3, +14] & -18 [-21, -14] &  \\
+ & Info-greedy & +81 [+50, +128] & +80 [+49, +128] &  \\
+\bottomrule
+\end{tabular}
+\end{table*}

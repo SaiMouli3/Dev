@@ -1,0 +1,9 @@
+source,setting,overdispersion,ci90_cov_mean,ci90_cov_min,ci90_cov_max,flag_healthy_max,flag_moderate_max,flag_degraded_min,abs_err_mean
+Twist+sim (selection),real Twist,0.0,0.08125,0.0,0.39,0.0,0.815,1.0,0.060007394464195875
+Twist+sim (selection),real Twist,0.01,1.0,1.0,1.0,0.0,0.0,1.0,0.02292560746578859
+Twist+sim (selection),real Twist,0.05,1.0,1.0,1.0,0.0,0.0,1.0,0.019485520994179276
+Twist+sim (selection),simulated s7,0.0,0.5065625,0.0,0.795,0.0,,1.0,0.038053755449585086
+Twist+sim (selection),simulated s7,0.01,0.79,0.08,0.985,0.0,,1.0,0.026892125304616103
+Twist+sim (selection),simulated s7,0.05,1.0,1.0,1.0,0.0,,1.0,0.03382992502879027
+Genscript (held-out),real genscript,0.0,0.006500000000000001,0.0,0.065,0.0,0.0,1.0,0.3399913606251792
+Genscript (held-out),real genscript,0.01,0.849,0.22,1.0,0.0,0.0,1.0,0.33458991069137095

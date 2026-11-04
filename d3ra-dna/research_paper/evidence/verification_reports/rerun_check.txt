@@ -1,0 +1,26 @@
+Re-run check of 24 randomly sampled committed retrievals of results/dt_baseline.csv in a fresh, single-process run (reverse order). Fields compared: status, reads, reads_per_container, rounds, decode_attempts, false_accepts, verification_rounds, file_identical, wrong_output.
+Mismatching retrievals: 0 of 24.
+baseline rep=15 perm=1 coverage           reads=3350 -> 3350 IDENTICAL
+baseline rep=28 perm=2 tail_aware         reads=3600 -> 3600 IDENTICAL
+baseline rep=27 perm=9 coverage           reads=4050 -> 4050 IDENTICAL
+baseline rep=11 perm=6 pivotal            reads=4550 -> 4550 IDENTICAL
+baseline rep=18 perm=0 pivotal            reads=7200 -> 7200 IDENTICAL
+baseline rep=15 perm=6 round_robin_stop   reads=3400 -> 3400 IDENTICAL
+baseline rep=12 perm=1 learn_then_commit  reads=5600 -> 5600 IDENTICAL
+baseline rep=29 perm=6 info_greedy        reads=15000 -> 15000 IDENTICAL
+baseline rep=7 perm=2 round_robin_stop   reads=3350 -> 3350 IDENTICAL
+baseline rep=22 perm=2 thompson           reads=3500 -> 3500 IDENTICAL
+baseline rep=2 perm=6 learn_then_commit  reads=4800 -> 4800 IDENTICAL
+baseline rep=25 perm=0 info_greedy        reads=15350 -> 15350 IDENTICAL
+baseline rep=0 perm=6 thompson           reads=2050 -> 2050 IDENTICAL
+baseline rep=5 perm=7 pivotal            reads=3450 -> 3450 IDENTICAL
+baseline rep=16 perm=5 coverage           reads=3050 -> 3050 IDENTICAL
+baseline rep=29 perm=7 info_greedy        reads=14450 -> 14450 IDENTICAL
+baseline rep=4 perm=0 ucb                reads=4450 -> 4450 IDENTICAL
+baseline rep=0 perm=2 coverage           reads=2250 -> 2250 IDENTICAL
+baseline rep=25 perm=0 thompson           reads=4750 -> 4750 IDENTICAL
+baseline rep=9 perm=8 coverage           reads=3100 -> 3100 IDENTICAL
+baseline rep=16 perm=4 learn_then_commit  reads=4800 -> 4800 IDENTICAL
+baseline rep=13 perm=6 info_greedy        reads=26300 -> 26300 IDENTICAL
+baseline rep=25 perm=2 round_robin_stop   reads=3750 -> 3750 IDENTICAL
+baseline rep=15 perm=0 info_greedy        reads=15000 -> 15000 IDENTICAL

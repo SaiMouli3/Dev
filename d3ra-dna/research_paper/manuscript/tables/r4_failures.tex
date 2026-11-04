@@ -1,0 +1,62 @@
+\begin{table*}[!t]
+\centering
+\caption{Failure modes beyond total loss (20 syntheses $\times$ 3 read orders).  \texttt{partial}: a fraction of a container's designs is physically lost; \texttt{lowyield}: 90\% of a container's reads do not derive from stored strands; \texttt{contam}: 50\% do not; \texttt{common-cause}: every container aged two further half-lives and amplified harder.  Paired against round-robin on jointly successful retrievals.  Thousands of reads.}
+\label{tab:r4fail}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}llrrrrr@{}}
+\toprule
+Setting & Allocation & $n$ & $p_{\text{ok}}$ & $\bar r_{\text{ok}}$ & vs.\ RR & q99 \\
+\midrule
+partial-c0-50 & Round-robin + verified stop & 60 & 1.00 & 6.66 & -- & 13.31 \\
+ & Coverage-greedy & 60 & 1.00 & 11.76 & $+77$ & 21.44 \\
+ & Coverage-greedy\,+\,dropout model & 60 & 1.00 & 6.26 & $-6$ & 10.09 \\
+ & Tail-aware & 60 & 1.00 & 12.79 & $+92$ & 31.04 \\
+ & Thompson sampling & 60 & 1.00 & 10.24 & $+54$ & 23.50 \\
+ & Thompson sampling\,+\,dropout model & 60 & 1.00 & 6.73 & $+1$ & 12.35 \\
+ & UCB & 60 & 1.00 & 10.64 & $+60$ & 17.55 \\
+ & Static $\alpha{=}0$ (fixed depth) & 60 & 1.00 & 6.66 & $+0$ & 13.31 \\
+ & Static $\alpha{=}1$ & 60 & 1.00 & 5.76 & $-14$ & 11.07 \\
+\midrule
+partial-c0c3-25 & Round-robin + verified stop & 60 & 0.95 & 6.45 & -- & 72.00 \\
+ & Coverage-greedy & 60 & 0.95 & 10.19 & $+58$ & 72.00 \\
+ & Coverage-greedy\,+\,dropout model & 60 & 0.95 & 6.37 & $-1$ & 72.00 \\
+ & Tail-aware & 60 & 0.95 & 11.16 & $+73$ & 72.00 \\
+ & Thompson sampling & 60 & 0.95 & 9.07 & $+40$ & 72.00 \\
+ & Thompson sampling\,+\,dropout model & 60 & 0.95 & 6.74 & $+4$ & 72.00 \\
+ & UCB & 60 & 0.95 & 9.28 & $+44$ & 72.00 \\
+ & Static $\alpha{=}0$ (fixed depth) & 60 & 0.95 & 6.45 & $+0$ & 72.00 \\
+ & Static $\alpha{=}1$ & 60 & 0.95 & 5.84 & $-10$ & 72.00 \\
+\midrule
+lowyield-c0 & Round-robin + verified stop & 60 & 1.00 & 7.58 & -- & 15.47 \\
+ & Coverage-greedy & 60 & 1.00 & 8.29 & $+9$ & 14.49 \\
+ & Coverage-greedy\,+\,dropout model & 60 & 1.00 & 7.34 & $-3$ & 12.37 \\
+ & Tail-aware & 60 & 1.00 & 8.44 & $+11$ & 18.72 \\
+ & Thompson sampling & 60 & 1.00 & 7.71 & $+2$ & 13.45 \\
+ & Thompson sampling\,+\,dropout model & 60 & 1.00 & 7.42 & $-2$ & 12.00 \\
+ & UCB & 60 & 1.00 & 8.39 & $+11$ & 14.07 \\
+ & Static $\alpha{=}0$ (fixed depth) & 60 & 1.00 & 7.58 & $+0$ & 15.47 \\
+ & Static $\alpha{=}1$ & 60 & 1.00 & 8.62 & $+14$ & 16.47 \\
+\midrule
+contam-c2 & Round-robin + verified stop & 60 & 1.00 & 3.90 & -- & 5.71 \\
+ & Coverage-greedy & 60 & 1.00 & 4.47 & $+15$ & 8.58 \\
+ & Coverage-greedy\,+\,dropout model & 60 & 1.00 & 4.00 & $+2$ & 5.42 \\
+ & Tail-aware & 60 & 1.00 & 4.40 & $+13$ & 6.30 \\
+ & Thompson sampling & 60 & 1.00 & 4.24 & $+9$ & 6.56 \\
+ & Thompson sampling\,+\,dropout model & 60 & 1.00 & 3.97 & $+2$ & 5.87 \\
+ & UCB & 60 & 1.00 & 4.47 & $+15$ & 8.00 \\
+ & Static $\alpha{=}0$ (fixed depth) & 60 & 1.00 & 3.90 & $+0$ & 5.71 \\
+ & Static $\alpha{=}1$ & 60 & 1.00 & 3.77 & $-3$ & 5.91 \\
+\midrule
+common-cause & Round-robin + verified stop & 60 & 0.87 & 12.49 & -- & 72.00 \\
+ & Coverage-greedy & 60 & 0.87 & 18.35 & $+47$ & 72.00 \\
+ & Coverage-greedy\,+\,dropout model & 60 & 0.87 & 8.29 & $-34$ & 72.00 \\
+ & Tail-aware & 60 & 0.87 & 20.08 & $+61$ & 72.00 \\
+ & Thompson sampling & 60 & 0.87 & 17.08 & $+37$ & 72.00 \\
+ & Thompson sampling\,+\,dropout model & 60 & 0.87 & 8.83 & $-29$ & 72.00 \\
+ & UCB & 60 & 0.87 & 16.18 & $+29$ & 72.00 \\
+ & Static $\alpha{=}0$ (fixed depth) & 60 & 0.87 & 12.49 & $+0$ & 72.00 \\
+ & Static $\alpha{=}1$ & 60 & 0.87 & 10.45 & $-16$ & 72.00 \\
+\bottomrule
+\end{tabular}
+\end{table*}

@@ -113,7 +113,7 @@ Script: `experiments/q4_stopping_safety.py`. Code: `decoding/reconstruction.py`,
 | **RS nsym 4, CRC-16 (default)** | **0 / 2,682 (≤ 1.1×10⁻³)** | **2×10⁻⁷** |
 
 **End-to-end retrievals** (12 each, heavy errors):
-- **Default code:** 12/12 exact, **0 false accepts in 10,567 decode attempts**, 0 wrong outputs.
+- **Default code:** 12/12 exact, **0 false accepts in 10,557 decode attempts**, 0 wrong outputs.
 - **Weak code (nsym 2, no CRC):** 54–60 false accepts per retrieval. All were caught: **0 wrong files output**. Retrievals ended *partial* because bad fragments outnumbered what leave-two-out repair can isolate. The weak code is safe but not live, which justifies the CRC.
 
 **Futility rule, a negative result.** Giving up when the estimated completion probability drops below ε (10⁻³–5×10⁻²) abandoned 3.7–4.5% of retrievals in the channel-change scenario. **All of them would have succeeded** within the budget. The completion-probability model is miscalibrated under channel change, so the rule is off by default and is not recommended without calibration.
@@ -146,7 +146,7 @@ Script: `experiments/q4_stopping_safety.py`. Code: `decoding/reconstruction.py`,
 | s4, P(exact) at ref (0.99 never reached) | 0.970–0.975 | 0.973–0.989 | 0.944–0.969 | 0.977–0.989 |
 
 - The cost rankings are stable to the seed. Note that s2's container parameters are fixed, so here the seed varies only the Monte-Carlo draws.
-- **Negative correction:** the earlier claim that E is "the only design reaching 0.99 in s4" is **not robust**. E is the most reliable design in 3 of 5 seeds but below 0.99 in all of them. The claim has been corrected throughout.
+- **Negative correction:** the earlier claim that E is "the only design reaching 0.99 in s4" is **not robust**. E is the most reliable design in only 2 of 5 seeds but below 0.99 in all of them. The claim has been corrected throughout.
 
 **Strongest static baseline and paired statistics on real reads** (Twist pool, `results/realdata_policies.csv`). The static read fractions were optimised *on the evaluation recovery-time matrix itself*, an oracle that no deployable static plan can beat. The difference is a paired bootstrap over the same 200 read orders.
 

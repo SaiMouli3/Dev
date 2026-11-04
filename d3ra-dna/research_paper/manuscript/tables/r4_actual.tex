@@ -1,0 +1,49 @@
+\begin{table*}[!t]
+\centering
+\caption{Reads \emph{consumed} with verified stopping versus capacity that must be \emph{reserved} without it (digital twin, 300 retrievals per row).  All rows stop on verification, so the comparison between rows is allocation only; the last column is the budget the same read proportions would need without stopping, which coincides with q99 wherever every retrieval succeeds.  Thousands of reads; mean over all attempts with a cluster-bootstrap 95\% interval.}
+\label{tab:actual}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}llrrrrr@{}}
+\toprule
+Scen. & Allocation & $p_{\text{ok}}$ & $\bar r_{\text{all}}$ [95\% CI] & q95 & q99 & $B_{0.99}$ \\
+\midrule
+Base & Static $\alpha{=}0$ (fixed depth) & 1.00 & 3.49 [3.37, 3.60] & 4.56 & 5.15 & 5.15 \\
+ & Static $\alpha{=}0.25$ & 1.00 & 3.45 [3.33, 3.55] & 4.60 & 5.05 & 5.05 \\
+ & Static $\alpha{=}0.5$ & 1.00 & 3.40 [3.29, 3.50] & 4.55 & 4.90 & 4.90 \\
+ & Static $\alpha{=}0.75$ & 1.00 & 3.36 [3.25, 3.46] & 4.45 & 4.80 & 4.80 \\
+ & Static $\alpha{=}1$ & 1.00 & 3.34 [3.24, 3.44] & 4.45 & 4.80 & 4.80 \\
+ & Static $\alpha{=}1.25$ & 1.00 & 3.33 [3.24, 3.43] & 4.45 & 5.00 & 5.00 \\
+ & Static $\alpha{=}1.5$ & 1.00 & 3.33 [3.24, 3.43] & 4.40 & 4.95 & 4.95 \\
+ & Static $\alpha{=}2$ & 1.00 & 3.36 [3.27, 3.44] & 4.40 & 4.90 & 4.90 \\
+ & Static $\alpha{=}3$ & 1.00 & 3.47 [3.38, 3.54] & 4.55 & 5.30 & 5.30 \\
+ & Static $\alpha{=}0.5$, calibration-estimated & 1.00 & 3.39 [3.29, 3.49] & 4.50 & 4.85 & 4.85 \\
+ & Static $\alpha{=}1$, calibration-estimated & 1.00 & 3.34 [3.23, 3.43] & 4.45 & 5.00 & 5.00 \\
+ & Static $\alpha{=}2$, calibration-estimated & 1.00 & 3.39 [3.30, 3.46] & 4.40 & 5.10 & 5.10 \\
+ & Round-robin + verified stop & 1.00 & 3.49 [3.37, 3.60] & 4.56 & 5.15 & 5.15 \\
+ & Coverage-greedy & 1.00 & 4.02 [3.77, 4.30] & 5.80 & 9.05 & 9.05 \\
+ & Pivotal & 1.00 & 5.21 [4.75, 5.70] & 8.85 & 9.60 & 9.60 \\
+ & Thompson sampling & 1.00 & 3.75 [3.57, 3.95] & 5.21 & 6.45 & 6.45 \\
+ & UCB & 1.00 & 4.02 [3.75, 4.29] & 6.05 & 8.15 & 8.15 \\
+ & Learn-then-commit & 1.00 & 5.05 [4.74, 5.31] & 6.80 & 7.65 & 7.65 \\
+ & Info-greedy & 1.00 & 18.87 [17.25, 20.31] & 31.44 & 37.45 & 37.45 \\
+ & Tail-aware & 1.00 & 3.94 [3.71, 4.19] & 5.65 & 7.15 & 7.15 \\
+\midrule
+Homog. & Static $\alpha{=}0$ (fixed depth) & 1.00 & 2.26 [2.23, 2.29] & 2.60 & 2.85 & 2.85 \\
+ & Static $\alpha{=}0.5$ & 1.00 & 2.26 [2.24, 2.29] & 2.65 & 2.85 & 2.85 \\
+ & Static $\alpha{=}1$ & 1.00 & 2.26 [2.24, 2.29] & 2.65 & 2.85 & 2.85 \\
+ & Static $\alpha{=}2$ & 1.00 & 2.26 [2.24, 2.29] & 2.65 & 2.85 & 2.85 \\
+ & Static $\alpha{=}0.5$, calibration-estimated & 1.00 & 2.26 [2.24, 2.28] & 2.65 & 2.75 & 2.75 \\
+ & Static $\alpha{=}1$, calibration-estimated & 1.00 & 2.26 [2.23, 2.28] & 2.65 & 2.75 & 2.75 \\
+ & Static $\alpha{=}2$, calibration-estimated & 1.00 & 2.26 [2.24, 2.28] & 2.65 & 2.75 & 2.75 \\
+ & Round-robin + verified stop & 1.00 & 2.26 [2.23, 2.29] & 2.60 & 2.85 & 2.85 \\
+ & Coverage-greedy & 1.00 & 2.18 [2.16, 2.20] & 2.50 & 2.70 & 2.70 \\
+ & Pivotal & 1.00 & 2.18 [2.16, 2.20] & 2.50 & 2.75 & 2.75 \\
+ & Thompson sampling & 1.00 & 2.19 [2.17, 2.22] & 2.50 & 2.70 & 2.70 \\
+ & UCB & 1.00 & 2.18 [2.16, 2.20] & 2.50 & 2.75 & 2.75 \\
+ & Learn-then-commit & 1.00 & 2.19 [2.17, 2.21] & 2.50 & 2.75 & 2.75 \\
+ & Info-greedy & 1.00 & 2.25 [2.23, 2.28] & 2.60 & 2.90 & 2.90 \\
+ & Tail-aware & 1.00 & 2.20 [2.18, 2.23] & 2.55 & 2.75 & 2.75 \\
+\bottomrule
+\end{tabular}
+\end{table*}

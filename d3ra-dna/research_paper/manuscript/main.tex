@@ -1074,10 +1074,13 @@ decision worth engineering next is the \emph{container model}, not the allocatio
 \textbf{Calibration versus cost, and model versus likelihood.}  The likelihood that gave the
 best-calibrated intervals ($\rho_U{=}0.1$) also gave the costlier allocations, and the binomial
 likelihood, whose intervals covered only 54\%, gave cheaper ones.  Calibrating the uncertainty of a
-misspecified model does not make its decisions better.  Our revision-4 experiments go one step further
-and say which part was at fault: re-selecting $\rho_U$ with the prior actually used and on a wider grid
-still cannot cover the near-dead container at any value, while adding a dropout parameter to the
-container model fixes most of the cost penalty.  The lesson we draw is about priorities --- repair the
+misspecified model does not make its decisions better.  Our later experiments say which part was at fault, and the two questions come apart.  On
+\emph{calibration}, re-selecting $\rho_U$ with the prior actually used and on a wider grid still cannot
+cover the near-dead container at any value: that failure belongs to the container model, and only
+adding a dropout parameter addresses it.  On \emph{cost}, the likelihood matters a great deal: at the
+re-selected $\rho_U{=}0.03$ most of the allocation penalty disappears without touching the model at all
+(Section~\ref{sec:res-lik}).  So a configuration can be badly calibrated and yet allocate acceptably,
+and our strongest negative result sat at a setting that was poor on both counts.  The lesson we draw is about priorities --- repair the
 container model before tuning the posterior over it --- and we therefore present the controller as
 online-adaptive, not self-calibrating, and do not offer its forecasts as probabilities.
 

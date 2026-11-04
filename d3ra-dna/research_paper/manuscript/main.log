@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.11.2)  4 NOV 2026 05:59
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.11.2)  4 NOV 2026 06:00
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -840,92 +840,92 @@ Underfull \hbox (badness 10000) in paragraph at lines 25--25
  []
 
 )
-Underfull \hbox (badness 5359) in paragraph at lines 1181--1190
+Underfull \hbox (badness 5359) in paragraph at lines 1184--1193
 []\OT1/ptm/b/n/10 Artifact. \OT1/ptm/m/n/10 Code, con-fig-u-ra-tion, ev-ery re-
 sult file and
  []
 
 
-Underfull \hbox (badness 4429) in paragraph at lines 1181--1190
+Underfull \hbox (badness 4429) in paragraph at lines 1184--1193
 \OT1/ptm/m/n/10 the scripts that build ev-ery ta-ble and fig-ure are in
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1181--1190
+Underfull \hbox (badness 10000) in paragraph at lines 1184--1193
 \OT1/ptm/m/n/10 the pub-lic repos-i-tory $https : / / github . com / SaiMouli3 
 / Dev$
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1181--1190
+Underfull \hbox (badness 10000) in paragraph at lines 1184--1193
 \OT1/ptm/m/n/10 (di-rec-tory \OT1/pcr/m/n/10 d3ra-dna\OT1/ptm/m/n/10 ), at the 
 com-mit recorded in
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1181--1190
+Underfull \hbox (badness 10000) in paragraph at lines 1184--1193
 \OT1/pcr/m/n/10 research_paper/final/COMMIT.txt \OT1/ptm/m/n/10 of that
  []
 
 
-Underfull \hbox (badness 3281) in paragraph at lines 1181--1190
+Underfull \hbox (badness 3281) in paragraph at lines 1184--1193
 \OT1/ptm/m/n/10 2.5.3, SciPy 1.18.1, pan-das 3.0.5 and DT4DDS 1.1.0
  []
 
 
-Underfull \hbox (badness 2005) in paragraph at lines 1181--1190
+Underfull \hbox (badness 2005) in paragraph at lines 1184--1193
 \OT1/ptm/m/n/10 (pinned in \OT1/pcr/m/n/10 requirements.txt\OT1/ptm/m/n/10 ); t
 he pub-lic data are
  []
 
 
-Underfull \hbox (badness 2020) in paragraph at lines 1181--1190
+Underfull \hbox (badness 2020) in paragraph at lines 1184--1193
 \OT1/ptm/m/n/10 ENA PR-JEB65931 [46] (Il-lu-mina) and the DNAformer
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1191--1201
+Underfull \hbox (badness 10000) in paragraph at lines 1194--1204
 \OT1/ptm/m/n/10 are driven by \OT1/pcr/m/n/10 experiments/dt_experiments.py
  []
 
 
-Underfull \hbox (badness 7851) in paragraph at lines 1191--1201
+Underfull \hbox (badness 7851) in paragraph at lines 1194--1204
 \OT1/ptm/m/n/10 (sub-commands \OT1/pcr/m/n/10 gen\OT1/ptm/m/n/10 , \OT1/pcr/m/n
 /10 run\OT1/ptm/m/n/10 , \OT1/pcr/m/n/10 runx\OT1/ptm/m/n/10 , \OT1/pcr/m/n/10 
 static\OT1/ptm/m/n/10 , \OT1/pcr/m/n/10 calib\OT1/ptm/m/n/10 ,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1191--1201
+Underfull \hbox (badness 10000) in paragraph at lines 1194--1204
 \OT1/pcr/m/n/10 calib_eval\OT1/ptm/m/n/10 , \OT1/pcr/m/n/10 forecast\OT1/ptm/m/
 n/10 , \OT1/pcr/m/n/10 posthoc_rho0\OT1/ptm/m/n/10 ), the
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1191--1201
+Underfull \hbox (badness 10000) in paragraph at lines 1194--1204
 \OT1/ptm/m/n/10 re-play by \OT1/pcr/m/n/10 experiments/paper_experiments.py
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1191--1201
+Underfull \hbox (badness 10000) in paragraph at lines 1194--1204
 \OT1/ptm/m/n/10 (\OT1/pcr/m/n/10 replay_v3\OT1/ptm/m/n/10 , \OT1/pcr/m/n/10 rep
 lay_calcost\OT1/ptm/m/n/10 ); statis-tics by
  []
 
 
-Underfull \hbox (badness 1565) in paragraph at lines 1191--1201
+Underfull \hbox (badness 1565) in paragraph at lines 1194--1204
 \OT1/pcr/m/n/10 dt_analysis.py \OT1/ptm/m/n/10 and \OT1/pcr/m/n/10 r4_analysis.
 py\OT1/ptm/m/n/10 ; ta-bles and
  []
 
 
-Underfull \hbox (badness 2318) in paragraph at lines 1191--1201
+Underfull \hbox (badness 2318) in paragraph at lines 1194--1204
 \OT1/pcr/m/n/10 dt_protocol.yaml \OT1/ptm/m/n/10 and \OT1/pcr/m/n/10 dt_protoco
 l_rev4.yaml
  []
 
 [21]
-Underfull \hbox (badness 2165) in paragraph at lines 1213--1225
+Underfull \hbox (badness 2165) in paragraph at lines 1216--1228
 \OT1/ptm/m/n/10 against 3.51k; the hind-sight static plan $\OMS/cmsy/m/n/10 ^^@
 $\OT1/ptm/m/n/10 4.2% against
  []
@@ -1025,7 +1025,7 @@ en-er-ated) are kept in
  []
 
 ) [23]
-Underfull \hbox (badness 1394) in paragraph at lines 1312--1322
+Underfull \hbox (badness 1394) in paragraph at lines 1315--1325
 \OT1/ptm/m/n/10 against $\OT1/cmr/m/n/10 +$\OT1/ptm/m/n/10 15.1% at $\OML/cmm/m
 /it/10 ^^Z[][]\OT1/cmr/m/n/10 0\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 1$\OT1/ptm/m/n
 /10 ), Thomp-son sam-pling 3.37k
@@ -1092,7 +1092,7 @@ rr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/
 share/texlive/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive/
 texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/font
 s/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (26 pages, 570184 bytes).
+Output written on main.pdf (26 pages, 570513 bytes).
 PDF statistics:
  376 PDF objects out of 1000 (max. 8388607)
  217 compressed objects within 3 object streams

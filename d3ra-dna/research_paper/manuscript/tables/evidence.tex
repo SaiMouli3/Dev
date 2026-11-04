@@ -19,7 +19,7 @@ The penalty needs the frozen \emph{combination} of container model, likelihood a
 Likelihood, prior and model separated by ablation & \texttt{runx baseline \_r4abl\_*} & \texttt{dt\_*\_r4abl\_*.csv} & DT \\
 After an outright failure: $-$24\% on successes, $-$3\% per attempt, success unchanged (Table~\ref{tab:uncond}) & \texttt{run fail1} & \texttt{dt\_fail1\{,\_static\}.csv} & DT, simulated failure \\
 Crossover with severity of the worst container & \texttt{run sweep\_cov*} & \texttt{dt\_sweep\_cov*.csv} & DT \\
-No \emph{adaptive} rule lowers q99 (hindsight proportions do, by $\approx$9\%); wide tail intervals (Table~\ref{tab:r4tails}) & all DT runs, \texttt{\_r4ext} & \texttt{r4\_tails.csv} & DT, negative \\
+No \emph{adaptive} rule lowers q99 \emph{reliably} (three dropout-model configurations are 1--9\% below numerically, intervals contain zero; fixed proportions $-$8.7\% with the interval excluding zero) (Table~\ref{tab:r4tails}) & all DT runs, \texttt{\_r4ext} & \texttt{r4\_tails.csv} & DT, negative \\
 $\rho_U$ re-selected at $s{=}0.5$ on an extended grid; near-dead never covered (Table~\ref{tab:r4calib}) & \texttt{calib}, \texttt{calib\_eval} ($s{=}0.5$) & \texttt{dt\_calibration\_*\_r4sd05.csv} & DT, negative \\
 Forecasts over-confident, worse than climatology & \texttt{forecast baseline} & \texttt{dt\_forecast\_baseline.csv} & DT, negative \\
 Prior sensitivity (failure rate, dropout, shape, grid, $s$, $\varphi$) & \texttt{runx baseline \_r4prior\_*} & \texttt{r4\_prior\_sensitivity.csv} & DT \\

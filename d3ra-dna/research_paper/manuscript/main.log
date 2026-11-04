@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.11.2)  3 NOV 2026 20:48
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.11.2)  4 NOV 2026 04:28
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -656,30 +656,33 @@ LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 3
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
-)) [3] [4]
-Underfull \hbox (badness 10000) in paragraph at lines 350--352
+)) [3]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [4]
+Underfull \hbox (badness 10000) in paragraph at lines 354--356
 []\OT1/ptm/m/it/10 Coverage-greedy\OT1/ptm/m/n/10 : $[]$ = pos-te-rior mean; re
 ads
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 352--354
+Underfull \hbox (badness 10000) in paragraph at lines 356--358
 []\OT1/ptm/m/it/10 Pivotal\OT1/ptm/m/n/10 : weights each frag-ment by a normal-
 
  []
 
 
-Underfull \hbox (badness 3118) in paragraph at lines 352--354
+Underfull \hbox (badness 3118) in paragraph at lines 356--358
 \OT1/ptm/m/n/10 approximation sen-si-tiv-ity of its stripe's com-ple-tion
  []
 
 (./tables/algorithms.tex) [5] [6]
-Underfull \hbox (badness 10000) in paragraph at lines 454--465
+Underfull \hbox (badness 10000) in paragraph at lines 458--469
 []\OT1/ptm/m/n/10 Design, poli-cies, met-rics, statis-tics, pre-specified
  []
 
 
-Underfull \hbox (badness 4168) in paragraph at lines 454--465
+Underfull \hbox (badness 4168) in paragraph at lines 458--469
 \OT1/ptm/m/n/10 com-par-isons and the cal-i-bra-tion rule were writ-ten to
  []
 
@@ -702,24 +705,23 @@ LaTeX Font Warning: Font shape `OT1/ptm/m/scit' undefined
 (Font)              using `OT1/ptm/m/it' instead on input line 3.
 
 )
-<figures/fig_dt_policies.pdf, id=54, 522.27776pt x 168.16031pt>
+<figures/fig_dt_policies.pdf, id=53, 522.27776pt x 168.16031pt>
 File: figures/fig_dt_policies.pdf Graphic file (type pdf)
 <use figures/fig_dt_policies.pdf>
-Package pdftex.def Info: figures/fig_dt_policies.pdf  used on input line 578.
+Package pdftex.def Info: figures/fig_dt_policies.pdf  used on input line 582.
 (pdftex.def)             Requested size: 516.0pt x 166.14563pt.
  [8] (./tables/r4_uncond.tex) [9]
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Underfull \vbox (badness 6461) has occurred while \output is active []
 
 
-(./tables/r4_ablation.tex)
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [10]
-[11 <./figures/fig_dt_policies.pdf>]
+(./tables/r4_ablation.tex) [11 <./figures/fig_dt_policies.pdf>]
 <figures/fig_dt_sweep.pdf, id=116, 273.96347pt x 155.72171pt>
 File: figures/fig_dt_sweep.pdf Graphic file (type pdf)
 <use figures/fig_dt_sweep.pdf>
-Package pdftex.def Info: figures/fig_dt_sweep.pdf  used on input line 731.
+Package pdftex.def Info: figures/fig_dt_sweep.pdf  used on input line 735.
 (pdftex.def)             Requested size: 252.0pt x 143.24194pt.
 
 Underfull \vbox (badness 1648) has occurred while \output is active []
@@ -729,27 +731,30 @@ Underfull \vbox (badness 1648) has occurred while \output is active []
 <figures/fig_dt_calibration.pdf, id=120, 497.41081pt x 150.40694pt>
 File: figures/fig_dt_calibration.pdf Graphic file (type pdf)
 <use figures/fig_dt_calibration.pdf>
-Package pdftex.def Info: figures/fig_dt_calibration.pdf  used on input line 806
+Package pdftex.def Info: figures/fig_dt_calibration.pdf  used on input line 818
 .
 (pdftex.def)             Requested size: 505.6778pt x 152.90582pt.
  [13 <./figures/fig_dt_sweep.pdf>]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
 <figures/fig_forecast.pdf, id=144, 247.72362pt x 150.6221pt>
 File: figures/fig_forecast.pdf Graphic file (type pdf)
 <use figures/fig_forecast.pdf>
-Package pdftex.def Info: figures/fig_forecast.pdf  used on input line 820.
+Package pdftex.def Info: figures/fig_forecast.pdf  used on input line 832.
 (pdftex.def)             Requested size: 252.0pt x 153.22339pt.
- (./tables/replay.tex
+
+(./tables/replay.tex
 
 LaTeX Font Warning: Font shape `OT1/ptm/m/scit' undefined
 (Font)              using `OT1/ptm/m/it' instead on input line 3.
 
-)
+) [14] [15 <./figures/fig_dt_calibration.pdf> <./figures/fig_forecast.pdf>]
+(./tables/r4_calcost.tex) (./tables/r4_cap.tex) (./tables/r4_fail.tex) [16]
+(./tables/r4_geoms.tex)
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [14]
-(./tables/r4_calcost.tex) [15 <./figures/fig_dt_calibration.pdf> <./figures/fig
-_forecast.pdf>] (./tables/r4_cap.tex) (./tables/r4_fail.tex)
-(./tables/r4_geoms.tex) [16] (./tables/r4_cost.tex
+
+(./tables/r4_cost.tex
 Underfull \hbox (badness 5667) in paragraph at lines 14--14
 []|\OT1/ptm/m/n/7 Round-robin + ver-i-fied
  []
@@ -779,11 +784,14 @@ Underfull \hbox (badness 10000) in paragraph at lines 24--24
 []|\OT1/ptm/m/n/7 Info-greedy+dropout
  []
 
-)
+) [17]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [17]
-[18] (./tables/limitations.tex
+ [18]
+Underfull \vbox (badness 1057) has occurred while \output is active []
+
+
+(./tables/limitations.tex
 Underfull \hbox (badness 7907) in paragraph at lines 11--11
 []|\OT1/ptm/m/n/7 Computational only (dig-i-tal
  []
@@ -819,98 +827,98 @@ Underfull \hbox (badness 10000) in paragraph at lines 25--25
 \OT1/ptm/m/n/7 Gen-script re-play did not
  []
 
-)
-Underfull \hbox (badness 5359) in paragraph at lines 1073--1082
+) [19]
+Underfull \hbox (badness 5359) in paragraph at lines 1090--1099
 []\OT1/ptm/b/n/10 Artifact. \OT1/ptm/m/n/10 Code, con-fig-u-ra-tion, ev-ery re-
 sult file and
  []
 
 
-Underfull \hbox (badness 4429) in paragraph at lines 1073--1082
+Underfull \hbox (badness 4429) in paragraph at lines 1090--1099
 \OT1/ptm/m/n/10 the scripts that build ev-ery ta-ble and fig-ure are in
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1073--1082
+Underfull \hbox (badness 10000) in paragraph at lines 1090--1099
 \OT1/ptm/m/n/10 the pub-lic repos-i-tory $https : / / github . com / SaiMouli3 
 / Dev$
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1073--1082
+Underfull \hbox (badness 10000) in paragraph at lines 1090--1099
 \OT1/ptm/m/n/10 (di-rec-tory \OT1/pcr/m/n/10 d3ra-dna\OT1/ptm/m/n/10 ), at the 
 com-mit recorded in
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1073--1082
+Underfull \hbox (badness 10000) in paragraph at lines 1090--1099
 \OT1/pcr/m/n/10 research_paper/final/COMMIT.txt \OT1/ptm/m/n/10 of that
  []
 
 
-Underfull \hbox (badness 3281) in paragraph at lines 1073--1082
+Underfull \hbox (badness 3281) in paragraph at lines 1090--1099
 \OT1/ptm/m/n/10 2.5.3, SciPy 1.18.1, pan-das 3.0.5 and DT4DDS 1.1.0
  []
 
 
-Underfull \hbox (badness 2005) in paragraph at lines 1073--1082
+Underfull \hbox (badness 2005) in paragraph at lines 1090--1099
 \OT1/ptm/m/n/10 (pinned in \OT1/pcr/m/n/10 requirements.txt\OT1/ptm/m/n/10 ); t
 he pub-lic data are
  []
 
 
-Underfull \hbox (badness 2020) in paragraph at lines 1073--1082
+Underfull \hbox (badness 2020) in paragraph at lines 1090--1099
 \OT1/ptm/m/n/10 ENA PR-JEB65931 [46] (Il-lu-mina) and the DNAformer
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1083--1093
+Underfull \hbox (badness 10000) in paragraph at lines 1100--1110
 \OT1/ptm/m/n/10 are driven by \OT1/pcr/m/n/10 experiments/dt_experiments.py
  []
 
 
-Underfull \hbox (badness 7851) in paragraph at lines 1083--1093
+Underfull \hbox (badness 7851) in paragraph at lines 1100--1110
 \OT1/ptm/m/n/10 (sub-commands \OT1/pcr/m/n/10 gen\OT1/ptm/m/n/10 , \OT1/pcr/m/n
 /10 run\OT1/ptm/m/n/10 , \OT1/pcr/m/n/10 runx\OT1/ptm/m/n/10 , \OT1/pcr/m/n/10 
 static\OT1/ptm/m/n/10 , \OT1/pcr/m/n/10 calib\OT1/ptm/m/n/10 ,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1083--1093
+Underfull \hbox (badness 10000) in paragraph at lines 1100--1110
 \OT1/pcr/m/n/10 calib_eval\OT1/ptm/m/n/10 , \OT1/pcr/m/n/10 forecast\OT1/ptm/m/
 n/10 , \OT1/pcr/m/n/10 posthoc_rho0\OT1/ptm/m/n/10 ), the
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1083--1093
+Underfull \hbox (badness 10000) in paragraph at lines 1100--1110
 \OT1/ptm/m/n/10 re-play by \OT1/pcr/m/n/10 experiments/paper_experiments.py
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1083--1093
+Underfull \hbox (badness 10000) in paragraph at lines 1100--1110
 \OT1/ptm/m/n/10 (\OT1/pcr/m/n/10 replay_v3\OT1/ptm/m/n/10 , \OT1/pcr/m/n/10 rep
 lay_calcost\OT1/ptm/m/n/10 ); statis-tics by
  []
 
 
-Underfull \hbox (badness 1565) in paragraph at lines 1083--1093
+Underfull \hbox (badness 1565) in paragraph at lines 1100--1110
 \OT1/pcr/m/n/10 dt_analysis.py \OT1/ptm/m/n/10 and \OT1/pcr/m/n/10 r4_analysis.
 py\OT1/ptm/m/n/10 ; ta-bles and
  []
 
 
-Underfull \hbox (badness 7468) in paragraph at lines 1083--1093
+Underfull \hbox (badness 7468) in paragraph at lines 1100--1110
 \OT1/pcr/m/n/10 make_dt_figures.py\OT1/ptm/m/n/10 , which read only com-mit-ted
 
  []
 
 
-Underfull \hbox (badness 2941) in paragraph at lines 1083--1093
+Underfull \hbox (badness 2941) in paragraph at lines 1100--1110
 \OT1/ptm/m/n/10 re-sult files, so no num-ber in any ta-ble or fig-ure is
  []
 
-[19]
-Underfull \hbox (badness 2165) in paragraph at lines 1105--1117
+
+Underfull \hbox (badness 2165) in paragraph at lines 1122--1134
 \OT1/ptm/m/n/10 against 3.51k; the hind-sight static plan $\OMS/cmsy/m/n/10 ^^@
 $\OT1/ptm/m/n/10 4.2% against
  []
@@ -976,11 +984,7 @@ Overfull \hbox (2.76848pt too wide) in paragraph at lines 10--38
  [][] 
  []
 
-) [20]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-(./tables/leak_appendix.tex
+) [20] (./tables/leak_appendix.tex
 
 LaTeX Font Warning: Font shape `OT1/ptm/m/scit' undefined
 (Font)              using `OT1/ptm/m/it' instead on input line 3.
@@ -1000,27 +1004,31 @@ en-er-ated) are kept in
  []
 
 ) [21]
-Underfull \hbox (badness 1394) in paragraph at lines 1198--1208
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Underfull \hbox (badness 1394) in paragraph at lines 1218--1228
 \OT1/ptm/m/n/10 against $\OT1/cmr/m/n/10 +$\OT1/ptm/m/n/10 15.1% at $\OML/cmm/m
 /it/10 ^^Z[][]\OT1/cmr/m/n/10 0\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 1$\OT1/ptm/m/n
 /10 ), Thomp-son sam-pling 3.37k
  []
 
+
+Underfull \vbox (badness 2460) has occurred while \output is active []
+
+ [22]
 (./main.bbl
 Underfull \hbox (badness 1360) in paragraph at lines 29--33
 \OT1/ptm/m/n/8 B. Sipos, and E. Bir-ney, ``To-wards prac-ti-cal, high-capacity,
  low-
  []
 
-[22]
+
 Underfull \hbox (badness 2626) in paragraph at lines 46--52
 []\OT1/ptm/m/n/8 L. Or-gan-ick, S. D. Ang, Y.-J. Chen, R. Lopez, S. Yekhanin,
  []
 
-
-Underfull \vbox (badness 1270) has occurred while \output is active []
-
- [23])
+[23])
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -1070,7 +1078,7 @@ rr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/
 share/texlive/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive/
 texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/font
 s/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (24 pages, 555949 bytes).
+Output written on main.pdf (24 pages, 558017 bytes).
 PDF statistics:
  369 PDF objects out of 1000 (max. 8388607)
  212 compressed objects within 3 object streams

@@ -279,6 +279,46 @@ def cap_table():
     write("r4_cap.tex", out, "")
 
 
+# ----------------------------------------------------------------------------- R6 likelihood sweep
+def likelihood_table():
+    d = load("r6_likelihood_sweep.csv")
+    if d is None:
+        return
+    order = ["0.1 (frozen)", "0.03 (re-selected)", "0 (binomial)"]
+    pols = ["coverage", "thompson", "ucb", "tail_aware", "pivotal", "learn_then_commit", "info_greedy"]
+    out = [r"\begin{table*}[!t]", r"\centering",
+           r"\caption{The complete primary comparison repeated under each likelihood setting: the frozen "
+           r"$\rho_U{=}0.1$, the value the corrected selection picks ($\rho_U{=}0.03$, Section~\ref{sec:res-calib}) "
+           r"and the binomial ($\rho_U{=}0$).  All three use the full design (30 syntheses $\times$ 10 read "
+           r"orders per policy) and the frozen prior width $s{=}0.5$.  Entries are the paired difference in mean "
+           r"reads against round-robin on jointly successful retrievals, per cent, with cluster-bootstrap 95\% "
+           r"intervals; negative is cheaper than round-robin.  Round-robin never evaluates the posterior, so it is "
+           r"bit-identical across the three settings and is the common reference.  Success probability is "
+           r"unchanged by $\rho_U$ in every scenario.}",
+           r"\label{tab:r6lik}", r"\scriptsize", r"\setlength{\tabcolsep}{4pt}",
+           r"\begin{tabular}{@{}ll" + "r" * len(order) + r"@{}}", r"\toprule",
+           r"Scenario & Policy & " + " & ".join(f"$\\rho_U={o}$" for o in order) + r" \\", r"\midrule"]
+    for sc in ["baseline", "homog", "fail1"]:
+        g = d[d.scenario == sc]
+        if g.empty:
+            continue
+        first = True
+        for pol in pols:
+            cells = []
+            for o in order:
+                r_ = g[(g.policy == pol) & (g.rho_U == o)]
+                cells.append(f"{r_.rel_vs_rr.iloc[0] * 100:+.0f} [{r_.lo.iloc[0] * 100:+.0f}, "
+                             f"{r_.hi.iloc[0] * 100:+.0f}]" if len(r_) else "")
+            if not any(cells):
+                continue
+            out.append(f"{sc if first else ''} & {name(pol)} & " + " & ".join(cells) + r" \\")
+            first = False
+        out.append(r"\midrule")
+    out[-1] = r"\bottomrule"
+    out += [r"\end{tabular}", r"\end{table*}"]
+    write("r6_likelihood.tex", out, "")
+
+
 # ----------------------------------------------------------------------------- R4.7 recalibration
 def recalibration():
     d = load("r4_recalibration.csv")
@@ -379,5 +419,6 @@ if __name__ == "__main__":
                    r"larger file.  Thousands of reads.")
     cap_table()
     recalibration()
+    likelihood_table()
     calcost()
     cost_model()

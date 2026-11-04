@@ -201,6 +201,41 @@ def ablation():
     return df
 
 
+# --------------------------------------------------------------------------- R6 likelihood sweep
+def likelihood_sweep():
+    """Complete primary comparison under each likelihood setting: the frozen rho_U=0.1, the value the
+    corrected selection picks (0.03), and the binomial (0). Round-robin never evaluates the posterior,
+    so it is identical across settings and serves as the common reference; we assert that."""
+    rows = []
+    cfgs = [("0.1 (frozen)", ""), ("0.03 (re-selected)", "_rho003"), ("0 (binomial)", "_posthoc_rho0")]
+    for sc in ("baseline", "homog", "fail1"):
+        ref = load(f"dt_{sc}.csv")
+        if ref is None:
+            continue
+        rr0 = ref[ref.policy == "round_robin_stop"]
+        for label, tag in cfgs:
+            d = load(f"dt_{sc}{tag}.csv")
+            if d is None:
+                continue
+            rr = d[d.policy == "round_robin_stop"]
+            # round-robin must be bit-identical across likelihood settings
+            same = (rr.sort_values(["rep", "perm"]).reads.values ==
+                    rr0.sort_values(["rep", "perm"]).reads.values).all() if len(rr) else None
+            for pol, g in d.groupby("policy"):
+                if pol == "round_robin_stop":
+                    continue
+                e, lo, hi = paired_vs(g, rr0)[:3]
+                ok = g.status == "exact"
+                rows.append({"scenario": sc, "rho_U": label, "policy": pol, "n": len(g),
+                             "rr_identical": same, "success": ok.mean(),
+                             "mean_success": g.reads[ok].mean() if ok.any() else np.nan,
+                             "q99": np.quantile(g.reads, .99),
+                             "rel_vs_rr": e, "lo": lo, "hi": hi})
+    df = pd.DataFrame(rows)
+    df.to_csv(RES / "r6_likelihood_sweep.csv", index=False)
+    return df
+
+
 # --------------------------------------------------------------------------- R4.8 prior sensitivity
 def prior_sens():
     rows = []
@@ -362,7 +397,7 @@ def replay_calcost():
 
 
 if __name__ == "__main__":
-    for fn in (actual_vs_reserved, safety, tails, ablation, prior_sens, failure_modes, geometries, consensus_cap,
+    for fn in (actual_vs_reserved, safety, tails, ablation, likelihood_sweep, prior_sens, failure_modes, geometries, consensus_cap,
                recalibration, cost_model, replay_calcost):
         out = fn()
         print(f"== {fn.__name__}")

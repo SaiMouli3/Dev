@@ -10,7 +10,7 @@ Limitation & Consequence \\
 \midrule
 Computational only (digital twin + replay) & no wet-lab confirmation; DT4DDS fidelity bounds external validity; see Section~\ref{sec:wetlab} for what we would test \\
 Single efficiency multiplier $\theta_j$ in the frozen model & cannot represent dropout; adaptive allocators over-read near-dead containers.  $\dagger$~A two-parameter model (efficiency and dropout) removes most of the penalty (Section~\ref{sec:res-dropout}) \\
-$\rho_U$ at the edge of its grid; selected with $s{=}1$ while runs use $s{=}0.5$ & $\dagger$~re-selected with $s{=}0.5$ on an extended grid: no value reaches 0.90 coverage and the near-dead container is never covered (Table~\ref{tab:r4calib}) \\
+$\rho_U$ at the edge of its grid; selected with $s{=}1$ while runs use $s{=}0.5$ & $\dagger$~re-selected with $s{=}0.5$ on an extended grid: no value reaches 0.90 coverage and the near-dead container is never covered (Table~\ref{tab:r4calib}); $\dagger$~the complete primary comparison re-run at the re-selected $\rho_U{=}0.03$ weakens the allocation penalty from harmful to merely no better for four of seven rules (Table~\ref{tab:r6lik}) \\
 Calibration-optimal vs.\ cost-optimal $\rho_U$ differ & a better-calibrated posterior allocated worse; the ablation separates likelihood, prior and model (Table~\ref{tab:r4abl}) \\
 Gains are in the mean, not the tail & $\dagger$~no \emph{adaptive} rule lowered q99 (a hindsight static plan did, by about 9\%); tail intervals are wide and reported (Table~\ref{tab:r4tails}) \\
 Failures simulated & real failure modes and rates unknown; $\dagger$~partial loss, low yield, contamination and common-cause degradation are now tested (Table~\ref{tab:r4fail}), but their rates are still assumed \\

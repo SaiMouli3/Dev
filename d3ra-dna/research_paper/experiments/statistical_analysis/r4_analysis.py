@@ -83,8 +83,10 @@ def actual_vs_reserved():
 
 # --------------------------------------------------------------------------- R4.3 cluster-aware safety
 def safety():
+    # the clean-reproduction re-runs repeat baseline replicates on regenerated streams; they are a
+    # reproducibility check, not additional independent evidence, so they are excluded from the totals
     files = [f for f in sorted(glob.glob(str(RES / "dt_*.csv")))
-             if not any(k in f for k in ("summary", "forecast", "calibration"))]
+             if not any(k in f for k in ("summary", "forecast", "calibration", "cleanrepro"))]
     n = w = fa = att = 0
     units = set()
     per_unit_att = []

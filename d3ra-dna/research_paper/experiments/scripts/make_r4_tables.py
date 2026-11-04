@@ -297,7 +297,10 @@ def likelihood_table():
            r"unchanged by $\rho_U$ in every scenario.}",
            r"\label{tab:r6lik}", r"\scriptsize", r"\setlength{\tabcolsep}{4pt}",
            r"\begin{tabular}{@{}ll" + "r" * len(order) + r"@{}}", r"\toprule",
-           r"Scenario & Policy & " + " & ".join(f"$\\rho_U={o}$" for o in order) + r" \\", r"\midrule"]
+           r"Scenario & Policy & " + " & ".join(
+               {"0.1 (frozen)": r"$\rho_U{=}0.1$ (frozen)",
+                "0.03 (re-selected)": r"$\rho_U{=}0.03$ (re-selected)",
+                "0 (binomial)": r"$\rho_U{=}0$ (binomial)"}[o] for o in order) + r" \\", r"\midrule"]
     for sc in ["baseline", "homog", "fail1"]:
         g = d[d.scenario == sc]
         if g.empty:

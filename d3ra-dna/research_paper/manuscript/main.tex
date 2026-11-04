@@ -39,13 +39,17 @@ containers, a streaming decoder that stops only when every stripe, its CRC-32 an
 verify consumed 3.49k reads per retrieval (95\% CI 3.37--3.60k), against the 4.80--5.15k that the same
 read proportions must \emph{reserve} in advance to succeed on 99\% of retrievals: stopping turns a
 reservation into a bill 27--32\% smaller, with no model of the containers.  Choosing \emph{which}
-container to read next is a far smaller and more fragile effect.  Under our pre-registered container
-model, a single efficiency multiplier, every model-based rule --- Thompson sampling, UCB,
-learn-then-commit, information-greedy --- read \emph{more} than round-robin when one container was
-near-dead ($+$7\% to $+$441\%), because one multiplier cannot express dropout, while \emph{fixed} read
-proportions with the same stopping rule were 4.2\% cheaper than round-robin (the pre-specified plan,
-95\% CI 3.5--4.9\%), and a plan whose proportions came from ten disjoint calibration replicates rather
-than from hindsight did just as well --- so the useful allocation knowledge is obtainable offline.  A $2\times2\times2$ ablation shows that the penalty requires the frozen
+container to read next is a far smaller and more fragile effect.  Under our pre-registered configuration --- a single efficiency multiplier per container and a
+beta-binomial likelihood at $\rho_U{=}0.1$ --- every model-based rule (Thompson sampling, UCB,
+learn-then-commit, information-greedy) read \emph{more} than round-robin when one container was
+near-dead, by 7\% to 441\%.  That penalty is specific to the pre-registered likelihood: re-running the
+complete comparison at the $\rho_U{=}0.03$ a corrected selection picks leaves four of the seven rules
+statistically indistinguishable from round-robin ($-$1.2\% to $+$1.5\%) and three still clearly worse,
+so the defensible claim is that no adaptive rule \emph{beat} round-robin by more than a few per cent in
+any configuration we tested.  \emph{Fixed} read proportions with the same stopping rule were 4.2\%
+cheaper than round-robin (the pre-specified plan, 95\% CI 3.5--4.9\%), and a plan whose proportions came
+from ten disjoint calibration replicates rather than from hindsight did just as well --- so what
+allocation knowledge is worth having is obtainable offline.  A $2\times2\times2$ ablation shows that the penalty requires the frozen
 \emph{combination} of container model, likelihood and prior width: relaxing any one of the three brings
 every rule into a narrow band 0 to 4.5\% below round-robin, the band fixed proportions already occupy.
 Adding a dropout parameter is the physically meaningful change of the three and helps most where loss
@@ -54,8 +58,9 @@ about what the fixed plan already gives rather than an addition to it).  So adap
 27--32\%.  At the 0.99-quantile, three adaptive rules with the dropout model were numerically below round-robin
 (by 1--9\%) but none of those reductions survives a cluster-bootstrap interval, so no adaptive rule
 reduced reserved capacity \emph{reliably}, whereas fixed proportions did ($-$450 reads, $-$8.7\%,
-interval excluding zero).  Over \SafeN{} end-to-end retrievals --- every scenario, policy, container model, prior setting, failure
-mode and archive geometry in this paper --- no output file was ever wrong, and no wrong payload passed the
+interval excluding zero).  Over \SafeN{} end-to-end retrievals --- every scenario, policy, container model, likelihood and prior
+setting, failure mode and archive geometry in this paper, excluding the clean-reproduction re-runs,
+which repeat replicates rather than adding independent ones --- no output file was ever wrong, and no wrong payload passed the
 inner checks in \SafeAtt{} decode attempts; because those retrievals share only \SafeUnits{} synthesis
 replicates we report both the per-retrieval upper limit (\SafeWUB{}) and the conservative per-synthesis
 one (\SafeWUBc{}).  A leak-free replay of real Illumina
@@ -103,9 +108,11 @@ consumed-versus-reserved saving.}  It needs no model, never returned a wrong fil
 ($-$27 to $-$32\%); on both real-read pools it cut reads against fixed depth by 14\% and 25\%.
 (ii) \emph{Allocation is worth a few percent at best, and is harmful under a misspecified container
 model.}  Under the frozen configuration every model-based rule read more than round-robin when a container was
-near-dead, by 7--441\%; an ablation attributes that to the controller being slow to recognise a bad
-container, with three independent modelling choices each sufficient to cause it, and each sufficient to
-remove it.  Once any one of them is relaxed, every rule lands 0--4.5\% below round-robin, where fixed proportions
+near-dead, by 7--441\%, but that penalty depends on the likelihood: at the $\rho_U$ a corrected
+selection picks, four of the seven are statistically indistinguishable from round-robin and three
+remain clearly worse (Section~\ref{sec:res-lik}).  An ablation attributes the penalty to the controller
+being slow to recognise a bad container, with three independent modelling choices each sufficient to
+cause it and each sufficient to remove it.  Once any one of them is relaxed, every rule lands 0--4.5\% below round-robin, where fixed proportions
 already sit ($-$4.2\% for the pre-specified plan, and the same within noise when its proportions are
 estimated from disjoint calibration replicates instead of hindsight).  The one substantially larger allocation effect requires
 knowing the weak container \emph{before} retrieval, from calibration reads ($-$16\% per retrieval on one
@@ -873,6 +880,44 @@ both have a worse Brier score than a constant forecast at the base rate.}
 \label{fig:forecast}
 \end{figure}
 
+\subsection{What the primary comparison looks like under the corrected likelihood}\label{sec:res-lik}
+\input{tables/r6_likelihood}
+The selection defect of Section~\ref{sec:res-calib} raises a fair question: the primary
+adaptive-allocation comparison runs at $\rho_U{=}0.1$, a value chosen by a procedure we later found to
+have used the wrong prior width, and the corrected procedure picks $\rho_U{=}0.03$.  Rather than argue
+that the difference is small, we re-ran the \emph{complete} primary comparison at the re-selected value:
+all eight policies, all three primary scenarios, the full 30 syntheses $\times$ 10 read orders, and
+everything else --- seeds, prior width $s{=}0.5$, container model, placement, decoder --- held at its
+frozen setting.  Table~\ref{tab:r6lik} puts it beside the frozen runs and the binomial ablation.  One
+property makes the comparison clean: round-robin never evaluates the posterior, so its retrievals are
+bit-identical across all three settings and serve as a common reference.
+
+The answer is that the likelihood setting changes the headline sub-claim, and we state the corrected
+version.  On the baseline, four of the seven model-based rules move from clearly costlier than
+round-robin to indistinguishable from it: coverage-greedy from $+$15.1\% to $-$0.4\% (95\% CI $-$2.5 to
+$+$1.7\%), Thompson sampling from $+$7.4\% to $+$0.3\% ($-$1.7 to $+$2.4\%), UCB from $+$15.3\% to
+$+$1.5\% ($-$0.5 to $+$3.8\%) and tail-aware from $+$12.9\% to $-$1.2\% ($-$3.2 to $+$0.6\%), every
+interval containing zero.  Three rules stay clearly worse at any setting: pivotal ($+$12.2\%),
+learn-then-commit ($+$34.9\%) and information-greedy ($+$576\%, worse than at the frozen value).  In the
+homogeneous control the likelihood is irrelevant, as it should be when there is no near-dead container
+to misread: every rule sits at $-$2.8\% to $-$3.7\% under both settings.  After an outright failure the
+picture is mixed rather than uniformly better: coverage-greedy keeps less of its gain ($-$8.7\% against
+$-$17.0\%) and UCB most of all loses it ($-$2.3\%, not significant, against $-$23.7\%), while tail-aware
+($+$1.6\% to $-$16.7\%) and learn-then-commit ($+$7.9\% to $-$17.8\%) gain.  No single $\rho_U$ is best
+everywhere.
+
+Three consequences, stated plainly.  (i) The strong form of our negative result --- ``every model-based
+rule read 7--441\% more than round-robin'' --- holds for the \emph{pre-registered} configuration and not
+for the corrected one; under $\rho_U{=}0.03$ the honest statement for the coverage family is that it is
+\emph{no better} than round-robin, not that it is harmful.  (ii) The weak form survives every setting we
+tested, and it is the one we rely on: \emph{no adaptive rule beat round-robin by more than a few per
+cent in any (scenario, likelihood) combination, while three of the seven were clearly worse in most of
+them}.  (iii) The main thesis is unaffected, and if anything strengthened: at the corrected likelihood
+adaptive allocation on the baseline buys essentially nothing, against the 27--32\% that verified
+stopping delivers.  We keep $\rho_U{=}0.1$ as the primary configuration because it was pre-registered
+and because re-tuning after seeing outcomes would make the protocol unfrozen, but every claim about the
+\emph{size} of the allocation penalty is now reported with the likelihood it depends on.
+
 \subsection{Secondary evidence: real read streams}\label{sec:res-replay}
 \input{tables/replay}
 Table~\ref{tab:replay} gives the leak-free replay with the generic prior.  On the Twist pool,
@@ -1194,9 +1239,12 @@ consumed-versus-reserved saving is the paper's robust result, and it needs no mo
 Deciding \emph{which} container to read next is worth far less, and the two best cases we measured come
 from different experiments rather than adding up: fixed proportions, which run no controller and can be
 estimated offline from calibration replicates, gave 4.2\% on the baseline, while under the frozen
-container model every online rule cost \emph{more} than round-robin when a container was near-dead, by
-7--441\%, and only with a dropout-aware model --- a secondary configuration --- did the best online rule
-reach a comparable 3.5\%.  An ablation shows that penalty
+container model and likelihood every online rule cost \emph{more} than round-robin when a container was
+near-dead, by 7--441\%.  That penalty is a property of the pre-registered configuration: at the
+likelihood a corrected selection picks, four of the seven rules become indistinguishable from
+round-robin rather than harmful, and only with a dropout-aware model --- another secondary
+configuration --- did the best online rule reach a comparable 3.5\%.  Across every combination we
+tested, no adaptive rule beat round-robin by more than a few per cent.  An ablation shows that penalty
 requires the frozen combination of container model, likelihood and prior width, and that relaxing any
 one of the three removes most of it; a container model with a dropout parameter is the physically
 meaningful choice and earns its keep where loss dominates, reaching $-$6\% under partial loss, $-$34\%

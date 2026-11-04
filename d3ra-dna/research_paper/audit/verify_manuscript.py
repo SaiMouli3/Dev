@@ -66,14 +66,14 @@ for f in files:
     geom = d["geom"].iloc[0] if "geom" in d and d["geom"].notna().any() else "main"
     n += len(d); w += int(d.wrong_output.sum()); fa += int(d.false_accepts.sum()); att += int(d.decode_attempts.sum())
     units |= {(geom, sc, int(r)) for sc, r in zip(d.scenario, d.rep)}
-check("Abstract / VI-A", "retrievals", n, 55110, 0)
+check("Abstract / VI-A", "retrievals", n, 62310, 0)
 check("Abstract / VI-A", "wrong outputs", w, 0, 0)
 check("Abstract / VI-A", "false accepts", fa, 0, 0)
-check("Abstract / VI-A", "decode attempts (millions)", att / 1e6, 69.5, 0.05)
+check("Abstract / VI-A", "decode attempts (millions)", att / 1e6, 77.3, 0.05)
 check("Abstract / VI-A", "synthesis replicates", len(units), 580, 0)
-check("Abstract / VI-A", "wrong-output UL per retrieval (1e-5)", cp_upper(w, n) * 1e5, 6.7, 0.05)
+check("Abstract / VI-A", "wrong-output UL per retrieval (1e-5)", cp_upper(w, n) * 1e5, 5.9, 0.05)
 check("Abstract / VI-A", "wrong-output UL per synthesis (1e-3)", cp_upper(w, len(units)) * 1e3, 6.3, 0.05)
-check("Abstract / VI-A", "false-accept UL per attempt (1e-8)", cp_upper(fa, att) * 1e8, 5.3, 0.05)
+check("Abstract / VI-A", "false-accept UL per attempt (1e-8)", cp_upper(fa, att) * 1e8, 4.8, 0.05)
 
 # ---------------------------------------------------------------- baseline consumed vs reserved (Sec. VI-B, Table V)
 b = load("dt_baseline.csv")
@@ -149,6 +149,31 @@ f1d = load("dt_fail1_r4drop.csv")
 if f1d is not None:
     check("VI-F", "fail1 coverage+dropout vs round-robin (%)", paired(f1d[f1d.policy == "coverage"], rr1)[0] * 100,
           -35.0, 0.6)
+
+# ---------------------------------------------------------------- likelihood sweep (Sec. VI-J, Table XII)
+lik = load("r6_likelihood_sweep.csv")
+if lik is not None:
+    bl = lik[lik.scenario == "baseline"]
+    for pol, claim, cl, ch in (("coverage", -0.4, -2.5, 1.7), ("thompson", 0.3, -1.7, 2.4),
+                               ("ucb", 1.5, -0.5, 3.8), ("tail_aware", -1.2, -3.2, 0.6)):
+        r_ = bl[(bl.policy == pol) & (bl.rho_U == "0.03 (re-selected)")].iloc[0]
+        check("VI-J (lik.)", f"{pol} at rho=0.03 (%)", r_.rel_vs_rr * 100, claim, 0.1)
+        check("VI-J (lik.)", f"{pol} at rho=0.03 CI lo (%)", r_.lo * 100, cl, 0.4)
+        check("VI-J (lik.)", f"{pol} at rho=0.03 CI hi (%)", r_.hi * 100, ch, 0.4)
+        check("VI-J (lik.)", f"{pol} at rho=0.03 interval contains zero", 1.0 if r_.lo < 0 < r_.hi else 0.0, 1.0, 0)
+    for pol, claim in (("pivotal", 12.2), ("learn_then_commit", 34.9), ("info_greedy", 576.1)):
+        r_ = bl[(bl.policy == pol) & (bl.rho_U == "0.03 (re-selected)")].iloc[0]
+        check("VI-J (lik.)", f"{pol} at rho=0.03 (%)", r_.rel_vs_rr * 100, claim, 0.3)
+        check("VI-J (lik.)", f"{pol} at rho=0.03 still costlier", 1.0 if r_.lo > 0 else 0.0, 1.0, 0)
+    hm = lik[(lik.scenario == "homog") & (lik.rho_U == "0.03 (re-selected)")]
+    check("VI-J (lik.)", "homog min at rho=0.03 (%)", hm[hm.policy != "info_greedy"].rel_vs_rr.min() * 100, -3.7, 0.15)
+    check("VI-J (lik.)", "homog max at rho=0.03 (%)", hm[hm.policy != "info_greedy"].rel_vs_rr.max() * 100, -2.8, 0.15)
+    f1l = lik[(lik.scenario == "fail1") & (lik.rho_U == "0.03 (re-selected)")]
+    for pol, claim in (("coverage", -8.7), ("ucb", -2.3), ("tail_aware", -16.7), ("learn_then_commit", -17.8)):
+        check("VI-J (lik.)", f"fail1 {pol} at rho=0.03 (%)",
+              f1l[f1l.policy == pol].rel_vs_rr.iloc[0] * 100, claim, 0.2)
+    check("VI-J (lik.)", "round-robin identical across likelihoods",
+          1.0 if lik.rr_identical.dropna().all() else 0.0, 1.0, 0)
 
 # ---------------------------------------------------------------- tails (Sec. VI-H, Table IX)
 ext = load("dt_baseline_r4ext.csv")

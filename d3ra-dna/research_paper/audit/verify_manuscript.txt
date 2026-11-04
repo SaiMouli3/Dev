@@ -1,15 +1,15 @@
 Numeric verification of the manuscript against committed result files.
-Checks: 96, failures: 0.
+Checks: 125, failures: 0.
 
     section        quantity                                               recomputed   in paper
-ok  Abstract / VI-A retrievals                                              5.511e+04  5.511e+04
+ok  Abstract / VI-A retrievals                                              6.231e+04  6.231e+04
 ok  Abstract / VI-A wrong outputs                                                   0          0
 ok  Abstract / VI-A false accepts                                                   0          0
-ok  Abstract / VI-A decode attempts (millions)                                  69.52       69.5
+ok  Abstract / VI-A decode attempts (millions)                                  77.29       77.3
 ok  Abstract / VI-A synthesis replicates                                          580        580
-ok  Abstract / VI-A wrong-output UL per retrieval (1e-5)                        6.693        6.7
+ok  Abstract / VI-A wrong-output UL per retrieval (1e-5)                         5.92        5.9
 ok  Abstract / VI-A wrong-output UL per synthesis (1e-3)                         6.34        6.3
-ok  Abstract / VI-A false-accept UL per attempt (1e-8)                          5.306        5.3
+ok  Abstract / VI-A false-accept UL per attempt (1e-8)                          4.773        4.8
 ok  VI-B           round-robin mean reads (k)                                   3.49       3.49
 ok  VI-B           round-robin mean CI lo (k)                                  3.375       3.37
 ok  VI-B           round-robin mean CI hi (k)                                  3.601        3.6
@@ -49,6 +49,35 @@ ok  VI-F           UCB+dropout CI hi (%)                                      -2
 ok  VI-F           coverage+dropout near-dead share                           0.1972        0.2
 ok  VI-F           UCB+dropout near-dead share                                0.1658       0.17
 ok  VI-F           fail1 coverage+dropout vs round-robin (%)                  -35.01        -35
+ok  VI-J (lik.)    coverage at rho=0.03 (%)                                  -0.4393       -0.4
+ok  VI-J (lik.)    coverage at rho=0.03 CI lo (%)                             -2.455       -2.5
+ok  VI-J (lik.)    coverage at rho=0.03 CI hi (%)                              1.695        1.7
+ok  VI-J (lik.)    coverage at rho=0.03 interval contains zero                     1          1
+ok  VI-J (lik.)    thompson at rho=0.03 (%)                                   0.2626        0.3
+ok  VI-J (lik.)    thompson at rho=0.03 CI lo (%)                             -1.703       -1.7
+ok  VI-J (lik.)    thompson at rho=0.03 CI hi (%)                              2.412        2.4
+ok  VI-J (lik.)    thompson at rho=0.03 interval contains zero                     1          1
+ok  VI-J (lik.)    ucb at rho=0.03 (%)                                         1.514        1.5
+ok  VI-J (lik.)    ucb at rho=0.03 CI lo (%)                                 -0.4782       -0.5
+ok  VI-J (lik.)    ucb at rho=0.03 CI hi (%)                                   3.791        3.8
+ok  VI-J (lik.)    ucb at rho=0.03 interval contains zero                          1          1
+ok  VI-J (lik.)    tail_aware at rho=0.03 (%)                                 -1.237       -1.2
+ok  VI-J (lik.)    tail_aware at rho=0.03 CI lo (%)                           -3.171       -3.2
+ok  VI-J (lik.)    tail_aware at rho=0.03 CI hi (%)                           0.6357        0.6
+ok  VI-J (lik.)    tail_aware at rho=0.03 interval contains zero                   1          1
+ok  VI-J (lik.)    pivotal at rho=0.03 (%)                                     12.22       12.2
+ok  VI-J (lik.)    pivotal at rho=0.03 still costlier                              1          1
+ok  VI-J (lik.)    learn_then_commit at rho=0.03 (%)                           34.89       34.9
+ok  VI-J (lik.)    learn_then_commit at rho=0.03 still costlier                    1          1
+ok  VI-J (lik.)    info_greedy at rho=0.03 (%)                                 576.1      576.1
+ok  VI-J (lik.)    info_greedy at rho=0.03 still costlier                          1          1
+ok  VI-J (lik.)    homog min at rho=0.03 (%)                                  -3.703       -3.7
+ok  VI-J (lik.)    homog max at rho=0.03 (%)                                  -2.766       -2.8
+ok  VI-J (lik.)    fail1 coverage at rho=0.03 (%)                             -8.742       -8.7
+ok  VI-J (lik.)    fail1 ucb at rho=0.03 (%)                                  -2.288       -2.3
+ok  VI-J (lik.)    fail1 tail_aware at rho=0.03 (%)                           -16.74      -16.7
+ok  VI-J (lik.)    fail1 learn_then_commit at rho=0.03 (%)                    -17.75      -17.8
+ok  VI-J (lik.)    round-robin identical across likelihoods                        1          1
 ok  VI-H           100-synthesis replicate count                                 100        100
 ok  VI-H           100-synthesis round-robin q99 (k)                            5.15       5.15
 ok  VI-H           100-synthesis static alpha=1 q99 (k)                          4.7        4.7

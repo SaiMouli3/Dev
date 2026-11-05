@@ -69,3 +69,9 @@ statement or its scope, so they were left as they were:
 5. **Title (optional).** "A Leak-Free Computational Study" could become "A Computational Study". The
    leakage control is described in the body.
 6. **Affiliations.** Add once confirmed (placeholders are LaTeX comments in the `\author` block).
+
+## 5. Addendum: third author
+
+Added Pruthviraj M. Savanur (rajsavanur2003@gmail.com) as third author, after J Geetha (geetha@msrit.edu).
+No affiliation was invented; a LaTeX comment marks where it goes. Rebuilt PDF: 26 pages, 125/125 verifier
+checks pass.

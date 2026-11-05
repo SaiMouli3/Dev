@@ -25,50 +25,51 @@
 
 \author{\IEEEauthorblockN{Sai Mouli}
 \IEEEauthorblockA{saimouli12345678@gmail.com}
+% Institutional affiliation: to be confirmed by the author.
+\and
+\IEEEauthorblockN{J Geetha}
+\IEEEauthorblockA{geetha@msrit.edu}
+% Institutional affiliation: to be confirmed by the author.
 }
 
 \maketitle
 
 \begin{abstract}
 When an erasure-coded DNA archive is spread over several separately synthesised and handled containers of
-unknown quality, two retrieval decisions arise: when to stop sequencing, and which container to read
+unknown quality, retrieval involves two decisions: when to stop sequencing, and which container to read
 next.  We find that the first is worth an order of magnitude more than the second.  All results are
 computational: no DNA was synthesised or sequenced for this paper, and the real-read experiments replay
 public Illumina runs.  On the DT4DDS digital twin with six independently synthesised, aged and amplified
 containers, a streaming decoder that stops only when every stripe, its CRC-32 and the file's SHA-256
-verify consumed 3.49k reads per retrieval (95\% CI 3.37--3.60k), against the 4.80--5.15k that the same
-read proportions must \emph{reserve} in advance to succeed on 99\% of retrievals: stopping turns a
-reservation into a bill 27--32\% smaller, with no model of the containers.  Choosing \emph{which}
-container to read next is a far smaller and more fragile effect.  Under our pre-registered configuration --- a single efficiency multiplier per container and a
-beta-binomial likelihood at $\rho_U{=}0.1$ --- every model-based rule (Thompson sampling, UCB,
-learn-then-commit, information-greedy) read \emph{more} than round-robin when one container was
-near-dead, by 7\% to 441\%.  That penalty is specific to the pre-registered likelihood: re-running the
-complete comparison at the $\rho_U{=}0.03$ a corrected selection picks leaves four of the seven rules
-statistically indistinguishable from round-robin ($-$1.2\% to $+$1.5\%) and three still clearly worse,
-so the defensible claim is that no adaptive rule \emph{beat} round-robin by more than a few per cent in
-any configuration we tested.  \emph{Fixed} read proportions with the same stopping rule were 4.2\%
-cheaper than round-robin (the pre-specified plan, 95\% CI 3.5--4.9\%), and a plan whose proportions came
-from ten disjoint calibration replicates rather than from hindsight did just as well --- so what
-allocation knowledge is worth having is obtainable offline.  A $2\times2\times2$ ablation shows that the penalty requires the frozen
-\emph{combination} of container model, likelihood and prior width: relaxing any one of the three brings
-every rule into a narrow band 0 to 4.5\% below round-robin, the band fixed proportions already occupy.
-Adding a dropout parameter is the physically meaningful change of the three and helps most where loss
-dominates (with it, UCB reaches $-$3.5\% on the baseline --- a separate, non-frozen configuration, and
-about what the fixed plan already gives rather than an addition to it).  So adaptive allocation is worth a few percent at best, against stopping's
-27--32\%.  At the 0.99-quantile, three adaptive rules with the dropout model were numerically below round-robin
-(by 1--9\%) but none of those reductions survives a cluster-bootstrap interval, so no adaptive rule
-reduced reserved capacity \emph{reliably}, whereas fixed proportions did ($-$450 reads, $-$8.7\%,
-interval excluding zero).  Over \SafeN{} end-to-end retrievals --- every scenario, policy, container model, likelihood and prior
-setting, failure mode and archive geometry in this paper, excluding the clean-reproduction re-runs,
-which repeat replicates rather than adding independent ones --- no output file was ever wrong, and no wrong payload passed the
-inner checks in \SafeAtt{} decode attempts; because those retrievals share only \SafeUnits{} synthesis
-replicates we report both the per-retrieval upper limit (\SafeWUB{}) and the conservative per-synthesis
-one (\SafeWUBc{}).  A leak-free replay of real Illumina
-streams from two vendor pools agrees on the ranking, and adds the one case where allocation pays
-substantially: a prior calibrated on held-out reads of the same containers, which identifies the weak
-container before retrieval, saved 16\% per retrieval --- but it needed 1.8M calibration reads, 2.8 times
-one retrieval's cost, so it only pays for itself after about 17 retrievals of the same archive.  Every number is regenerated from committed result files under
-frozen protocols with logged deviations.
+verify consumed 3.49k reads per retrieval (95\% CI 3.37--3.60k).  Without stopping, the same read
+proportions must \emph{reserve} 4.80--5.15k reads to succeed on 99\% of retrievals, so stopping reduces
+the bill by 27--32\% and requires no model of the containers.  The choice of container is a much smaller
+and less stable effect.  Under the pre-registered configuration (a single efficiency multiplier per
+container and a beta-binomial likelihood with $\rho_U{=}0.1$), every model-based rule (Thompson sampling,
+UCB, learn-then-commit, information-greedy) read 7\% to 441\% \emph{more} than round-robin when one
+container was near-dead.  This penalty depends on the likelihood.  At $\rho_U{=}0.03$, the value chosen
+by a corrected selection, four of the seven rules are statistically indistinguishable from round-robin
+($-$1.2\% to $+$1.5\%) and three remain clearly worse; no adaptive rule beat round-robin by more than a
+few per cent in any configuration we tested.  \emph{Fixed} read proportions with the same stopping rule
+were 4.2\% cheaper than round-robin (pre-specified plan, 95\% CI 3.5--4.9\%), and proportions estimated
+from ten disjoint calibration replicates instead of hindsight performed as well, so the useful
+allocation knowledge can be obtained offline.  A $2\times2\times2$ ablation shows that the penalty
+requires the frozen \emph{combination} of container model, likelihood and prior width; relaxing any one
+of them places every rule 0 to 4.5\% below round-robin, where fixed proportions already lie.  Adding a
+dropout parameter, the physically meaningful change of the three, helps most where loss dominates.  On
+the baseline it brings UCB to $-$3.5\% (a separate, non-frozen configuration), which is comparable to the
+fixed plan rather than additional to it.  At the 0.99-quantile, three adaptive rules with the dropout
+model were 1--9\% below round-robin, but none of these reductions survives a cluster-bootstrap interval;
+fixed proportions reduced it by 450 reads ($-$8.7\%) with an interval excluding zero.  Over \SafeN{}
+end-to-end retrievals, covering every configuration in the paper except the clean-reproduction re-runs,
+no output file was wrong, and no wrong payload passed the inner checks in \SafeAtt{} decode attempts.
+Because these retrievals share \SafeUnits{} synthesis replicates, we report both the per-retrieval upper
+limit (\SafeWUB{}) and the per-synthesis limit (\SafeWUBc{}).  A replay of real Illumina streams from two
+vendor pools, with calibration and evaluation reads kept disjoint, gives the same ranking.  It also
+contains the one case in which allocation pays substantially: a prior calibrated on held-out reads of the
+same containers identified the weak container before retrieval and saved 16\% per retrieval, but it
+required 1.8M calibration reads, 2.8 times the cost of one retrieval, and so breaks even only after
+about 17 retrievals of the same archive.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -102,55 +103,55 @@ heterogeneous quality, some of which may have failed, sequence in batches and de
 each batch which container to read and whether to stop, so that the output file is
 byte-identical to the stored one with high probability while the number of reads is small.
 
-\textbf{Findings.}  (i) \emph{Verified stopping is the robust saving, and it is a
-consumed-versus-reserved saving.}  It needs no model, never returned a wrong file, and converts the
-4.80--5.15k reads that a static plan must reserve into a 3.49k average bill on the digital twin
-($-$27 to $-$32\%); on both real-read pools it cut reads against fixed depth by 14\% and 25\%.
-(ii) \emph{Allocation is worth a few percent at best, and is harmful under a misspecified container
-model.}  Under the frozen configuration every model-based rule read more than round-robin when a container was
-near-dead, by 7--441\%, but that penalty depends on the likelihood: at the $\rho_U$ a corrected
-selection picks, four of the seven are statistically indistinguishable from round-robin and three
-remain clearly worse (Section~\ref{sec:res-lik}).  An ablation attributes the penalty to the controller
-being slow to recognise a bad container, with three independent modelling choices each sufficient to
-cause it and each sufficient to remove it.  Once any one of them is relaxed, every rule lands 0--4.5\% below round-robin, where fixed proportions
-already sit ($-$4.2\% for the pre-specified plan, and the same within noise when its proportions are
-estimated from disjoint calibration replicates instead of hindsight).  The one substantially larger allocation effect requires
-knowing the weak container \emph{before} retrieval, from calibration reads ($-$16\% per retrieval on one
-real-read pool, repaid after about 17 retrievals).  (iii) \emph{No adaptive rule lowered the 0.99-quantile reliably}: three configurations with the dropout
-model are 1--9\% below round-robin numerically, but every one of those intervals contains zero, while
-fixed proportions lower it by 8.7\% with an interval that excludes zero.  Online learning therefore
-gives no demonstrated reduction in reserved capacity.
-(iv) \emph{Two zero-success results mark boundaries of the archive design, not of the policies}: two
-failed containers leave exactly $K$ fragments per stripe by construction, and under the
+\textbf{Findings.}  (i) \emph{Verified stopping provides the robust saving, measured as reads consumed
+against capacity reserved.}  It needs no container model and never returned a wrong file.  On the
+digital twin it turns the 4.80--5.15k reads that a static plan must reserve into a mean of 3.49k
+($-$27 to $-$32\%); on the two real-read pools it reduced reads relative to fixed depth by 14\% and 25\%.
+(ii) \emph{Allocation is worth a few per cent at best and is harmful under a misspecified container
+model.}  Under the frozen configuration, every model-based rule read 7--441\% more than round-robin when
+a container was near-dead.  The penalty depends on the likelihood: at the $\rho_U$ chosen by a corrected
+selection, four of the seven rules are statistically indistinguishable from round-robin and three remain
+clearly worse (Section~\ref{sec:res-lik}).  An ablation attributes the penalty to the controller being
+slow to recognise a bad container; each of three independent modelling choices is sufficient to cause
+it, and relaxing any one of them removes it.  Every rule then lies 0--4.5\% below round-robin, where
+fixed proportions already lie ($-$4.2\% for the pre-specified plan, and the same within noise when the
+proportions are estimated from disjoint calibration replicates rather than in hindsight).  The only
+substantially larger allocation effect requires identifying the weak container \emph{before} retrieval
+from calibration reads ($-$16\% per retrieval on one real-read pool, repaid after about 17 retrievals).
+(iii) \emph{No adaptive rule reliably lowered the 0.99-quantile.}  Three configurations with the dropout
+model are 1--9\% below round-robin, but every one of those intervals contains zero, whereas fixed
+proportions lower it by 8.7\% with an interval that excludes zero.  Online learning therefore gave no
+demonstrated reduction in reserved capacity.
+(iv) \emph{Two zero-success results reflect limits of the archive design rather than of the policies.}
+Two failed containers leave exactly $K$ fragments per stripe by construction, and under the
 photolithographic synthesis model no policy or static plan in our design recovered the file.
 
-\textbf{Scope.}  All work is computational.  Nothing was synthesised or sequenced for this
-paper, and no result should be read as a wet-lab demonstration.  We use the term \emph{exact
-retrieval} only for our digital-twin pipeline, where the output file is checked byte for byte
-against the stored file; on replayed real reads, decodability is an oracle event and we speak
-of \emph{recovery}.
+\textbf{Scope.}  All work is computational; nothing was synthesised or sequenced for this paper.  We use
+the term \emph{exact retrieval} only for our digital-twin pipeline, where the output file is checked
+byte for byte against the stored file.  On replayed real reads, decodability is an oracle event and we
+speak of \emph{recovery}.
 
 \textbf{Contributions.}
 \begin{enumerate}
-\item \emph{A measurement of what verified stopping is worth, with the comparison stated correctly.}  A
-verification-gated streaming pipeline (Section~\ref{sec:method}) evaluated against a static family that
-includes a hindsight-tuned plan and a calibration-estimated plan, separating reads consumed from
-capacity reserved (Section~\ref{sec:res-actual}).  Stopping when decodable~\cite{lopez2019dna} and
-checksum-verified decoding~\cite{erlich2017fountain} are both known; quantifying their value for
-heterogeneous multi-container retrieval, end to end to verified bytes, is what we add.
+\item \emph{A measurement of the value of verified stopping.}  A verification-gated streaming pipeline
+(Section~\ref{sec:method}) is evaluated against a static family that includes a hindsight-tuned plan
+and a calibration-estimated plan, with reads consumed reported separately from capacity reserved
+(Section~\ref{sec:res-actual}).  Stopping when decodable~\cite{lopez2019dna} and checksum-verified
+decoding~\cite{erlich2017fountain} are both known; our contribution is to quantify their value for
+heterogeneous multi-container retrieval, end to end to verified bytes.
 \item \emph{A negative result for adaptive allocation, with its cause isolated and repaired.}  Eight
 rules, including Thompson sampling, UCB, learn-then-commit and information-greedy
 design~\cite{thompson1933likelihood,auer2002finite,garivier2016explore,chaloner1995bayesian}, lose to
-round-robin under a near-dead container; a $2\times2\times2$ ablation separates the container model from
-the likelihood and the prior (Section~\ref{sec:res-misspec}); and a two-parameter model with dropout
-removes most of the penalty (Section~\ref{sec:res-dropout}), which shows the failure is the model's, not
-adaptivity's, and bounds what a better model buys.
-\item \emph{Leak-free, end-to-end reproducibility, with honest uncertainty.}  The full chain from
-DT4DDS reads~\cite{gimpel2023digital} of independently synthesised containers to verified bytes under
-pre-registered protocols; safety bounds reported both per retrieval and per synthesis replicate; tail
-metrics with cluster-bootstrap intervals; sensitivity to the prior, the consensus cap, six further
-archive geometries and five failure modes; a cost model in which reads are not the only charge; and an
-artifact from which every table and figure is regenerated (Section~\ref{sec:repro}).
+round-robin under a near-dead container.  A $2\times2\times2$ ablation separates the container model
+from the likelihood and the prior (Section~\ref{sec:res-misspec}), and a two-parameter model with dropout
+removes most of the penalty (Section~\ref{sec:res-dropout}).  The failure therefore lies in the model
+rather than in adaptivity, and the experiments bound what a better model gains.
+\item \emph{A reproducible end-to-end evaluation with explicit uncertainty.}  The full chain from
+DT4DDS reads~\cite{gimpel2023digital} of independently synthesised containers to verified bytes is run
+under pre-registered protocols.  We report safety bounds per retrieval and per synthesis replicate, tail
+metrics with cluster-bootstrap intervals, sensitivity to the prior, the consensus cap, six further
+archive geometries and five failure modes, and a cost model in which reads are not the only charge.  Every
+table and figure is regenerated from the released artifact (Section~\ref{sec:repro}).
 \end{enumerate}
 
 %=====================================================================
@@ -185,8 +186,7 @@ digital-twin experiments, byte-for-byte verification of the returned file.  We t
 coverage-depth analysis and the use of checksums as established by this literature, not as contributions
 of ours.
 
-\emph{Distributed coverage depth.}  Two 2026 papers are closest to our setting and we state the
-relation precisely.  Kong \emph{et al.}~\cite{kong2026coverage} define the distributed coverage-depth
+\emph{Distributed coverage depth.}  Two 2026 papers are closest to our setting.  Kong \emph{et al.}~\cite{kong2026coverage} define the distributed coverage-depth
 problem: the $n$ columns of a rank-$k$ generator matrix are split over $M$ containers by an ordered
 partition, and in every round \emph{one} column is drawn uniformly at random, with replacement and
 \emph{noiselessly}, from \emph{each} container; $\tau(G,\mathcal P)$ is the first round at which the
@@ -202,11 +202,11 @@ Their model is deliberately idealised: sampling is uniform within and across con
 homogeneous and never fail, reads are noiseless, every round costs $M$ reads whether or not they are
 needed (their Remark II.1), and the allocation is fixed in advance.  Their Section~V lists
 ``nonuniform, asynchronous, adaptive, and noisy sampling'' as open problem~4 and an asynchronous
-variant with a total read budget as an open problem.  Our work is an empirical study inside exactly
-that gap --- heterogeneous, noisy, possibly failed containers, reads allocated one batch at a time, and
-stopping decided by verification rather than by an oracle span condition --- and it is complementary,
-not competing: we prove nothing about optimal codes or layouts, and we use their regime distinction
-(parallelism versus genuine read saving) to interpret our results.  Levy
+variant with a total read budget as an open problem.  Our work is an empirical study of that gap:
+heterogeneous, noisy, possibly failed containers, reads allocated one batch at a time, and stopping
+decided by verification rather than by an oracle span condition.  It is complementary to theirs; we
+prove nothing about optimal codes or layouts, and we use their regime distinction (parallelism versus
+genuine read saving) to interpret our results.  Levy
 \emph{et al.}~\cite{levy2026expected} study a different objective: reconstructing the contents of one
 \emph{failed} container from the surviving ones, with scalar MDS and MDS array codes.  Full-message
 retrieval, which we study, is still required after such a repair, and the two stopping rules differ
@@ -221,8 +221,7 @@ Choosing a container resembles a multi-armed bandit with a combinatorial ($K$-of
 reward; we use Thompson sampling~\cite{thompson1933likelihood,russo2018tutorial}, upper
 confidence bounds~\cite{auer2002finite}, explore-then-commit~\cite{garivier2016explore} and an
 information-greedy rule from Bayesian experimental design~\cite{chaloner1995bayesian} as
-baselines (see~\cite{lattimore2020bandit}).  We prove no regret bound and no optimality result: this
-is an experimental paper, and its claims are empirical claims about the configurations we tested.
+baselines (see~\cite{lattimore2020bandit}).
 
 \textbf{Placement and consensus.}  Erasure-coded storage limits the fragments of a stripe per
 failure domain~\cite{weil2006crush,cidon2013copysets,ford2010availability,nath2006subtleties,leong2012distributed}.
@@ -232,18 +231,18 @@ after clustering~\cite{rashtchian2017clustering} or learned models~\cite{barlev2
 systematic nanopore errors are documented~\cite{delahaye2021sequencing,wick2019performance}.
 Table~\ref{tab:literature_comparison} positions this work.
 
-\textbf{What is and is not new here.}  (i) Prior DNA-storage work already stops sequencing when the
-decoder has enough information~\cite{lopez2019dna} and already verifies decoded data with
-checksums~\cite{erlich2017fountain}; the coverage-depth literature already analyses the expected
-number of reads until decodability, including across
-containers~\cite{barlev2025cover,kong2026coverage,levy2026expected}.  We do not claim to introduce
-stopping, verification, or distributed DNA read allocation.  (ii) What we did not find in that
-literature is a measurement, on an end-to-end pipeline that decodes to verified bytes, of how much a
+\textbf{Relation to prior work.}  Prior DNA-storage work already stops sequencing when the decoder has
+enough information~\cite{lopez2019dna} and verifies decoded data with
+checksums~\cite{erlich2017fountain}, and the coverage-depth literature analyses the expected number of
+reads until decodability, including across
+containers~\cite{barlev2025cover,kong2026coverage,levy2026expected}.  Stopping, verification and
+distributed DNA read allocation are therefore not contributions of this paper.  We did not find in that
+literature a measurement, on an end-to-end pipeline that decodes to verified bytes, of how much a
 verification-gated stop is worth relative to the capacity a static plan must reserve when containers
-are heterogeneous and may have failed, and of whether choosing \emph{which} container to read next
-with a learned container model helps or hurts under those conditions.  (iii) Our contribution is that
-measurement, the mechanism behind the negative allocation result, and an artifact from which every
-number can be regenerated.
+are heterogeneous and may have failed, or of whether choosing \emph{which} container to read next with a
+learned container model helps or hurts under those conditions.  We provide that measurement, the
+mechanism behind the negative allocation result, and an artifact from which every number can be
+regenerated.
 \input{tables/literature_comparison}
 
 %=====================================================================
@@ -307,9 +306,8 @@ consensus curve, failure probability $10^{-3}$); no calibration data of the eval
 used in the primary experiments.
 
 \subsection{Objective and metrics}
-A policy chooses, after each batch of $b$ reads, a container and whether to stop.  Several distinct
-quantities are easy to conflate, so we define and report all of them separately, and we never compare
-two of them as if they were one:
+A policy chooses, after each batch of $b$ reads, a container and whether to stop.  We report the
+following quantities separately:
 \begin{enumerate}
 \item \textbf{Mean reads over all attempts} $\bar r_{\text{all}}$: the average reads consumed per
 retrieval \emph{attempt}, counting attempts that end in failure (which consume the whole stream).
@@ -322,15 +320,15 @@ verified file within the stream.
 \item \textbf{Tail quantiles} q95 and q99 of the consumed reads, with cluster-bootstrap intervals.
 \item \textbf{Reserved capacity} $B_{0.99}$: the budget a plan must commit \emph{in advance} to
 succeed on 99\% of retrievals, i.e.\ the q99 of its read requirement.  Where every retrieval succeeds,
-$B_{0.99}$ coincides numerically with (4); the two differ in who pays it --- a reserving user pays
-$B_{0.99}$ every time, a pay-per-read user pays (1).  A user who reserves a flowcell
-pays this on every retrieval, whether or not the retrieval needed it.
+$B_{0.99}$ coincides numerically with (4); the two differ in who pays it.  A user who reserves a
+flowcell pays $B_{0.99}$ on every retrieval, whether or not the retrieval needed it, whereas a
+pay-per-read user pays (1).
 \end{enumerate}
-Verified stopping converts the reserved capacity $B_{0.99}$ into the consumed mean $\bar r_{\text{all}}$:
-that is the saving it offers, and it is a comparison between a policy that stops and a plan that does
-not.  Comparing two policies that both stop is a separate, allocation-only question, and we report it
-separately (Section~\ref{sec:res-actual}).  No metric here is a monetary cost; a cost model with
-per-run and per-container charges is in Section~\ref{sec:res-cost}.
+Verified stopping replaces the reserved capacity $B_{0.99}$ with the consumed mean $\bar r_{\text{all}}$;
+its saving is therefore a comparison between a policy that stops and a plan that does not.  Comparing
+two policies that both stop is a separate, allocation-only question (Section~\ref{sec:res-actual}).  No
+metric here is a monetary cost; a cost model with per-run and per-container charges is given in
+Section~\ref{sec:res-cost}.
 
 %=====================================================================
 \section{Online-Adaptive Retrieval}\label{sec:method}
@@ -376,21 +374,21 @@ set the retrieval's length); a heuristic aimed at the q99.
 \end{itemize}
 All rules probe each container with one batch first.  Table~\ref{tab:algorithms} gives the
 operational specification of the loop and of every rule --- initialisation, batch size, tie-breaking,
-when the posterior is updated, the stopping test and how an exhausted stream is handled --- so that
-nothing has to be read out of the code.  The \emph{static} family reads fixed
+when the posterior is updated, the stopping test and how an exhausted stream is handled.  The
+\emph{static} family reads fixed
 proportions $w_j\propto e_j^{\alpha}$, $\alpha\in\{0,0.5,1,2\}$, until decodable, where $e_j$ is
 the per-read recovery rate of container $j$ measured in hindsight on the same scenario:
 $\alpha{=}0$ is uniform fixed depth, $\alpha{=}1$ equalises expected coverage, and the best
 $\alpha$ is a hindsight-tuned (``oracle'') static plan.
 
-\subsection{What a ``container switch'' means here, and what it would mean in a laboratory}
+\subsection{Physical interpretation of container switching}
 \label{sec:ops}
-Our controller picks a container after every batch of $b{=}50$ reads.  We do not claim that a
-sequencer can be redirected between physical vials that often, and the paper should not be read as a
-demonstration of a physical sequencing controller.  What our experiments model is an \emph{allocation
-policy over $M$ independent read streams}: each container has its own prepared library and its own
-stream of reads, and the policy decides from which stream the next batch is consumed.  Three physical
-arrangements realise that abstraction with different costs.  (i) \emph{Multiplexed run}: all $M$
+Our controller picks a container after every batch of $b{=}50$ reads.  This does not assume that a
+sequencer can be redirected between physical vials that often, and the experiments do not demonstrate a
+physical sequencing controller.  They model an \emph{allocation policy over $M$ independent read
+streams}: each container has its own prepared library and its own stream of reads, and the policy
+decides from which stream the next batch is consumed.  Three physical arrangements realise this
+abstraction at different costs.  (i) \emph{Multiplexed run}: all $M$
 libraries are barcoded and loaded on one flow cell; reads arrive interleaved and ``choosing a
 container'' means choosing which barcode's reads to keep processing.  This matches our model closely
 but does not reduce the reads the instrument actually produces, so it saves analysis and, on
@@ -401,8 +399,8 @@ selective sequencing approximates container choice.  (iii) \emph{Sequential runs
 container, where a switch costs a library preparation and a run setup.  Our frozen cost metric (reads)
 describes case~(i) with per-read billing and is optimistic for cases~(ii) and~(iii); the per-batch and
 per-container charges in Section~\ref{sec:res-cost} bound how much that optimism matters.  Verified
-stopping, the result we actually recommend, needs no switching mechanism at all: it only needs the
-decoder to be able to say ``stop''.
+stopping, which is our main recommendation, needs no switching mechanism; the decoder only has to
+signal that the file is complete.
 
 \input{tables/algorithms}
 
@@ -433,7 +431,8 @@ $\lceil 18{,}594/(32\times24)\rceil=25$ stripes of 32 data fragments cover it, t
 zero-padded (24 stripes would hold only 18{,}432 bytes, which is the payload alone).  This gives
 $25\times48=1{,}200$ strands of 136\,nt, 200 per container, 8 fragments of every stripe per container,
 and, at 60 simulated reads per stored strand, a maximum stream of $60\times1{,}200=72{,}000$ reads.
-Every count in this paper is the one the code produces, not a rounded design target.  For each container we run
+All counts reported are those produced by the code rather than rounded design targets.  For each
+container we run
 DT4DDS~1.1.0~\cite{gimpel2023digital} with its published default parameters: array synthesis
 (Twist model; log-normal oligo counts, $\sigma{=}0.3$), sampling of a given number of copies
 per strand, aging, high-fidelity PCR and Illumina iSeq100 single-end 150\,nt sequencing,
@@ -452,11 +451,11 @@ PCR cycles; 45 PCR cycles with 20 copies; near-dead (two half-lives, 40 cycles, 
 non-informative reads.  \emph{Homogeneous control}: six fresh containers.
 \emph{Photolithographic}: the baseline histories with DT4DDS's photolithographic synthesis
 model.  \emph{Severity sweep}: the baseline with the near-dead container's copy number set to 200, 30, 10, 3
-or 1.  \emph{Revision-4 failure modes}: half of one container's designs physically lost before storage;
+or 1.  \emph{Additional failure modes}: half of one container's designs physically lost before storage;
 a quarter lost in each of two containers; one container whose reads are 90\% not derived from stored
 strands (library-preparation failure or severe contamination); another at 50\%; and a common-cause
 scenario in which every container is aged two further half-lives and amplified harder.
-\emph{Revision-4 geometries}: 3 and 12 containers, $(32,40)$, $(32,64)$ and $(16,24)$ codes, and a file
+\emph{Additional geometries}: 3 and 12 containers, $(32,40)$, $(32,64)$ and $(16,24)$ codes, and a file
 four times larger.  With three containers the six conditions cannot all be kept; we retain one healthy,
 one weak and one near-dead container, so a third of that archive is near-dead instead of a sixth, which
 makes it a harder archive and not only a smaller one.
@@ -471,16 +470,16 @@ streams, but DT4DDS itself is not seed-deterministic, so the streams are part of
 (Section~\ref{sec:repro}).  CIs are cluster
 bootstrap percentile intervals over syntheses (2{,}000 resamples~\cite{efron1993introduction});
 comparisons are paired over the same syntheses and read orders; wrong-output and false-accept
-rates carry exact Clopper--Pearson bounds~\cite{clopper1934use}.  We report every pre-specified
-comparison, including negative ones, and no significance stars.
+rates carry exact Clopper--Pearson bounds~\cite{clopper1934use}.  All pre-specified comparisons are
+reported, including negative ones, without significance stars.
 
 \subsection{Calibration protocol}\label{sec:calib-protocol}
 $\rho_U$ is chosen from $\{0, 0.003, 0.01, 0.03, 0.1\}$ on ten \emph{disjoint} baseline
 replicates (seeds 1000--1009) as the value whose 90\% credible interval covers the target
 $\theta^\ast_j$ closest to 90\% of the time.  $\theta^\ast_j$ is the multiplier that best fits the
 container's full recovery curve under the generic model, and the selection used prior sd $s{=}1$
-whereas the policy runs use $s{=}0.5$ (a mismatch we noticed after freezing and report rather than
-re-tune); intervals are evaluated at the read
+whereas the policy runs use $s{=}0.5$ (a mismatch identified after freezing; see
+Section~\ref{sec:res-calib}); intervals are evaluated at the read
 count where the prior predicts 40\% recovery and at twice that.  The selected value is then fixed
 as the default for every policy run, evaluated on the held-out replicates 0--29, and used on
 the real-read replay.  The completion forecast is evaluated with a budget equal to the median
@@ -497,116 +496,108 @@ strands (108\,nt), all of which are used.  The Genscript design file contains 12
 entirely, discarding the reads that map to them: of the $6\times900{,}000$ evaluation reads, 86.3\%
 map to a design and 4.23\% of those mapped reads are discarded as excluded designs, leaving
 4{,}461{,}804 usable reads.  The excluded strands serve no other purpose, and the subset is the same
-in every condition and policy, so all Genscript comparisons use identical read material.  A fragment counts as recovered when the
-consensus of its first $t$ reads in a random permutation of the run equals the designed strand,
-with $t$ drawn from per-strand consensus curves estimated from real reads; decodability is
-therefore an \emph{oracle} event and the replay is semi-empirical (read orders and counts real,
-containers emulated by subsetting runs of one synthesis batch).  200 read permutations, paired bootstrap.
+in every condition and policy, so all Genscript comparisons use identical read material.  We use 200
+read permutations and a paired bootstrap.
 
-\textbf{What is real here and what is not.}  The replay is \emph{semi-empirical} and we state the
-division explicitly, because it is the single most important qualification on our real-read results.
+\textbf{Real and emulated components of the replay.}  The replay is \emph{semi-empirical}.
 \emph{Taken from the sequencing data}: the reads themselves, their number, which designed strand each
 read came from, the per-container yield and abundance profile that follows from those counts, the
 fraction of reads that map to no design, and the order in which reads arrive (we permute the real
 evaluation reads rather than generating arrivals from a model).  \emph{Supplied by us}: the
 partitioning of one pool's runs into ``containers''; the erasure-coded layout of 250 stripes over those
-containers, which was never physically synthesised; and, most importantly, \emph{the decision that a
-fragment has been recovered}.  That last is an \emph{oracle} event: a fragment counts as recovered when
-the consensus of its reads equals the designed strand, with the number of reads needed drawn from
-per-strand consensus curves estimated from real reads.  Our inner Reed--Solomon code, the CRC-16, the
-address check, the outer code, the CRC-32 and the SHA-256 \emph{are not executed} on this path, and no
-bytes are compared.  The replay therefore cannot support any statement about wrong outputs, false
-accepts or byte-exact retrieval; those come only from the digital twin, where the whole decode chain
-runs.  Nor is it a physical demonstration of the system: nothing here was synthesised, and the
-containers are aliquot runs of one batch.  What the replay does support is the comparison of
-\emph{allocation and stopping policies} over read streams with real arrival statistics, which is why we
-use it as secondary evidence on the ranking of policies and for nothing else.
+containers, which was never physically synthesised; and \emph{the decision that a fragment has been
+recovered}.  This decision is an \emph{oracle} event: a fragment counts as recovered when the consensus
+of its first $t$ reads in a random permutation of the run equals the designed strand, with $t$ drawn
+from per-strand consensus curves estimated from real reads.  Our inner Reed--Solomon code, the CRC-16,
+the address check, the outer code, the CRC-32 and the SHA-256 \emph{are not executed} on this path, and
+no bytes are compared.  The replay therefore supports no statement about wrong outputs, false accepts or
+byte-exact retrieval; those results come only from the digital twin, where the whole decode chain runs.
+Nor is the replay a physical demonstration of the system, since the containers are aliquot runs of one
+synthesis batch.  It supports the comparison of \emph{allocation and stopping policies} over read
+streams with real arrival statistics, and we use it only as secondary evidence on the ranking of
+policies.
 
-\textbf{Leakage audit of the replay.}  Each run is read once and split by position: the first
+\textbf{Separation of calibration and evaluation reads.}  Each run is read once and split by position: the first
 300{,}000 reads are the calibration split and the next 900{,}000 the evaluation split, so no read is in
 both.  Everything that generates a recovery event in the evaluation comes from the evaluation split
 alone: the read order is a permutation of the evaluation reads, and the number of reads a strand needs
 is drawn against per-strand consensus curves.  Two beliefs are used, and they differ exactly in which
 split they may see.  The \emph{generic} prior (all primary replay results) sees no data from these pools
-at all: yield 0.9, NB shape 10, dropout 0.5\%, a generic consensus curve.  The \emph{leak-free
-calibrated} belief sees only the calibration split --- per-container read counts and pooled consensus
-statistics estimated from calibration reads --- and never the evaluation split.  The one place where
-evaluation data is used deliberately is the hindsight-tuned static plan, which is labelled as an oracle
-baseline wherever it appears and exists to be an upper bound on what a static allocation could achieve.
-Our first analysis of these pools violated this discipline (per-strand consensus curves estimated on
-the evaluation reads and static weights tuned on them); it is superseded, kept only as an upper bound in
-Appendix~\ref{app:leak}, and no claim in this paper rests on it.
+at all: yield 0.9, NB shape 10, dropout 0.5\%, a generic consensus curve.  The \emph{calibrated}
+belief (labelled ``leak-free calibrated'' in the tables) sees only the calibration split, i.e.\
+per-container read counts and pooled consensus statistics estimated from calibration reads.  Evaluation
+data is used deliberately in one place only: the hindsight-tuned static plan, which is labelled as an
+oracle baseline wherever it appears and serves as an upper bound on what a static allocation could
+achieve.  Our first analysis of these pools did not keep the splits separate (per-strand consensus
+curves were estimated on the evaluation reads and static weights tuned on them); it is superseded, kept
+only as an upper bound in Appendix~\ref{app:leak}, and no claim in this paper rests on it.
 
 %=====================================================================
 \section{Results}\label{sec:results}
 %=====================================================================
 \subsection{Safety of verified stopping}
 \input{tables/safety}
-Table~\ref{tab:safety} reports the safety record and, next to it, the dependence structure behind it.
-Across \SafeN{} end-to-end retrievals no output file differed from the stored file in a single byte, and
-in \SafeAtt{} fragment decode attempts no wrong payload passed inner RS decoding, the CRC-16 and the
-address check.  These retrievals are \emph{not} independent experiments: they come from \SafeUnits{}
-distinct synthesis replicates, \SafePerUnit{} retrievals per replicate on average (several read orders,
-policies, container models and prior settings applied to the same simulated DNA), and the decode attempts
-inside one retrieval share the same reads.  A Clopper--Pearson bound that treats every retrieval as an
-independent Bernoulli trial would therefore overstate what has been shown.  We report both ends: per retrieval the upper limit is
-\SafeWUB{}, and treating one synthesis replicate as one unit --- the conservative reading, which
-discards the information in repeated read orders --- it is \SafeWUBc{}.  The false-accept limits are
-\SafeFUB{} per attempt and \SafeFUBc{} per synthesis replicate.  The honest summary is therefore
-qualitative as well as numerical: in every configuration we ran, verification-gated stopping never
-returned a wrong file, and the bound that does not assume independence is two orders of magnitude weaker
-than the per-retrieval one.  Two things this table does \emph{not} establish.  First, zero observed errors is not evidence of zero
-error \emph{probability}: it is consistent with any rate below the bounds above, which is why we quote
-them rather than the observed zero, and the bounds are of order $10^{-4}$ per retrieval and
-$10^{-2}$ per independent synthesis --- far from a guarantee.  Second, the bounds apply to
-\emph{this} archive configuration only: this code and rate, this placement, this decoder with its
-24-read consensus cap, DT4DDS's error model, and the scenarios we ran.  They say nothing about DNA
-storage in general, nor about an archive with a weaker inner code or a different verification chain.
-Mechanistically, a false accept would need a wrong payload to pass a 4-symbol RS code, a CRC-16 and an
-address byte, then the stripe CRC-32 and the file SHA-256; the cryptographic hash is the backstop, and
-no experiment of this size can bound \emph{its} failure rate.
-Table~\ref{tab:safety} pools every digital-twin retrieval run for this paper.  No retrieval
-returned a file that differed from the stored one, and no wrong payload passed the inner
-RS + CRC-16 + address checks.  The bounds are those of zero events in the given number of
-trials; they are statements about this archive geometry, these error rates and this code
-stack, not about DNA storage in general.  Unsuccessful retrievals (one or two failed
-containers) ended by exhausting the streams and reported failure instead of returning a file.
+Table~\ref{tab:safety} reports the safety record together with the dependence structure behind it.  It
+pools every digital-twin retrieval in this paper except the clean-reproduction re-runs
+(Section~\ref{sec:repro}), which repeat replicates rather than adding independent ones.  Across
+\SafeN{} end-to-end retrievals no output file differed from the stored file in a single byte, and in
+\SafeAtt{} fragment decode attempts no wrong payload passed inner RS decoding, the CRC-16 and the address
+check.  Unsuccessful retrievals (one or two failed containers) ended by exhausting the streams and
+reported failure instead of returning a file.
+
+These retrievals are \emph{not} independent experiments.  They come from \SafeUnits{} distinct synthesis
+replicates, \SafePerUnit{} retrievals per replicate on average (several read orders, policies,
+container models and prior settings applied to the same simulated DNA), and the decode attempts inside
+one retrieval share the same reads.  A Clopper--Pearson bound that treats every retrieval as an
+independent Bernoulli trial would therefore overstate the evidence.  Per retrieval the upper limit is
+\SafeWUB{}; treating one synthesis replicate as one unit, which is conservative because it discards the
+information in repeated read orders, it is \SafeWUBc{}, two orders of magnitude weaker.  The
+false-accept limits are \SafeFUB{} per attempt and \SafeFUBc{} per synthesis replicate.
+
+Zero observed errors does not imply zero error \emph{probability}: the data are consistent with any
+rate below these bounds, which are of order $10^{-4}$ per retrieval and $10^{-2}$ per independent
+synthesis.  The bounds also apply only to \emph{this} archive configuration: this code and rate, this
+placement, this decoder with its 24-read consensus cap, DT4DDS's error model, and the scenarios we ran.
+They do not extend to DNA storage in general or to an archive with a weaker inner code or a different
+verification chain.  Mechanistically, a false accept would require a wrong payload to pass a 4-symbol RS
+code, a CRC-16 and an address byte, then the stripe CRC-32 and the file SHA-256.  The cryptographic hash
+is the final safeguard, and no experiment of this size can bound \emph{its} failure rate.
 
 \subsection{Reads consumed versus capacity reserved}\label{sec:res-actual}
 \input{tables/r4_actual}
 The largest effect in this paper is the difference between reads that are \emph{consumed} and capacity
-that must be \emph{reserved}, and it is easy to misattribute, so we separate it first
-(Table~\ref{tab:actual}).  In the baseline digital twin, round-robin with verified stopping consumed
+that must be \emph{reserved} (Table~\ref{tab:actual}).  In the baseline digital twin, round-robin with verified stopping consumed
 3.49k reads on average (95\% CI 3.37--3.60k), while the same uniform read proportions without stopping
 must reserve 5.15k to succeed on 99\% of retrievals, and the best static plan in the family must
 reserve 4.80k.  Stopping converts a 4.80--5.15k reservation into a 3.49k average bill: a 27--32\%
 reduction, depending on which plan the reservation is taken from, and it needs no model of the
 containers.
 
-Allocation is a separate and much smaller effect.  Three static numbers appear in this paper and they
-are easy to confuse, so we define them once.  All three read fixed proportions $w_j\propto e_j^{\alpha}$
-\emph{with} the same verified stopping --- the only fair policy-versus-policy comparison --- and all
-three are paired against round-robin on the same 300 syntheses and read orders.
+Allocation is a separate and much smaller effect.  Three static plans are reported in this paper.  All
+three read fixed proportions $w_j\propto e_j^{\alpha}$ \emph{with} the same verified stopping, which is
+the appropriate basis for a policy-versus-policy comparison, and all three are paired against
+round-robin on the same 300 syntheses and read orders.
 \begin{enumerate}
 \item \emph{Pre-specified plan} (primary).  $\alpha\in\{0,0.5,1,2\}$ was the frozen grid and $\alpha{=}1$,
 which equalises expected coverage, is its best member: 3.343k reads, $-$4.21\% against round-robin's
-3.490k (95\% CI $-$4.9 to $-$3.5\%).  This is the result.
-\item \emph{Extended grid} (revision-4 sensitivity check).  Adding $\alpha\in\{0.25,0.75,1.25,1.5,3\}$
+3.490k (95\% CI $-$4.9 to $-$3.5\%).  This is the primary static result.
+\item \emph{Extended grid} (secondary sensitivity check).  Adding $\alpha\in\{0.25,0.75,1.25,1.5,3\}$
 moves the point estimate to $-$4.57\% at $\alpha{=}1.5$ (CI $-$5.5 to $-$3.5\%).  That interval overlaps
 $\alpha{=}1$'s almost entirely, so the finer grid does \emph{not} establish a better plan; it shows the
 family is flat near its optimum ($-$3.7\% to $-$4.6\% for $\alpha\in[0.75,2]$, decaying to $-$0.70\% at
-$\alpha{=}3$).  We report it as a sensitivity check, not an improved result.
-\item \emph{Calibration-estimated plan} (revision-4, practical variant).  The same $\alpha{=}1$ form with
+$\alpha{=}3$).  It is a sensitivity check, not an improved result.
+\item \emph{Calibration-estimated plan} (secondary, practical variant).  The same $\alpha{=}1$ form with
 the per-container efficiencies $e_j$ measured on the ten \emph{disjoint} calibration replicates, so the
 plan sees no evaluation data at all: 3.338k reads, $-$4.35\% (CI $-$5.1 to $-$3.6\%), statistically
-indistinguishable from the pre-specified hindsight plan.  This matters because it shows the static
-advantage is not an artefact of hindsight.
+indistinguishable from the pre-specified hindsight plan.  The static advantage is therefore not an
+artefact of hindsight.
 \end{enumerate}
 Against that band of roughly $-$4\%, the model-based rules consume 3.75--18.87k reads, 7--441\%
-\emph{more} than round-robin.  The baseline ranking is therefore: fixed proportions measured once, plus
-verified stopping, best by about 4\%; round-robin with stopping next; every online rule we tried worse.  The 27--32\% figure above is \emph{not} an allocation
-result and should not be read as one: it compares reads consumed against capacity reserved, and it is
-that comparison which carries the recommendation of Section~\ref{sec:disc}.
+\emph{more} than round-robin.  On the baseline, fixed proportions measured once and combined with
+verified stopping are best by about 4\%, round-robin with stopping is next, and every online rule we
+tried is worse.  The 27--32\% figure above is \emph{not} an allocation result: it compares reads
+consumed with capacity reserved, and this comparison underlies the recommendation in
+Section~\ref{sec:disc}.
 
 \subsection{Policy comparison on the digital twin}
 \input{tables/dt_main}
@@ -642,33 +633,29 @@ adaptive gains, consistent with the low-severity end of the sweep below.  With D
 synthesis model, no policy and none of the four static plans recovered the file in any of 660 retrievals
 (eight policies at 10 syntheses $\times$ 3 read orders, four static plans, and round-robin re-run at the
 full 30 $\times$ 10 design to confirm the reduced one): every retrieval read the whole 72k-read stream and reported failure,
-with no wrong output.  These two zero-success results have different standing and we state them separately.  For
-\emph{two failed containers} the boundary is arithmetic: with $(32,48)$ over six containers each
-container holds exactly 8 of the 48 fragments of every stripe, so losing two leaves exactly $K{=}32$
-fragments and no margin for a single further strand loss; no policy and no read budget can recover the
-file, and this follows from the code and placement rather than from our experiments.  For the
-\emph{photolithographic} scenario the statement is empirical and narrower: under that synthesis model,
-with this code, this decoder, a 24-read consensus cap and a 72k-read stream, nothing recovered the file
-in 660 retrievals and no wrong file was returned.  We did not test deeper streams, a stronger inner code
-or a lower code rate, and we know the consensus cap moves the boundary in the neighbouring failure
-scenario (Section~\ref{sec:res-robust}), so this is a boundary of \emph{our} archive design and decoder
-configuration under that synthesis model, not a claim that photolithographic DNA archives are
-unrecoverable.
+with no wrong output.  The two zero-success results differ in kind.  For \emph{two failed containers}
+the limit is arithmetic and follows from the code and placement rather than from our experiments
+(Section~\ref{sec:res-fail}): exactly $K{=}32$ fragments per stripe remain, and no policy and no read
+budget can recover the file.  For the \emph{photolithographic} scenario the result is empirical and
+narrower: it holds under that synthesis model with this code, this decoder, a 24-read consensus cap and
+a 72k-read stream.  We did not test deeper streams, a stronger inner code or a lower code rate, and the
+consensus cap moves the boundary in the neighbouring failure scenario (Section~\ref{sec:res-robust}).
+This is therefore a limit of \emph{our} archive design and decoder configuration under that synthesis
+model, not evidence that photolithographic DNA archives are unrecoverable.
 
 \subsection{What the gain after a container failure buys}\label{sec:res-uncond}
 \input{tables/r4_uncond}
-The one setting in which the online rules won is a container that failed outright, and that result
-needs its denominator stated (Table~\ref{tab:uncond}).  With one failed container 34\% of retrievals
+The one setting in which the online rules won is a container that failed outright, and the size of that
+gain depends on the denominator (Table~\ref{tab:uncond}).  With one failed container 34\% of retrievals
 succeeded, and \emph{the success probability was identical for every policy and every static plan}:
 whether the file can be recovered at all is decided by which fragments survive in the five remaining
 containers, not by the reading order.  Among the 102 retrievals that succeeded, UCB used 15.49k reads
 against round-robin's 20.31k, 24\% fewer.  Counting all 300 attempts, including the 66\% that read the
-whole 72k-read stream and failed, UCB used 52.79k against round-robin's 54.43k, a 3\% reduction.  Both
-numbers are correct and they answer different questions: a user who retries until success pays the
-conditional number, a user who pays per attempt pays the unconditional one.  We therefore state the
-result as: \emph{after an outright failure, posterior rules cut the cost of the retrievals that succeed
-by up to 24\%, without improving the probability of success, and with a 3\% effect on the cost per
-attempt.}
+whole 72k-read stream and failed, UCB used 52.79k against round-robin's 54.43k, a 3\% reduction.  The
+two numbers answer different questions: a user who retries until success pays the conditional number,
+and a user who pays per attempt pays the unconditional one.  After an outright failure, posterior rules
+therefore cut the cost of the retrievals that succeed by up to 24\%, without improving the probability
+of success, and change the cost per attempt by 3\%.
 
 \subsection{Why adaptive allocation loses, and what fixes it}\label{sec:res-misspec}
 The frozen controller models a container by one efficiency multiplier $\theta_j$ that scales every
@@ -682,11 +669,10 @@ correction further; information-greedy, which reads the container with the large
 never brings that variance below its threshold and spends two thirds of its reads there.
 
 \emph{Separating the three candidate causes.}  Three things could be responsible: the container model,
-the likelihood ($\rho_U$), and the prior width ($s$).  We ran the $2\times2\times2$ ablation of
-Table~\ref{tab:r4abl} rather than attributing the result to the model by argument, and the answer is
-not the one we expected.  No single factor is \emph{the} cause; the frozen configuration
-($\theta$ only, $\rho_U{=}0.1$, $s{=}0.5$) is simply the one corner of the cube in which the penalty is
-large, and relaxing \emph{any} of the three removes most of it.  For coverage-greedy, paired against
+the likelihood ($\rho_U$), and the prior width ($s$).  To separate them we ran the $2\times2\times2$
+ablation of Table~\ref{tab:r4abl}, and the result was not the one we expected.  No single factor is
+\emph{the} cause.  The frozen configuration ($\theta$ only, $\rho_U{=}0.1$, $s{=}0.5$) is the one corner
+of the cube in which the penalty is large, and relaxing \emph{any} of the three removes most of it.  For coverage-greedy, paired against
 round-robin on the same 300 syntheses and read orders: the frozen corner costs $+$15.1\% (95\% CI
 $+$10.3 to $+$20.6\%); switching to the binomial likelihood alone gives $-$4.4\% ($-$6.0 to $-$2.8\%);
 widening the prior alone gives $-$0.6\% ($-$2.5 to $+$1.4\%); adding dropout alone gives $+$1.6\%
@@ -694,60 +680,60 @@ widening the prior alone gives $-$0.6\% ($-$2.5 to $+$1.4\%); adding dropout alo
 best single change.  Thompson sampling behaves the same way ($+$7.4\%, then $-$3.5\%, $+$0.9\%,
 $+$0.7\%).  The common mechanism is how fast the controller can conclude that a container is bad: the
 over-dispersed likelihood widens the posterior, a tight prior holds it near $\theta{=}1$, and a
-single-multiplier model keeps extrapolating the surviving fragments' rate to the absent ones.  Any one
-of those three being relaxed lets the evidence arrive fast enough, and once it does, every rule lands in
-the same narrow band a few percent below round-robin --- the band fixed proportions already occupy
-($-$4.21\% for the pre-specified plan, Section~\ref{sec:res-actual}).  That band, not the $+$15\%, is the honest estimate of what allocation is worth here.
+single-multiplier model keeps extrapolating the surviving fragments' rate to the absent ones.  Relaxing
+any one of the three lets the evidence accumulate fast enough, and every rule then falls in the same
+narrow band a few per cent below round-robin, the band that fixed proportions already occupy
+($-$4.21\% for the pre-specified plan, Section~\ref{sec:res-actual}).  This band, rather than the
+$+$15\%, is our estimate of what allocation is worth in this setting.
 
 \subsection{An efficiency-and-dropout container model}\label{sec:res-dropout}
 \input{tables/r4_ablation}
-The reviewer-facing question is whether a container model that \emph{can} express dropout rescues
-adaptive allocation.  We built one --- a joint posterior over $(\theta_j,d_j)$ with
-$d_j\in\{0,0.05,0.15,0.3,0.5,0.7,0.9\}$, so that a fragment still missing after many reads is
-increasingly attributed to permanent absence rather than to low coverage --- and the answer is a
-qualified yes.
+We next asked whether a container model that \emph{can} express dropout rescues adaptive allocation.
+The model uses a joint posterior over $(\theta_j,d_j)$ with $d_j\in\{0,0.05,0.15,0.3,0.5,0.7,0.9\}$, so
+that a fragment still missing after many reads is increasingly attributed to permanent absence rather
+than to low coverage.  It does, with qualifications.
 
 On the baseline, keeping the frozen likelihood and prior and changing only the model, UCB goes from
 $+$15.3\% to $-$3.5\% against round-robin (95\% CI $-$4.9 to $-$2.2\%), coverage-greedy from $+$15.1\%
 to $+$1.6\% ($-$0.2 to $+$3.4\%), Thompson sampling from $+$7.4\% to $+$0.7\%, pivotal from $+$49.3\%
 to $+$7.4\% and learn-then-commit from $+$44.6\% to $+$12.7\%.  The mechanism is visible in the read
 shares: coverage-greedy's share of the near-dead container falls from 0.27 to 0.20 and UCB's from 0.27
-to 0.17, against round-robin's 0.16.  Information-greedy gets worse ($+$441\% to $+$612\%), which is
-consistent --- a richer model gives a pure-information rule more uncertainty to chase.  In the
-homogeneous control, where there is no dropout to detect, the two models agree within 0.5\% on every
-rule, so the second parameter costs nothing when it is not needed.  The clearest benefits are in the scenarios the one-parameter model
-mis-reads worst.  After an outright failure, keeping the frozen likelihood, the conditional saving grows
+to 0.17, against round-robin's 0.16.  Information-greedy gets worse ($+$441\% to $+$612\%), as expected:
+a richer model gives a pure-information rule more uncertainty to chase.  In the homogeneous control,
+where there is no dropout to detect, the two models agree within 0.5\% on every rule, so the second
+parameter costs nothing when it is not needed.  The clearest benefits are in the scenarios the
+one-parameter model misreads most.  After an outright failure, keeping the frozen likelihood, the conditional saving grows
 from $-$17.0\% to $-$35.0\% for coverage-greedy, from $-$9.2\% to $-$36.2\% for Thompson sampling and
 from $+$1.6\% to $-$38.5\% for tail-aware, with the success probability unchanged at 0.34; adding the
 binomial likelihood as well takes all four rules to between $-$42\% and $-$45\%.  Under partial physical
 loss and common-cause degradation the two-parameter model turns penalties of $+$77\% and $+$47\% into
 savings of $-$6\% and $-$34\% (Section~\ref{sec:res-robust}).
 
-Three qualifications keep this from being a positive headline.  First, as the ablation shows, the
-dropout model is not uniquely responsible: the binomial likelihood alone does as much on the baseline.
-Second, the tail does not move for any \emph{adaptive} rule: the paired q99 difference for UCB with the
-dropout model is $-$450 reads with a 95\% interval of $-$1{,}147 to $+$150, so even the best rule is not
-resolved as better than round-robin at q99 (a hindsight static plan is, Section~\ref{sec:res-tail}).  Third, the size depends entirely on the scenario: in the baseline the best allocation result is a
-3.5--4.5\% mean saving, against the 27--32\% that verified stopping delivers with no model at all; it is
-only in the dropout-dominated scenarios (partial loss, common-cause degradation, a failed container)
-that allocation reaches 6--45\%, and there it is repairing a problem the frozen model created.  The right reading of our negative result
-is therefore not ``adaptive allocation does not work'' but \emph{``a controller that is slow to
-recognise a bad container makes allocation actively harmful, several independent modelling choices cause
-that slowness, and fixing any of them buys a few percent --- not the bulk of the saving''}.
+Three qualifications apply.  First, as the ablation shows, the dropout model is not uniquely
+responsible: the binomial likelihood alone does as much on the baseline.  Second, the tail does not move
+for any \emph{adaptive} rule.  The paired q99 difference for UCB with the dropout model is $-$450 reads
+with a 95\% interval of $-$1{,}147 to $+$150, so even the best rule is not resolved as better than
+round-robin at q99, whereas a hindsight static plan is (Section~\ref{sec:res-tail}).  Third, the size of
+the effect depends on the scenario.  On the baseline the best allocation result is a 3.5--4.5\% mean
+saving, against the 27--32\% that verified stopping delivers with no model.  Allocation reaches
+6--45\% only in the dropout-dominated scenarios (partial loss, common-cause degradation, a failed
+container), where it repairs a problem the frozen model created.  The negative result is therefore not
+that adaptive allocation does not work.  Rather, a controller that is slow to recognise a bad container
+makes allocation harmful; several independent modelling choices cause that slowness; and fixing any of
+them gains a few per cent, not the bulk of the saving.
 
 
-\subsection{Failed containers and severity sweep}
+\subsection{Failed containers and severity sweep}\label{sec:res-fail}
 With one failed container (the fresh one, which returns only non-informative reads), 34\% of
-retrievals succeeded under every policy, and success was identical for all policies on every
-synthesis and read order: whether the file can be recovered is set by which fragments the
-remaining five containers lost, i.e.\ by the archive's redundancy, not by the policy.  On the
-102 retrievals where all succeeded, adaptive allocation helped, because the failed container is
-easy to identify and stops being read: UCB used 24\% (17--28\%) fewer reads than round-robin,
+retrievals succeeded under every policy, with identical success on every synthesis and read order
+(Section~\ref{sec:res-uncond}); recoverability is set by the archive's redundancy, not by the policy.
+On the 102 retrievals where all policies succeeded, adaptive allocation helped, because the failed
+container is easy to identify and stops being read: UCB used 24\% (17--28\%) fewer reads than round-robin,
 coverage-greedy 17\% (8--23\%), pivotal 15\% (6--21\%) and Thompson sampling 9\% (2--15\%);
 tail-aware was even ($+$2\%, $-$8 to $+$14\%), learn-then-commit 8\% (2--14\%) and information-greedy
 81\% (49--133\%) costlier.  With two failed containers no policy recovered the file; every
-retrieval read all 72{,}000 reads and reported failure.  We read both results as boundaries of the
-\emph{archive design}, not of the policies: with round-robin placement of $(32,48)$ stripes over six
+retrieval read all 72{,}000 reads and reported failure.  Both results are limits of the
+\emph{archive design}, not of the policies.  With round-robin placement of $(32,48)$ stripes over six
 containers, each failed container removes 8 of a stripe's 48 fragments, half of its redundancy of 16.
 After one failure a stripe tolerates only 8 further lost strands: 18 of the 30 syntheses were
 unrecoverable under every read order, 7 always recoverable, and 5 depended on the read order
@@ -775,13 +761,11 @@ degradation).  Every retrieval at every level returned the correct file, so the 
 
 \subsection{Tail metrics and the static family}\label{sec:res-tail}
 \input{tables/r4_tails}
-No adaptive rule lowered the 0.99-quantile \emph{reliably}; a tuned static plan did.  That sentence
-needs care in both halves, because a q99 estimated from 300 retrievals is driven by its three most
-expensive observations and those sit in a few synthesis replicates.  We therefore report
-cluster-bootstrap intervals over syntheses and re-ran the baseline with 100 independent syntheses
-$\times$ 3 read orders (Table~\ref{tab:r4tails}).  We also separate two things that are easy to
-conflate: a \emph{numerical} reduction in the estimated q99, and a reduction that survives its
-interval.
+No adaptive rule lowered the 0.99-quantile \emph{reliably}; a tuned static plan did.  A q99 estimated
+from 300 retrievals is driven by its three most expensive observations, which come from a few synthesis
+replicates.  We therefore report cluster-bootstrap intervals over syntheses and re-ran the baseline with
+100 independent syntheses $\times$ 3 read orders (Table~\ref{tab:r4tails}).  We distinguish a
+\emph{numerical} reduction in the estimated q99 from a reduction that survives its interval.
 
 Numerically, three adaptive configurations are below round-robin.  With the dropout model in the
 frozen design, UCB has q99 4.70k against round-robin's 5.15k ($-$8.7\%) and coverage-greedy 5.10k
@@ -794,14 +778,14 @@ reads (95\% CI $+$800 to $+$3{,}904), Thompson sampling $+$953 ($+$300 to $+$2{,
 ($+$1{,}151 to $+$3{,}003), tail-aware $+$1{,}752 ($+$650 to $+$2{,}149), learn-then-commit $+$2{,}516,
 pivotal $+$4{,}444 and information-greedy $+$30{,}842.  The one reduction that does survive is not
 adaptive at all: the pre-specified fixed proportions reach q99 4.70k against round-robin's 5.15k, a
-paired $-$450 reads (95\% CI $-$550 to $-$202), an interval excluding zero.  The honest claim is
-therefore: \emph{adaptive rules did not reliably lower the tail, and we cannot rule out that the best
-of them lowers it by up to about 9\%; fixed proportions chosen in advance did lower it}.  The
-tail-aware rule, built to attack the bottleneck stripes, is significantly worse than round-robin at q99
-in every design we ran: the heuristic did not work.  We report q95 beside q99 because it is the
-better-determined tail statistic at this sample size.
+paired $-$450 reads (95\% CI $-$550 to $-$202), an interval excluding zero.  Adaptive rules therefore
+did not reliably lower the tail, although we cannot rule out that the best of them lowers it by up to
+about 9\%; fixed proportions chosen in advance did lower it.  The tail-aware rule, designed to target
+the bottleneck stripes, is significantly worse than round-robin at q99 in every design we ran, so this
+heuristic did not achieve its aim.  We report q95 beside q99 because it is the better-determined tail
+statistic at this sample size.
 
-The static family deserves the same caution.  Its members are $w_j\propto e_j^{\alpha}$, and the frozen
+The same caution applies to the static family.  Its members are $w_j\propto e_j^{\alpha}$, and the frozen
 protocol tested only $\alpha\in\{0,0.5,1,2\}$, so ``best static plan'' means the best of those four,
 not the optimal fixed allocation; the extended grid and the calibration-estimated variant, and what
 each of the three numbers means, are defined in Section~\ref{sec:res-actual} and listed in
@@ -813,21 +797,22 @@ sized at all: it either reads the whole stream or fails, so its reservation is t
 
 \subsection{Calibration of the posterior, and a negative forecast result}\label{sec:res-calib}
 \input{tables/r4_calib}
-Two calibration questions must be kept apart: whether the posterior over $\theta_j$ is calibrated, and
-whether the completion forecast is.  Neither is, and the first failure is specific.
+We consider two calibration questions separately: whether the posterior over $\theta_j$ is calibrated,
+and whether the completion forecast is.  Neither is, and the first failure has a specific cause.
 
 \emph{Posterior intervals.}  On the ten selection replicates, 90\% credible-interval coverage of
 $\theta^\ast$ rose with $\rho_U$ from 0.45 (binomial) through 0.63, 0.73 and 0.80 to 0.87 at
 $\rho_U{=}0.1$, the edge of the pre-specified grid, which we kept and selected; on the 30 held-out
 replicates it gave 0.87 overall (0.84 at the earlier and 0.89 at the later read count), 1.00 for five
 containers and 0.20 for the near-dead one.  That selection has two defects: it used prior sd $s{=}1$
-while every policy run uses $s{=}0.5$, and the selected value sat at the grid boundary.  Revision~4
-repeats it with $s{=}0.5$ and an extended grid $\{0,0.003,0.01,0.03,0.1,0.2,0.3,0.5\}$
-(Table~\ref{tab:r4calib}), and the outcome corrects the original selection in two ways.  Before the numbers, which experiment
-uses which: \emph{every policy run in this paper, including all primary results and all revision-4
-scenarios, uses the originally selected $\rho_U{=}0.1$}; the re-selection is a \emph{sensitivity
-experiment} that re-runs the selection procedure only, changes no policy run, and replaces no reported
-result.  The original selection and its two defects stay on the record in Appendix~\ref{app:dev}.  First, under
+while every policy run uses $s{=}0.5$, and the selected value sat at the grid boundary.  A secondary
+analysis repeats the selection with $s{=}0.5$ and an extended grid
+$\{0,0.003,0.01,0.03,0.1,0.2,0.3,0.5\}$ (Table~\ref{tab:r4calib}).  \emph{Every policy run in this
+paper, including all primary results and all secondary scenarios, uses the originally selected
+$\rho_U{=}0.1$}; the re-selection is a \emph{sensitivity experiment} that re-runs the selection
+procedure only, changes no policy run and replaces no reported result.  The original selection and its
+two defects are documented in Appendix~\ref{app:dev}.  The re-selection corrects the original in two
+ways.  First, under
 the prior actually used the best value is $\rho_U{=}0.03$ (selection coverage 0.81, held out 0.83)
 rather than 0.1 (0.81 and 0.82), so the frozen default is not the best member of its own family,
 although the difference is within noise.  Second, extending the grid does not rescue calibration:
@@ -835,17 +820,16 @@ coverage flattens near 0.80 for $\rho_U\in[0.03,0.3]$ and collapses to 0.60 at 0
 likelihood family reaches the 0.90 target.  The reason is visible per container: at every $\rho_U$ the
 five healthy containers are covered 0.92--1.00 of the time and the near-dead container 0.00--0.03 of the
 time.  Widening a likelihood cannot fix a container whose behaviour the model cannot express, which is
-the same misspecification that makes allocation lose (Section~\ref{sec:res-misspec}).  We therefore do not describe this controller as calibrated: its posterior is reliable for healthy
-containers and wrong for near-dead ones, which is precisely the case that matters.  No primary
-conclusion changes as a result.  The re-selected value, $\rho_U{=}0.03$, differs from the frozen 0.1 by
-less than the noise in the selection statistic, and the ablation of Table~\ref{tab:r4abl} already
-reports what happens across the likelihood axis: the allocation penalty depends on $\rho_U$ as one of
-three interacting choices, which is reported as a finding rather than corrected away.  Had we re-tuned
-$\rho_U$ and re-run the primary experiments on the re-tuned value, the frozen protocol would no longer
-have been frozen; we kept it.
+the same misspecification that makes allocation lose (Section~\ref{sec:res-misspec}).  The controller
+is therefore not calibrated: its posterior is reliable for healthy containers and wrong for near-dead
+ones, which is the case that matters.  No primary conclusion changes as a result.  The re-selected
+value, $\rho_U{=}0.03$, differs from the frozen 0.1 by less than the noise in the selection statistic,
+and the ablation of Table~\ref{tab:r4abl} already covers the likelihood axis: the allocation penalty
+depends on $\rho_U$ as one of three interacting choices, and we report this as a finding.  The primary
+experiments were not re-tuned to the new value, so that the protocol remains as frozen.
 
-\emph{Completion forecast (negative, secondary).}  The forecast carries no claim in this paper and no
-policy depends on it; we report it because it was pre-specified and because its failure is informative.
+\emph{Completion forecast (negative, secondary).}  No policy depends on the forecast; we report it
+because it was pre-specified and its failure is informative.
 On 1{,}127 checkpoints from 300 baseline retrievals with a budget of 3.75k reads (the median
 coverage-greedy cost), of which 52\% finished within the budget, both forecasts were over-confident
 (mean forecast 0.86 against 0.52 observed at 30\% of the budget).  The posterior-simulation forecast
@@ -853,8 +837,7 @@ beat the analytic one on every metric (ECE 0.29 vs.\ 0.34; Brier 0.30, 95\% CI 0
 0.29--0.38; AUC 0.73, 0.69--0.78, vs.\ 0.69, 0.65--0.73), yet both Brier scores are worse than the 0.25
 of a constant forecast at the observed base rate, so neither beats climatology.  They rank retrievals
 usefully only late in a retrieval (AUC 0.82 at 85\% of the budget).  Futility stopping, which would
-rely on them, is disabled in every run, and we make no claim that these numbers are usable
-probabilities.
+rely on them, is disabled in every run, and the forecasts should not be used as probabilities.
 \begin{figure*}[t]
 \centering
 \includegraphics[width=0.98\textwidth]{fig_dt_calibration.pdf}
@@ -880,20 +863,18 @@ both have a worse Brier score than a constant forecast at the base rate.}
 \label{fig:forecast}
 \end{figure}
 
-\subsection{What the primary comparison looks like under the corrected likelihood}\label{sec:res-lik}
+\subsection{Primary comparison under the re-selected likelihood}\label{sec:res-lik}
 \input{tables/r6_likelihood}
-The selection defect of Section~\ref{sec:res-calib} raises a fair question: the primary
-adaptive-allocation comparison runs at $\rho_U{=}0.1$, a value chosen by a procedure we later found to
-have used the wrong prior width, and the corrected procedure picks $\rho_U{=}0.03$.  Rather than argue
-that the difference is small, we re-ran the \emph{complete} primary comparison at the re-selected value:
+The primary adaptive-allocation comparison runs at $\rho_U{=}0.1$, a value chosen by a procedure that
+used the wrong prior width (Section~\ref{sec:res-calib}); the corrected procedure picks
+$\rho_U{=}0.03$.  We therefore re-ran the \emph{complete} primary comparison at the re-selected value:
 all eight policies, all three primary scenarios, the full 30 syntheses $\times$ 10 read orders, and
 everything else --- seeds, prior width $s{=}0.5$, container model, placement, decoder --- held at its
-frozen setting.  Table~\ref{tab:r6lik} puts it beside the frozen runs and the binomial ablation.  One
-property makes the comparison clean: round-robin never evaluates the posterior, so its retrievals are
-bit-identical across all three settings and serve as a common reference.
+frozen setting.  Table~\ref{tab:r6lik} places it beside the frozen runs and the binomial ablation.
+Round-robin never evaluates the posterior, so its retrievals are bit-identical across all three
+settings and serve as a common reference.
 
-The answer is that the likelihood setting changes the headline sub-claim, and we state the corrected
-version.  On the baseline, four of the seven model-based rules move from clearly costlier than
+The likelihood setting changes part of the allocation result.  On the baseline, four of the seven model-based rules move from clearly costlier than
 round-robin to indistinguishable from it: coverage-greedy from $+$15.1\% to $-$0.4\% (95\% CI $-$2.5 to
 $+$1.7\%), Thompson sampling from $+$7.4\% to $+$0.3\% ($-$1.7 to $+$2.4\%), UCB from $+$15.3\% to
 $+$1.5\% ($-$0.5 to $+$3.8\%) and tail-aware from $+$12.9\% to $-$1.2\% ($-$3.2 to $+$0.6\%), every
@@ -906,26 +887,26 @@ $-$17.0\%) and UCB most of all loses it ($-$2.3\%, not significant, against $-$2
 ($+$1.6\% to $-$16.7\%) and learn-then-commit ($+$7.9\% to $-$17.8\%) gain.  No single $\rho_U$ is best
 everywhere.
 
-Three consequences, stated plainly.  (i) The strong form of our negative result --- ``every model-based
-rule read 7--441\% more than round-robin'' --- holds for the \emph{pre-registered} configuration and not
-for the corrected one; under $\rho_U{=}0.03$ the honest statement for the coverage family is that it is
-\emph{no better} than round-robin, not that it is harmful.  (ii) The weak form survives every setting we
-tested, and it is the one we rely on: \emph{no adaptive rule beat round-robin by more than a few per
-cent in any (scenario, likelihood) combination, while three of the seven were clearly worse in most of
-them}.  (iii) The main thesis is unaffected, and if anything strengthened: at the corrected likelihood
-adaptive allocation on the baseline buys essentially nothing, against the 27--32\% that verified
-stopping delivers.  We keep $\rho_U{=}0.1$ as the primary configuration because it was pre-registered
-and because re-tuning after seeing outcomes would make the protocol unfrozen, but every claim about the
-\emph{size} of the allocation penalty is now reported with the likelihood it depends on.
+Three consequences follow.  (i) The strong form of the negative result, that every model-based rule
+read 7--441\% more than round-robin, holds for the \emph{pre-registered} configuration but not for the
+corrected one.  Under $\rho_U{=}0.03$ the coverage family is \emph{no better} than round-robin rather
+than harmful.  (ii) The weaker form holds in every setting we tested, and it is the one we rely on:
+\emph{no adaptive rule beat round-robin by more than a few per cent in any (scenario, likelihood)
+combination, while three of the seven were clearly worse in most of them}.  (iii) The main conclusion
+is unaffected and, if anything, reinforced: at the corrected likelihood, adaptive allocation on the
+baseline gains essentially nothing, against the 27--32\% that verified stopping delivers.  We keep
+$\rho_U{=}0.1$ as the primary configuration because it was pre-registered and re-tuning after seeing
+outcomes would break the frozen protocol, but every statement about the \emph{size} of the allocation
+penalty is reported with the likelihood it depends on.
 
 \subsection{Secondary evidence: real read streams}\label{sec:res-replay}
 \input{tables/replay}
-Table~\ref{tab:replay} gives the leak-free replay with the generic prior.  On the Twist pool,
+Table~\ref{tab:replay} gives the replay with the generic prior.  On the Twist pool,
 round-robin with verified stopping used 58.6k reads on average against the 65.7k budget of the
 hindsight-tuned static plan ($-$11\%), and the model-based rules used 56.6--57.2k, 2--3\% fewer
 than round-robin; coverage-greedy was 9.0k (95\% CI 8.5--19.3k) below the hindsight static budget.
 Information-greedy reduced to coverage-greedy after the first probes (identical results), and
-the leak-free calibrated belief changed coverage-greedy by $-$0.2\%.  As on the digital twin, no \emph{adaptive}
+the calibrated belief changed coverage-greedy by $-$0.2\%.  As on the digital twin, no \emph{adaptive}
 rule lowered q99 materially: 65.6--67.2k for the model-based rules against the 65.7k static budget.  Stopping supplies most of the gain
 (about 7.1k of 9.0k reads).
 On the Genscript pool, whose PCR-30-cycle container is near-dead, verified stopping with
@@ -935,8 +916,8 @@ the hindsight-tuned static plan, which knows in advance to give that container 2
 prior was 0--3\% costlier than round-robin (UCB 637k, coverage-greedy and pivotal 639k, tail-aware
 644k, learn-then-commit 651k, Thompson sampling 654k), and, as on the digital twin, each gave the
 near-dead container more reads than round-robin did (19--20\% against 17\%).  The exception is the
-leak-free calibrated belief, fitted on calibration reads of the same containers that are disjoint
-from the evaluation reads: coverage-greedy with it gave the near-dead container 3.4\% of its reads and
+calibrated belief, fitted on calibration reads of the same containers that are disjoint from the
+evaluation reads: coverage-greedy with it gave the near-dead container 3.4\% of its reads and
 used 533k ($-$16\% vs.\ round-robin; $-$97.9k, 95\% CI $-$161.6 to $-$90.0k, vs.\ the hindsight static
 budget).  Allocation therefore pays when the weak container is identified \emph{before} retrieval,
 not when the controller must learn it online.  q99 was 820--853k for the generic-prior rules and 676k
@@ -955,10 +936,10 @@ distribution misleads the allocator more than no estimate at all.  Only at 100k 
 appear.  Dividing the calibration reads by the per-retrieval saving gives the break-even point: about
 10 retrievals for the 100k belief and 17 for the full one.  Calibration therefore pays only for an
 archive that will be read repeatedly, and for a single retrieval it costs several times what it saves.
-This is the clearest case in the paper where a saving that looks large per retrieval is small or
-negative once the information it depends on is charged for.
+A saving that is large per retrieval thus becomes small or negative once the information it depends on
+is charged for.
 
-\subsection{Robustness: what does and does not change the conclusions}\label{sec:res-robust}
+\subsection{Robustness}\label{sec:res-robust}
 \input{tables/r4_cap}
 \emph{Prior assumptions.}  The controller starts from fixed generic assumptions, so we varied them one
 at a time on the baseline (30 syntheses $\times$ 3 read orders each): the prior probability of outright
@@ -966,36 +947,35 @@ failure ($10^{-2}$, $10^{-1}$ against the frozen $10^{-3}$), the prior dropout (
 the negative-binomial shape (3, 30 against 10), the $\theta$ grid (40 points over $[0.001,10]$ and 10
 points over $[0.01,5]$ against 25 over $[0.01,5]$), the prior width ($s{=}0.25$, $1.0$ against $0.5$)
 and the consensus-success curve (scaled by 0.5 and 2.0).  Under the one-parameter model the penalty is
-remarkably insensitive: coverage-greedy stays between $+$10.9\% and $+$20.6\% against round-robin in
-every setting except the tighter prior $s{=}0.25$, where it rises to $+$56.4\% --- a prior that holds
-$\theta$ near 1 is the worst thing one can do here.  Changing the failure prior by two orders of
-magnitude changes nothing at all ($+$17.2\% either way), because the failure atom is not what is
-mismodelled.  Under the two-parameter model the same sweep stays between $-$0.3\% and $+$3.4\%.  So
-neither the negative result nor its repair is an artefact of the prior.
+insensitive to these settings: coverage-greedy stays between $+$10.9\% and $+$20.6\% against round-robin
+in every setting except the tighter prior $s{=}0.25$, where it rises to $+$56.4\%, because a prior that
+holds $\theta$ near 1 is the most harmful choice here.  Changing the failure prior by two orders of
+magnitude has no effect ($+$17.2\% either way), because the failure atom is not what is mismodelled.
+Under the two-parameter model the same sweep stays between $-$0.3\% and $+$3.4\%.  Neither the negative
+result nor its repair is therefore an artefact of the prior.
 
-\emph{Decoder configuration, and a boundary that is partly ours.}  The consensus cap (reads per cluster
+\emph{Decoder configuration.}  The consensus cap (reads per cluster
 used to form a consensus, frozen at 24) is not binding in the baseline: caps of 12, 24 and 48 give the
 same means to within 10 reads and the same q99 (Table~\ref{tab:r4cap}), because clusters there rarely
-accumulate more than a dozen reads before the fragment decodes.  Where a stream is read to exhaustion it
-does bind, and it moves the thing we had called an archive-design boundary.  With one failed container,
-round-robin recovers the file in 31.3\% of retrievals at a cap of 12, 34.0\% at 24 and 35.7\% at 48, with
-no wrong output at any setting.  So part of what we reported as the redundancy limit of the archive is a
-limit of \emph{our decoder configuration}: a deeper consensus extracts more fragments from the surviving
-containers.  The honest statement about every zero- or partial-success result in this paper is therefore
-that it holds for this code, this placement, this consensus cap and this stream length, and that a more
-patient decoder shifts the boundary.
+accumulate more than a dozen reads before the fragment decodes.  Where a stream is read to exhaustion,
+however, the cap does bind and shifts what we described above as an archive-design limit.  With one
+failed container, round-robin recovers the file in 31.3\% of retrievals at a cap of 12, 34.0\% at 24 and
+35.7\% at 48, with no wrong output at any setting.  Part of the redundancy limit reported above is
+therefore a limit of \emph{our decoder configuration}: a deeper consensus extracts more fragments from
+the surviving containers.  Every zero- or partial-success result in this paper holds for this code, this
+placement, this consensus cap and this stream length, and a more patient decoder shifts the boundary.
 
 \emph{Failure modes beyond total loss.}
 \input{tables/r4_fail}
-Simulated total loss is the easiest failure to model and the least interesting, so we added four modes
+Because total loss is the simplest failure to model, we added four further modes
 (Table~\ref{tab:r4fail}): half of one container's designs physically lost before storage; a quarter lost
 in each of two containers; one container whose reads are 90\% not derived from stored strands; another at
 50\%; and a common-cause scenario in which every container is aged two further half-lives and amplified
 harder.  Three results stand out.  First, partial physical loss is where the one-parameter model fails
 hardest: coverage-greedy costs $+$76.6\% against round-robin, tail-aware $+$92.0\%, UCB $+$59.7\% --- far
-worse than the $+$15\% of the baseline --- which is exactly what the dropout explanation predicts, since a
-container missing half its designs is pure dropout.  Second, the two-parameter model does not merely
-recover: coverage-greedy with dropout reaches $-$6.0\% under partial loss and $-$33.6\% under common-cause
+worse than the $+$15\% of the baseline.  This is what the dropout explanation predicts, since a
+container missing half its designs is pure dropout.  Second, the two-parameter model does more than
+remove the penalty: coverage-greedy with dropout reaches $-$6.0\% under partial loss and $-$33.6\% under common-cause
 degradation, the largest allocation savings anywhere in our digital-twin experiments.  Third, success
 probability again does not depend on the policy (0.95 with two quarter-lost containers, 0.87 under
 common-cause degradation, identical across rules), and no configuration produced a wrong output.  Low
@@ -1033,17 +1013,18 @@ fewest at 38, coverage-greedy most at 61), round-robin 63 times, and the fixed-p
 all (65 for $\alpha{=}1$, 69 for uniform), because they cycle to hold their proportions.  No policy
 here is switch-frugal by design, and a setting where switching is expensive would need a larger batch
 or an explicit switch penalty in the score; the rule that happens to switch least, tail-aware, is also
-among the costliest in reads, so nothing here trades switches for reads deliberately.  Three quantities must stay separate and we never equate them: reads \emph{consumed} (what a policy
-spends), capacity \emph{reserved} (what a non-stopping plan must commit in advance), and laboratory
-\emph{expenditure} (what an invoice says).  Our 27--32\% figure is the first against the second, and it
-is \emph{not} a demonstrated 27--32\% reduction in the cost of sequencing: converting it would require
-per-read pricing with no fixed component, which no laboratory we know of offers.  We did not model
-instrument time, reagent costs, library preparation, minimum run sizes, flow-cell granularity, or the
-cost of the calibration reads used by the replay's calibrated belief (charged separately in
-Section~\ref{sec:res-replay}).  Under the only charging models we did examine, the fixed components
-dominate: with a per-batch run charge the whole spread between policies is a few per cent of a bill
-set by run setup.  A reader should take the read counts as the measured quantity and the monetary
-columns as an illustration of how little of a read saving may survive contact with a price list.
+among the costliest in reads, so no policy here deliberately trades switches for reads.
+
+Three quantities are distinct: reads \emph{consumed} (what a policy spends), capacity \emph{reserved}
+(what a non-stopping plan must commit in advance), and laboratory \emph{expenditure} (what an invoice
+says).  Our 27--32\% figure compares the first with the second; it is \emph{not} a demonstrated
+27--32\% reduction in the cost of sequencing.  Converting it would require per-read pricing with no
+fixed component, which no laboratory we know of offers.  We did not model instrument time, reagent
+costs, library preparation, minimum run sizes, flow-cell granularity, or the cost of the calibration
+reads used by the replay's calibrated belief (charged separately in Section~\ref{sec:res-replay}).
+Under the charging models we did examine, the fixed components dominate.  The read counts are the
+measured quantity; the monetary columns only illustrate how little of a read saving may remain once
+fixed charges apply.
 
 \subsection{Supporting channel result (real nanopore reads)}
 On two independent nanopore flowcells of DNAformer reads~\cite{barlev2025deep,technion2025dnaformerreads},
@@ -1057,39 +1038,41 @@ for an i.i.d.\ model.  This motivates over-dispersed models but does not enter t
 %=====================================================================
 \textbf{What helps, and whom.}  The robust gain in our experiments is verified stopping: reading until
 every stripe, its CRC-32 and the file hash verify, and then stopping.  It needs no model of the
-containers, never returned a wrong file, and converts the capacity a static plan must reserve into a
-bill 27--32\% smaller for a user who pays per read.  It does \emph{not} reduce the capacity a user must
+containers, never returned a wrong file, and for a user who pays per read it turns the capacity a static
+plan must reserve into a bill 27--32\% smaller.  It does \emph{not} reduce the capacity a user must
 reserve, because the q99 is unchanged.  Choosing \emph{which} container to read next is a second-order
-effect in every configuration we tested: at best a few per cent, and strongly negative when the container model cannot express what is wrong
-with a container.  Two such ``best cases'' appear in this paper and they are \emph{different
-experiments}, so we never add or compare them directly: 4.2\% is the pre-specified \emph{fixed}
-allocation, which runs no controller at all and whose proportions can be estimated offline, measured
-against round-robin with both stopping on the baseline; 3.5\% is UCB, an \emph{online} rule, measured
-against the same round-robin on the same baseline but only after the container model is extended with a
-dropout parameter --- a secondary, revision-4 configuration that is not the frozen one.  They are two
-routes to a similar small gain, not a cumulative 7.7\%.  If one sentence has to carry the
-paper's practical content, it is that the decision worth engineering is \emph{when to stop}, and the
-decision worth engineering next is the \emph{container model}, not the allocation rule on top of it.
+effect in every configuration we tested: worth a few per cent at best, and strongly negative when the
+container model cannot express what is wrong with a container.  The two best cases reported in this
+paper come from \emph{different experiments} and should not be added.  The 4.2\% saving is the
+pre-specified \emph{fixed} allocation, which runs no controller and whose proportions can be estimated
+offline, measured against round-robin with both stopping on the baseline.  The 3.5\% saving is UCB, an
+\emph{online} rule, measured against the same round-robin on the same baseline but only after the
+container model is extended with a dropout parameter, a secondary configuration that is not the frozen
+one.  They are two routes to a similar small gain, not a cumulative 7.7\%.  In practice, the decision
+most worth engineering is \emph{when to stop}; the next is the \emph{container model}, not the
+allocation rule built on it.
 
 \textbf{Calibration versus cost, and model versus likelihood.}  The likelihood that gave the
 best-calibrated intervals ($\rho_U{=}0.1$) also gave the costlier allocations, and the binomial
 likelihood, whose intervals covered only 54\%, gave cheaper ones.  Calibrating the uncertainty of a
-misspecified model does not make its decisions better.  Our later experiments say which part was at fault, and the two questions come apart.  On
-\emph{calibration}, re-selecting $\rho_U$ with the prior actually used and on a wider grid still cannot
-cover the near-dead container at any value: that failure belongs to the container model, and only
-adding a dropout parameter addresses it.  On \emph{cost}, the likelihood matters a great deal: at the
-re-selected $\rho_U{=}0.03$ most of the allocation penalty disappears without touching the model at all
-(Section~\ref{sec:res-lik}).  So a configuration can be badly calibrated and yet allocate acceptably,
-and our strongest negative result sat at a setting that was poor on both counts.  The lesson we draw is about priorities --- repair the
-container model before tuning the posterior over it --- and we therefore present the controller as
-online-adaptive, not self-calibrating, and do not offer its forecasts as probabilities.
+misspecified model does not improve its decisions.  The later experiments separate the two questions.
+On \emph{calibration}, re-selecting $\rho_U$ with the prior actually used and on a wider grid still
+cannot cover the near-dead container at any value; that failure belongs to the container model, and
+only a dropout parameter addresses it.  On \emph{cost}, the likelihood matters a great deal: at the
+re-selected $\rho_U{=}0.03$ most of the allocation penalty disappears without changing the model
+(Section~\ref{sec:res-lik}).  A configuration can therefore be poorly calibrated and still allocate
+acceptably, and our strongest negative result came from a setting that was poor on both counts.  The
+practical priority is to repair the container model before tuning the posterior over it.  We therefore
+describe the controller as online-adaptive rather than self-calibrating, and do not present its
+forecasts as probabilities.
 
-\textbf{Digital twin versus replay.}  The two settings agree that stopping is the main saving and that no adaptive rule lowers q99 reliably; on
-allocation with the generic prior they agree where the conditions match.  On the Twist pool, whose
-containers are runs of one synthesis batch with no near-dead member (the mild-heterogeneity end of
-the sweep), allocation saved 2--3\%; on the Genscript pool, which has a near-dead container, it cost
-0--3\% and over-read that container, as on the digital twin.  Only prior knowledge of the weak
-container, through calibration reads, turned allocation into a large saving.
+\textbf{Digital twin versus replay.}  The two settings agree that stopping is the main saving and that
+no adaptive rule lowers q99 reliably.  On allocation with the generic prior they agree where the
+conditions match.  On the Twist pool, whose containers are runs of one synthesis batch with no near-dead
+member (the mild-heterogeneity end of the sweep), allocation saved 2--3\%; on the Genscript pool, which
+has a near-dead container, it cost 0--3\% and over-read that container, as on the digital twin.  Only
+prior knowledge of the weak container, obtained from calibration reads, turned allocation into a large
+saving.
 
 \begin{figure}[t]
 \centering
@@ -1097,64 +1080,63 @@ container, through calibration reads, turned allocation into a large saving.
 \textbf{Practical recommendation (multi-container retrieval).}
 \begin{enumerate}
 \setlength{\itemsep}{1pt}
-\item Read the containers in turn and \textbf{stop on verification} (every stripe against its CRC-32,
-the file against its hash).  This is the robust saving, 27--32\% of a reserved budget, and it needs no
-model.  Never return an unverified file.
-\item If you \textbf{reserve} capacity rather than pay per read, expect nothing from online
-adaptation: budget the q99 of round-robin.  Fixed proportions tuned to the containers do lower the tail
-(about 9\% here), so spend the effort on measuring the containers once, not on a controller.
-\item \textbf{Deprioritise, do not permanently exclude, a container that looks dead.}  In our simulated
-total-loss scenario, where a container returns no fragment derived from stored strands at all, posterior
-rules cut the cost of the retrievals that still succeed by up to 24\% --- but they do not make recovery
-more likely, and ``no verified fragment in one probe'' does not prove a container is physically dead.  A
-container that is merely low-efficiency, that has lost part of its strands, or whose fragments need
-deeper consensus can look identical after one batch, and our own experiments show those cases behave very
-differently (Sections~\ref{sec:res-dropout} and~\ref{sec:res-robust}): with partial loss the file is
-still recoverable from that container, and raising the consensus cap alone moved the one-failed-container
-success rate from 0.313 to 0.357.  We did not design or validate a failure-detection rule, and we report
-no false-exclusion rate, so we recommend down-weighting such a container while continuing to sample it,
-not switching it off for good.
-\item Do \textbf{not} put a model-based allocation rule in front of a container model that cannot
-represent dropout: every such rule we tried read more than round-robin, by 7--441\%.  With efficiency \emph{and} dropout --- a different, non-frozen configuration --- the best online rule
-(UCB) gained 3.5\% on the baseline: about what the fixed plan gives, and not additional to it.
-\item \textbf{Calibration pays only for an archive that will be read repeatedly.}  A prior fitted on
-held-out reads of the same containers identified the weak container in advance and saved about 16\% per
-retrieval on the Genscript replay --- the largest allocation effect we measured --- but it consumed
-1.8M calibration reads, 2.8 times one retrieval's cost, so it breaks even only after roughly 17
-retrievals (about 10 at 100k calibration reads per container).  Smaller calibration budgets did not help
-consistently, and one intermediate level (30k reads per container) was \emph{worse} than no calibration
-at all.  The result comes from a semi-empirical replay with oracle decodability, not an end-to-end
-physical experiment.  Estimating only the static read proportions is the cheaper route to most of the
-available gain.
-\item \textbf{Read savings are not laboratory-cost savings.}  Every number above is a read count. A
-27\% or 16\% reduction in reads does not imply the same reduction in a sequencing bill: instrument time,
-reagents, library preparation, minimum run sizes and real switching costs are not modelled, and under our
-assumed per-batch and per-container charges the margin allocation competes for shrinks sharply
-(Section~\ref{sec:res-cost}).
-\item \textbf{Size redundancy for the failures you must survive.}  With $(32,48)$ over six containers,
-two lost containers leave exactly $K$ fragments per stripe and no margin; and a noisier synthesis model
-made the file unrecoverable in our design whatever the policy.
+\item \textbf{Read the containers in turn and stop on verification.}  Check every stripe against its
+CRC-32 and the file against its hash.  This requires no container model and saved 27--32\% relative
+to a reserved budget.  An unverified file should never be returned.
+\item \textbf{Online adaptation does not help users who reserve capacity.}  A user who reserves
+capacity rather than paying per read should budget for the q99 of round-robin.  Fixed proportions tuned
+to the containers did lower the tail (by about 9\% here), so effort is better spent on measuring the
+containers once than on an adaptive controller.
+\item \textbf{Deprioritise, but do not permanently exclude, a container that appears dead.}  In our
+simulated total-loss scenario, where a container returns no fragment derived from stored strands,
+posterior rules reduced the cost of the retrievals that still succeeded by up to 24\%, but did not make
+recovery more likely.  A probe that yields no verified fragment does not show that a container is
+physically dead.  Low efficiency, partial strand loss or a need for deeper consensus can look the same
+after one batch, yet behave very differently (Sections~\ref{sec:res-dropout} and~\ref{sec:res-robust}):
+with partial loss the file remained recoverable from that container, and raising the consensus cap alone
+moved the one-failed-container success rate from 0.313 to 0.357.  Because we did not design or validate
+a failure-detection rule and report no false-exclusion rate, we recommend down-weighting such a
+container while continuing to sample it.
+\item \textbf{Do not use a model-based allocation rule with a container model that cannot represent
+dropout.}  Every such rule we tested read 7--441\% more than round-robin.  With efficiency \emph{and}
+dropout (a different, non-frozen configuration), the best online rule, UCB, gained 3.5\% on the baseline,
+which is comparable to the fixed plan and not additional to it.
+\item \textbf{Calibrate only for archives that will be read repeatedly.}  A prior fitted on held-out
+reads of the same containers identified the weak container in advance and saved about 16\% per
+retrieval on the Genscript replay, the largest allocation effect we measured.  It consumed 1.8M
+calibration reads, 2.8 times the cost of one retrieval, and broke even only after roughly 17 retrievals
+(about 10 at 100k calibration reads per container).  Smaller calibration budgets did not help
+consistently, and 30k reads per container was \emph{worse} than no calibration.  This result comes from
+a semi-empirical replay with oracle decodability.  Estimating only the static read proportions is a
+cheaper route to most of the available gain.
+\item \textbf{Distinguish read savings from laboratory-cost savings.}  Every number above is a read
+count, and a 27\% or 16\% reduction in reads does not imply the same reduction in sequencing cost.
+Instrument time, reagents, library preparation, minimum run sizes and real switching costs are not
+modelled, and under our assumed per-batch and per-container charges the margin available to allocation
+shrinks sharply (Section~\ref{sec:res-cost}).
+\item \textbf{Size redundancy for the failures the archive must survive.}  With $(32,48)$ over six
+containers, two lost containers leave exactly $K$ fragments per stripe and no margin, and under a
+noisier synthesis model the file was unrecoverable in our design regardless of policy.
 \end{enumerate}}}
 \caption{Practical recommendation derived from Section~\ref{sec:results}.}
 \label{fig:recommend}
 \end{figure}
-\textbf{Practical recommendation.}  The box in Fig.~\ref{fig:recommend} summarises what our
-results support for archives like ours.
+Fig.~\ref{fig:recommend} summarises the practical recommendations that our results support for
+archives like ours.
 
-\textbf{What we would test with wet-lab containers.}\label{sec:wetlab}  With physically separate containers we
-would test (X) whether real containers show the near-dead, dropout-dominated behaviour that made
-adaptive allocation lose here, by synthesising one design in several independent batches, aging
-and amplifying them differently, and sequencing each container to saturation to measure its
-fraction of absent strands; (Y) whether verified stopping keeps its saving and its safety on
-real sequencing runs with our own inner code, by streaming reads from a nanopore or a split
-Illumina run through the same decoder and counting wrong outputs and inner-code false accepts
-against the known file; and (Z) what real container failures look like and how often they occur,
-by tracking a set of containers over accelerated aging, which would calibrate the failure prior and
-the redundancy needed per container.  The decisive experiment, which we could not run, is the full
-chain on physical material: encode a known file with these codes, synthesise it, split it into
-independently synthesised and separately handled containers, sequence each one, feed the FASTQ reads
-into this decoder, and compare the returned bytes with the original.  Until that is done, the replay in
-Section~\ref{sec:res-replay} remains semi-empirical --- real read streams, oracle decodability --- and
+\textbf{Future experimental validation.}\label{sec:wetlab}  Physically separate containers would allow
+three tests.  (i) Whether real containers show the near-dead, dropout-dominated behaviour that made
+adaptive allocation lose here: one design would be synthesised in several independent batches, aged and
+amplified differently, and each container sequenced to saturation to measure its fraction of absent
+strands.  (ii) Whether verified stopping keeps its saving and its safety on real sequencing runs with
+our own inner code: reads from a nanopore or a split Illumina run would be streamed through the same
+decoder, counting wrong outputs and inner-code false accepts against the known file.  (iii) What real
+container failures look like and how often they occur: a set of containers would be tracked over
+accelerated aging, which would calibrate the failure prior and the redundancy needed per container.  The
+decisive experiment, not performed here, is the full chain on physical material: encode a known file
+with these codes, synthesise it, split it into independently synthesised and separately handled
+containers, sequence each one, feed the FASTQ reads into this decoder, and compare the returned bytes
+with the original.  Until then, the replay in Section~\ref{sec:res-replay} remains semi-empirical and
 the end-to-end evidence remains simulated.
 
 %=====================================================================
@@ -1202,8 +1184,7 @@ Table~\ref{tab:evidence} maps each claim to its command and result file, and
 \texttt{dt\_protocol.yaml} and \texttt{dt\_protocol\_rev4.yaml} record the frozen protocols and every
 deviation.
 
-\textbf{Determinism: what is reproducible, and what is not.}  One finding here is negative and we
-report it rather than the claim we expected to make.  Our own layer is deterministic: every random draw
+\textbf{Determinism.}  Our own layer is deterministic: every random draw
 in placement, read ordering, the controller and the decoder is seeded by CRC-32 of a string naming the
 scenario, replicate, container, read order and policy, so those results do not depend on worker count or
 scheduling, and 24 sampled baseline retrievals re-executed single-process in reverse order reproduce
@@ -1213,22 +1194,22 @@ streams from a fixed seed, and calling its synthesis--aging--PCR--sequencing cha
 with the same seed gives different streams.  The committed read streams are therefore part of the
 artifact, and a reader who regenerates them does not get our retrievals back.
 
-We quantified what that costs.  Regenerating all 30 baseline replicates from a clean clone of the final
+We quantified the consequence.  Regenerating all 30 baseline replicates from a clean clone of the final
 commit and re-running all eight policies and four static plans (3{,}600 retrievals) leaves every outcome
 identical --- the same successes, the same zero wrong outputs --- while 2{,}350 of 2{,}400 retrievals consume
-a different number of reads (mean absolute difference 1{,}629).  The conclusions, however, survive: every
+a different number of reads (mean absolute difference 1{,}629).  The conclusions are unchanged: every
 policy's mean falls inside the other run's cluster-bootstrap interval in both directions, the ordering of
 all twelve policies is identical, and the headline comparisons move by one to three percentage points
 (round-robin 3.49k against 3.51k; the hindsight static plan $-$4.2\% against $-$5.4\%; coverage-greedy
 $+$15.1\% against $+$12.2\%).  The full comparison is in
 \texttt{evidence/}\allowbreak\texttt{verification\_reports/}\allowbreak\texttt{clean\_repro.txt},
-regenerated by \texttt{clean\_repro.sh} and \texttt{clean\_repro\_}\allowbreak\texttt{compare.py}.  A third check at condition level: the
-Genscript replay conditions re-run in separate parallel processes reproduced the sequential run's values
+regenerated by \texttt{clean\_repro.sh} and \texttt{clean\_repro\_}\allowbreak\texttt{compare.py}.  At
+condition level, the Genscript replay conditions re-run in separate parallel processes reproduced the sequential run's values
 exactly, because that pipeline consumes fixed real reads rather than simulated ones.
 
-What we did \emph{not} re-execute for the final build: the severity sweep, the failure modes, the six
-alternative geometries, the photolithographic scenario and the two replays, which are reproduced from
-their committed result files and seeds.  A full re-execution takes several CPU-days, dominated by DT4DDS
+The severity sweep, the failure modes, the six alternative geometries, the photolithographic scenario
+and the two replays were \emph{not} re-executed for the final build; they are reproduced from their
+committed result files and seeds.  A full re-execution takes several CPU-days, dominated by DT4DDS
 synthesis and by the information-greedy policy, and the commands are in the artifact.
 \input{tables/evidence}
 
@@ -1237,34 +1218,32 @@ synthesis and by the information-greedy policy, and the commands are in the arti
 %=====================================================================
 On a digital twin whose containers are independently synthesised \emph{in simulation}, verified
 stopping returned the stored file without a single wrong output in \SafeN{} retrievals and reduced the
-reads actually consumed to 27--32\% below the capacity a non-stopping plan must reserve.  That
-consumed-versus-reserved saving is the paper's robust result, and it needs no model of the containers.
-Deciding \emph{which} container to read next is worth far less, and the two best cases we measured come
-from different experiments rather than adding up: fixed proportions, which run no controller and can be
-estimated offline from calibration replicates, gave 4.2\% on the baseline, while under the frozen
-container model and likelihood every online rule cost \emph{more} than round-robin when a container was
-near-dead, by 7--441\%.  That penalty is a property of the pre-registered configuration: at the
-likelihood a corrected selection picks, four of the seven rules become indistinguishable from
-round-robin rather than harmful, and only with a dropout-aware model --- another secondary
-configuration --- did the best online rule reach a comparable 3.5\%.  Across every combination we
-tested, no adaptive rule beat round-robin by more than a few per cent.  An ablation shows that penalty
-requires the frozen combination of container model, likelihood and prior width, and that relaxing any
-one of the three removes most of it; a container model with a dropout parameter is the physically
-meaningful choice and earns its keep where loss dominates, reaching $-$6\% under partial loss, $-$34\%
-under common-cause degradation and $-$35\% after an outright failure.  No adaptive rule reduced the
-0.99-quantile in any configuration we tested, so none of this lowers reserved capacity; the posterior is
-not calibrated for a near-dead container at any value in its likelihood family, and the completion
-forecasts are worse than climatology and are not usable probabilities.
+reads actually consumed to 27--32\% below the capacity a non-stopping plan must reserve.  This saving
+requires no model of the containers and is the main result of the paper.
 
-Every result is computational.  The digital-twin experiments run the full decode chain and compare bytes;
-the real-read replay uses public Illumina streams but keeps decodability as an oracle event and emulates
-containers by subsetting runs of one synthesis batch, so it is semi-empirical and is not a physical
-demonstration of the retrieval system.  No DNA was synthesised or sequenced for this paper.  Each
-headline figure is a read count, not a laboratory cost.  What we offer is a leak-free, regenerable
-baseline, bounds on wrong outputs that state their own dependence structure, and a careful account of
-when online adaptation hurts.  The experiments that would settle what we could not are physically
-independent containers with measured failure and dropout statistics, and one end-to-end retrieval of a
-known file from synthesised DNA through this decoder.
+Deciding \emph{which} container to read next is worth far less.  Fixed proportions, which run no
+controller and can be estimated offline from calibration replicates, gave 4.2\% on the baseline.  Under
+the frozen container model and likelihood, every online rule cost \emph{more} than round-robin when a
+container was near-dead, by 7--441\%.  This penalty is a property of the pre-registered configuration:
+at the likelihood chosen by a corrected selection, four of the seven rules become indistinguishable from
+round-robin rather than harmful.  With a dropout-aware model, another secondary configuration, the best
+online rule reached a comparable 3.5\%; the two best cases come from different experiments and do not
+add up.  No adaptive rule beat round-robin by more than a few per cent in any combination we tested.  The
+ablation shows that the penalty requires the frozen combination of container model, likelihood and prior
+width, and that relaxing any one of the three removes most of it.  A dropout parameter is the physically
+meaningful repair and is most useful where loss dominates, reaching $-$6\% under partial loss, $-$34\%
+under common-cause degradation and $-$35\% after an outright failure.  No adaptive rule reduced the
+0.99-quantile in any configuration we tested, so none of these gains lowers reserved capacity.  The
+posterior is not calibrated for a near-dead container at any value in its likelihood family, and the
+completion forecasts are worse than climatology and are not usable probabilities.
+
+The digital-twin experiments run the full decode chain and compare bytes; the real-read replay uses
+public Illumina streams but treats decodability as an oracle event and emulates containers by subsetting
+runs of one synthesis batch.  No~DNA~was synthesised or sequenced for this paper, and each headline
+figure is a read count, not a laboratory cost.  The paper provides a regenerable baseline, bounds on
+wrong outputs that account for their dependence structure, and an account of when online adaptation
+hurts.  The open questions require physically independent containers with measured failure and dropout
+statistics, and an end-to-end retrieval of a known file from synthesised DNA through this decoder.
 
 \appendices
 \section{Upper bound with evaluation leakage}\label{app:leak}
@@ -1299,12 +1278,11 @@ computing its paired difference, because some trials never completed (infinite c
 saved.  We fixed the bug, ran the other Genscript conditions in parallel processes with the same
 per-condition seeds (they reproduced every value logged by the sequential run), and re-started
 information-greedy; it had not finished when this version was built, so Table~\ref{tab:replay} has no
-information-greedy row for Genscript.  What we know about that condition is reportable and we report
-only that: in the sequential run its 200 trials finished, and more than 1\% of them never recovered the
-file within the available reads, which is why the 0.99 budget was infinite and the paired statistic
-overflowed.  We treat the condition as \emph{censored} --- excluded from every average and comparison,
-marked as not completed in Table~\ref{tab:replay} --- and we make no claim anywhere that every policy
-completed every real-read condition.  (vii) Revision~4 adds the pre-registered secondary analyses of
+information-greedy row for Genscript.  What is known about that condition is that in the sequential run
+its 200 trials finished and more than 1\% of them never recovered the file within the available reads,
+which is why the 0.99 budget was infinite and the paired statistic overflowed.  We treat the condition as
+\emph{censored}: it is excluded from every average and comparison and marked as not completed in
+Table~\ref{tab:replay}.  Not every policy therefore completed every real-read condition.  (vii) Revision~4 adds the pre-registered secondary analyses of
 \texttt{dt\_protocol\_rev4.yaml}: the dropout-aware container model, the $2\times2\times2$ ablation,
 the $\rho_U$ re-selection at $s{=}0.5$ on an extended grid, prior sensitivity, five further failure
 modes, six further archive geometries, consensus caps of 12 and 48, finer and calibration-estimated

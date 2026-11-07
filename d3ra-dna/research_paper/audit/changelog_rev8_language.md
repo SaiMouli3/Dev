@@ -75,3 +75,14 @@ statement or its scope, so they were left as they were:
 Added Pruthviraj M. Savanur (rajsavanur2003@gmail.com) as third author, after J Geetha (geetha@msrit.edu).
 No affiliation was invented; a LaTeX comment marks where it goes. Rebuilt PDF: 26 pages, 125/125 verifier
 checks pass.
+
+## 6. Addendum: single-column layout
+
+At the authors' request the paper is now typeset in one column: `\documentclass[conference,onecolumn,11pt]{IEEEtran}`
+(previously `[conference]`, two columns, 10pt). Layout-only adjustments that went with it:
+- `\setlength{\emergencystretch}{3em}`, so long file names and URLs no longer overflow the margin.
+- Notation table: the code column was widened from 22 mm to 26 mm because `\scriptsize` is larger at 11pt.
+- The severity-sweep and forecast figures were scaled from `\columnwidth` to `0.6\columnwidth`, so they are not
+  stretched to full page width.
+No text, number, table entry or figure content changed. Rebuilt PDF: 34 pages, no errors, 125/125 verifier
+checks pass. To go back to two columns, restore the class options to `[conference]` and the two figure widths.

@@ -1,6 +1,6 @@
 % D3RA-DNA manuscript (revision 3: computational-only positioning, digital-twin primary evidence,
 % leak-free secondary replay).  Official IEEEtran class (v1.8b, CTAN), following bare_conf.tex.
-\documentclass[conference]{IEEEtran}
+\documentclass[conference,onecolumn,11pt]{IEEEtran}
 \IEEEoverridecommandlockouts
 \usepackage{cite}
 \usepackage{amsmath,amssymb,amsfonts}
@@ -17,6 +17,7 @@
 \newcommand{\E}{\mathbb{E}}
 \newcommand{\Prob}{\mathbb{P}}
 \graphicspath{{figures/}}
+\setlength{\emergencystretch}{3em}
 \input{tables/macros}
 
 \begin{document}
@@ -755,7 +756,7 @@ throughout.  The point at 3 copies reproduces the baseline design with other see
 multiplier is a fair description of the worst container.
 \begin{figure}[t]
 \centering
-\includegraphics[width=\columnwidth]{fig_dt_sweep.pdf}
+\includegraphics[width=0.6\columnwidth]{fig_dt_sweep.pdf}
 \caption{Severity sweep: mean reads consumed as the degraded container's copy number falls from 200 to 1
 (300 retrievals per point and policy, 95\% cluster-bootstrap intervals; the axis runs from mild to severe
 degradation).  Every retrieval at every level returned the correct file, so the success probability is
@@ -858,7 +859,7 @@ of Table~\ref{tab:r4calib}): no value of $\rho_U$ calibrates the container that 
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\columnwidth]{fig_forecast.pdf}
+\includegraphics[width=0.6\columnwidth]{fig_forecast.pdf}
 \caption{Reliability of the completion forecast on the digital twin: forecast probability of finishing
 within the remaining budget against the observed frequency of finishing, pooled over checkpoints at
 30/50/70/85\% of the budget (10 equal-width bins, bins with fewer than five checkpoints dropped).  A

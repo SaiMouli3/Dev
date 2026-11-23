@@ -9,24 +9,32 @@ M=$ROOT/research_paper/manuscript
 F=$ROOT/research_paper/final
 cd "$M"
 
+# main.tex and supplement.tex reference each other through the xr package
 pdflatex -interaction=nonstopmode main.tex >/dev/null
 bibtex main >/dev/null 2>&1 || true
-pdflatex -interaction=nonstopmode main.tex >/dev/null
-pdflatex -interaction=nonstopmode main.tex >/dev/null
+pdflatex -interaction=nonstopmode supplement.tex >/dev/null
+bibtex supplement >/dev/null 2>&1 || true
+for i in 1 2; do
+  pdflatex -interaction=nonstopmode main.tex >/dev/null
+  pdflatex -interaction=nonstopmode supplement.tex >/dev/null
+done
 
 fail=0
-if grep -qE '^! ' main.log; then echo "LaTeX errors:"; grep -E '^! ' main.log | head; fail=1; fi
-if grep -q "undefined on input" main.log; then
-  echo "Unresolved references/citations:"
-  grep "undefined on input" main.log | sed "s/.*\`\([^']*\)'.*/  \1/" | sort -u
-  fail=1
-fi
-if pdftotext main.pdf - | grep -q "TBD"; then echo "TBD markers remain in the PDF"; fail=1; fi
+for d in main supplement; do
+  if grep -qE '^! ' $d.log; then echo "LaTeX errors in $d:"; grep -E '^! ' $d.log | head; fail=1; fi
+  if grep -q "undefined on input" $d.log; then
+    echo "Unresolved references/citations in $d:"
+    grep "undefined on input" $d.log | sed "s/.*\`\([^']*\)'.*/  \1/" | sort -u
+    fail=1
+  fi
+  if pdftotext $d.pdf - | grep -qE "TBD|@@"; then echo "TBD or unfilled @@ markers remain in $d.pdf"; fail=1; fi
+done
 [ "$fail" = 0 ] || { echo "finalize: refusing to publish an inconsistent build"; exit 1; }
 
 mkdir -p "$F"
 cp main.pdf "$F/IEEE_Research_Paper.pdf"
 cp main.tex "$F/IEEE_Research_Paper.tex"
+cp supplement.pdf "$F/IEEE_Research_Paper_Supplement.pdf"
 # The paper's content commit. finalize.sh runs before the bundle is committed, so record the commit
 # that the build came from and note that the bundle itself is committed on top of it.
 git -C "$ROOT" rev-parse HEAD > "$F/COMMIT.txt"
@@ -38,5 +46,5 @@ git -C "$ROOT" rev-parse HEAD > "$F/COMMIT.txt"
 } >> "$F/COMMIT.txt"
 
 rm -f "$F/IEEE_Research_Paper_Source.zip"
-zip -qr "$F/IEEE_Research_Paper_Source.zip" main.tex references.bib tables figures IEEEtran.cls
+zip -qr "$F/IEEE_Research_Paper_Source.zip" main.tex supplement.tex references.bib tables figures IEEEtran.cls IEEEtran.bst
 echo "finalize: $(pdfinfo main.pdf | awk '/Pages/{print $2}') pages, $(unzip -l "$F/IEEE_Research_Paper_Source.zip" | tail -1 | awk '{print $2}') files in the source archive"

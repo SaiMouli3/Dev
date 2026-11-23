@@ -125,6 +125,13 @@ POLICIES = {   # name -> (controller, static weights or None)
     "info_greedy": ("info", None),
     "tail_aware": ("tail_lcb", None),
 }
+# Exploratory baselines added in the final revision (run on regenerated streams; see r9 analysis).
+# They are not part of POLICIES, so the default policy set of `run` is unchanged.
+EXTRA_POLICIES = {
+    "per_read_stop": "uniform",          # round-robin schedule, verified stop tested after every read
+    "succ_elim": "succ_elim",            # successive elimination on per-batch verified-fragment yield
+    "yield_threshold": "yield_threshold",  # skip containers whose recent yield < 25% of the best
+}
 N_REP, N_PERM = 30, 10             # 30 independent syntheses x 10 read orders = 300 retrievals per policy
 CALIB_REPS = range(1000, 1010)     # disjoint replicates used only to select rho_U
 
@@ -212,10 +219,11 @@ def one_retrieval(args):
     belief_over = cfg_kw.pop("_belief", None)
     mcr = cfg_kw.pop("_max_cluster_reads", 24)
     w = cfg_kw.pop("static_weights", None)
-    ctl = POLICIES[pol][0] if pol in POLICIES else "uniform"
+    ctl = POLICIES[pol][0] if pol in POLICIES else EXTRA_POLICIES.get(pol, "uniform")
     cfg = AdaptiveConfig(controller=ctl, batch=50, cap=cap, **cfg_kw)
     r = StreamRetriever(lib.manifest, lib.fmt, X, addresses, streams, generic_belief(M, belief_over), cfg, truth=truth,
-                        static_weights=w, cap_reads=cap, checkpoints=cps, max_cluster_reads=mcr)
+                        static_weights=w, cap_reads=cap, checkpoints=cps, max_cluster_reads=mcr,
+                        per_read_stop=(pol == "per_read_stop"))
     out = r.run(np.random.default_rng(zlib.crc32(f"ctl|{scen}|{rep}|{perm}|{pol}".encode())))
     files = out.pop("files")
     exact_bytes = bool(files) and files[0].data == data

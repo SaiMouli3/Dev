@@ -30,7 +30,8 @@ ADAPTER = "AGATCGGAAGAGC"
 class StreamRetriever:
     def __init__(self, man, fmt, placement, addresses, streams: list[list[str]], belief: ChannelParams,
                  cfg: AdaptiveConfig, truth: dict | None = None, static_weights=None, cap_reads: float = np.inf,
-                 max_cluster_reads: int = 24, two_sided: bool = False, checkpoints=None):
+                 max_cluster_reads: int = 24, two_sided: bool = False, checkpoints=None,
+                 per_read_stop: bool = False):
         self.man, self.fmt, self.placement, self.addresses = man, fmt, placement, addresses
         self.streams = streams
         self.pos = np.zeros(len(streams), dtype=int)
@@ -62,6 +63,12 @@ class StreamRetriever:
         self.uid = {(a[1], a[2]): i for i, a in enumerate(addresses)}
         self.checkpoints = sorted(checkpoints or [])
         self.cp_rows = []
+        # per_read_stop: consume each scheduled batch one read at a time and test for a verified file after
+        # every read (same container schedule as the batched run); gives the first read count at which
+        # this decoder can return the verified file, i.e. the batching-free limit of verified stopping
+        self.per_read_stop = per_read_stop
+        self.batch_yield = [[] for _ in range(m)]   # new verified fragments per batch, per container
+        self.eliminated = np.zeros(m, bool)        # successive elimination state
 
     # ------------------------------------------------------------------ sequencing
     def _batch(self, j: int, n: int) -> list[str]:
@@ -130,6 +137,10 @@ class StreamRetriever:
             return int(ok[np.argmin(self.reads_used[ok] / w[ok])])
         if name == "uniform":
             return int(cand[rounds % len(cand)])
+        if name == "succ_elim":
+            return self._choose_succ_elim(avail)
+        if name == "yield_threshold":
+            return self._choose_yield_threshold(avail)
         R, rec_pair, rec_frag, by_stripe, U = self._state()
         post = self.ctl.posterior(R, U)
         if name == "ltc":
@@ -150,6 +161,57 @@ class StreamRetriever:
         sc[~avail] = -np.inf
         return int(sc.argmax())
 
+    # ------------------------------------------------------------------ model-free allocation heuristics
+    # Both were specified before they were run and were not tuned (exploratory baselines).
+    SE_MIN_BATCHES = 3       # successive elimination: batches per container before it can be eliminated
+    SE_Z = 2.0               # width of the per-container interval on the mean yield per batch
+    YT_WINDOW = 4            # yield threshold: recent batches used for a container's yield
+    YT_FRAC = 0.25           # a container is skipped while its recent yield is below this fraction of the best
+
+    def _least_read(self, ok: np.ndarray) -> int:
+        c = np.flatnonzero(ok)
+        return int(c[np.argmin(self.reads_used[c])])
+
+    def _choose_succ_elim(self, avail: np.ndarray) -> int:
+        """Round-robin over the active containers; container j is eliminated once the upper end of its
+        interval on the mean new-fragment yield per batch lies below the lower end of the best container's.
+        If the active containers returned no new fragment in their last batch each, every eliminated
+        container is reinstated, so the rule cannot fail a retrieval that round-robin would complete."""
+        stats = {}
+        for j in np.flatnonzero(avail):
+            y = np.asarray(self.batch_yield[j], float)
+            if len(y) >= self.SE_MIN_BATCHES:
+                se = y.std(ddof=1) / np.sqrt(len(y)) if len(y) > 1 else 0.0
+                stats[j] = (y.mean() - self.SE_Z * se, y.mean() + self.SE_Z * se)
+        if stats:
+            best_lcb = max(lo for lo, _ in stats.values())
+            for j, (_, hi) in stats.items():
+                if hi < best_lcb:
+                    self.eliminated[j] = True
+        active = avail & ~self.eliminated
+        if active.any():
+            last = [self.batch_yield[j][-1] for j in np.flatnonzero(active) if self.batch_yield[j]]
+            if len(last) == active.sum() and sum(last) == 0:
+                self.eliminated[:] = False
+                active = avail.copy()
+        else:
+            active = avail.copy()
+        return self._least_read(active)
+
+    def _choose_yield_threshold(self, avail: np.ndarray) -> int:
+        """Dropout-aware heuristic without a model: read, among available containers, the least-read one
+        whose recent yield (new verified fragments per batch over its last few batches) is at least a
+        fixed fraction of the best recent yield; a skipped container becomes eligible again as soon as the
+        others' yield falls (it is deprioritised, never excluded)."""
+        c = np.flatnonzero(avail)
+        r = np.array([np.mean(self.batch_yield[j][-self.YT_WINDOW:]) if self.batch_yield[j] else np.inf for j in c])
+        top = r[np.isfinite(r)].max() if np.isfinite(r).any() else 0.0
+        if top <= 0:
+            return self._least_read(avail)
+        ok = np.zeros_like(avail)
+        ok[c[r >= self.YT_FRAC * top]] = True
+        return self._least_read(ok)
+
     def _record_checkpoint(self, rng):
         spent = self.reads_used.sum()
         while self.checkpoints and spent >= self.checkpoints[0]:
@@ -169,7 +231,7 @@ class StreamRetriever:
         self._explore_end = int(used.sum()) * self.cfg.explore_rounds
         if self.static_w is None:
             for j in np.flatnonzero(used):
-                self.read_container(j, self.ctl.probe)
+                self.batch_yield[j].append(self.read_container(j, self.ctl.probe))
         rounds, repairs = 0, 0
         switches, last = 0, -1
         status = "partial"
@@ -190,7 +252,15 @@ class StreamRetriever:
             j = self.choose(avail, rounds, rng)
             switches += int(last >= 0 and j != last)
             last = j
-            self.read_container(j, b)
+            if self.per_read_stop:
+                got = 0
+                for _ in range(b):
+                    got += self.read_container(j, 1)
+                    if self.tracker.complete() and reconstruct(self.man, self.tracker.rows).status.value == "exact":
+                        break
+            else:
+                got = self.read_container(j, b)
+            self.batch_yield[j].append(got)
             rounds += 1
         res = reconstruct(self.man, self.tracker.rows)
         return {"status": res.status.value, "reads": float(self.reads_used.sum()),

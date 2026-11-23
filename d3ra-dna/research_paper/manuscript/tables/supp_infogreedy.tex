@@ -1,0 +1,24 @@
+\begin{table}[!ht]
+\centering
+\caption{Information-greedy (Bayesian experimental design) results, removed from the main tables.  Paired relative difference in mean reads against round-robin with verified stopping on jointly successful retrievals (cluster-bootstrap 95\% CI).  $^{s}$: mean over successful retrievals.  Thousands of reads.}
+\label{tab:suppinfo}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}llrrr@{}}
+\toprule
+Scenario & Configuration & Success & Mean reads & vs.\ round-robin, \% [95\% CI] \\
+\midrule
+Baseline & primary ($\theta$, $\rho_U{=}0.1$, $s{=}0.5$) & 1.00 & 18.87 & $+441$ [$+406$, $+471$] \\
+ & $\rho_U{=}0.03$ & 1.00 & 23.60 & $+576$ [$+528$, $+618$] \\
+ & $\theta{+}d$ (dropout model) & 1.00 & 24.84 & $+612$ [$+563$, $+658$] \\
+Homogeneous & primary ($\theta$, $\rho_U{=}0.1$, $s{=}0.5$) & 1.00 & 2.25 & $0$ [$-1$, $0$] \\
+ & $\rho_U{=}0.03$ & 1.00 & 2.26 & $0$ [$-1$, $0$] \\
+ & $\theta{+}d$ (dropout model) & 1.00 & 2.25 & $0$ [$-1$, $0$] \\
+One failed & primary ($\theta$, $\rho_U{=}0.1$, $s{=}0.5$) & 0.34 & 36.68$^{s}$ & $+81$ [$+51$, $+127$] \\
+ & $\rho_U{=}0.03$ & 0.34 & 36.51 & $+80$ [$+50$, $+127$] \\
+\bottomrule
+\end{tabular}
+
+\vspace{2pt}
+\parbox{\columnwidth}{\scriptsize Baseline tail (frozen configuration): q99 37.45k [33.70, 37.51].  Twist replay: after the first probes information-greedy reduced to coverage-greedy (mean 56.7k, q99 66.0k).  Genscript replay: not completed; more than 1\% of its 200 trials never recovered the file, so the condition is censored (Section~\ref{app:devfull}).}
+\end{table}

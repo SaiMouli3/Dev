@@ -1,5 +1,5 @@
 Numeric verification of the manuscript against committed result files.
-Checks: 125, failures: 0.
+Checks: 167, failures: 0.
 
     section        quantity                                               recomputed   in paper
 ok  Abstract / VI-A retrievals                                              6.231e+04  6.231e+04
@@ -11,8 +11,8 @@ ok  Abstract / VI-A wrong-output UL per retrieval (1e-5)                        
 ok  Abstract / VI-A wrong-output UL per synthesis (1e-3)                         6.34        6.3
 ok  Abstract / VI-A false-accept UL per attempt (1e-8)                          4.773        4.8
 ok  VI-B           round-robin mean reads (k)                                   3.49       3.49
-ok  VI-B           round-robin mean CI lo (k)                                  3.375       3.37
-ok  VI-B           round-robin mean CI hi (k)                                  3.601        3.6
+ok  VI-B           round-robin mean CI lo (k)                                  3.373       3.37
+ok  VI-B           round-robin mean CI hi (k)                                  3.598        3.6
 ok  VI-B           uniform reservation q99 (k)                                 5.153       5.15
 ok  VI-B           best pre-specified reservation q99 (k)                      4.803        4.8
 ok  VI-B           stopping saving vs best reservation (%)                     27.33       27.3
@@ -37,33 +37,33 @@ ok  VI-D           fail1 round-robin mean on successes (k)                     2
 ok  VI-D           fail1 UCB mean on successes (k)                             15.49      15.49
 ok  VI-D           fail1 UCB vs round-robin, conditional (%)                  -23.74        -24
 ok  VI-D           fail1 UCB mean over all attempts (k)                        52.79      52.79
-ok  VI-D           fail1 round-robin mean over all attempts (k)                54.42      54.43
+ok  VI-D           fail1 round-robin mean over all attempts (k)                54.42      54.42
 ok  VI-D           fail1 UCB vs round-robin, unconditional (%)                -3.012         -3
 ok  VI-E           coverage theta rho=0.1 s=0.5 (%)                            15.11       15.1
 ok  VI-E           coverage theta rho=0.0 s=0.5 (%)                           -4.427       -4.4
 ok  VI-E           coverage theta rho=0.1 s=1.0 (%)                          -0.5587       -0.6
 ok  VI-E           coverage theta+d rho=0.1 s=0.5 (%)                          1.609        1.6
 ok  VI-F           UCB+dropout vs round-robin (%)                               -3.5       -3.5
-ok  VI-F           UCB+dropout CI lo (%)                                      -4.859       -4.9
-ok  VI-F           UCB+dropout CI hi (%)                                      -2.157       -2.2
+ok  VI-F           UCB+dropout CI lo (%)                                      -4.844       -4.8
+ok  VI-F           UCB+dropout CI hi (%)                                      -2.202       -2.2
 ok  VI-F           coverage+dropout near-dead share                           0.1972        0.2
 ok  VI-F           UCB+dropout near-dead share                                0.1658       0.17
 ok  VI-F           fail1 coverage+dropout vs round-robin (%)                  -35.01        -35
 ok  VI-J (lik.)    coverage at rho=0.03 (%)                                  -0.4393       -0.4
-ok  VI-J (lik.)    coverage at rho=0.03 CI lo (%)                             -2.455       -2.5
-ok  VI-J (lik.)    coverage at rho=0.03 CI hi (%)                              1.695        1.7
+ok  VI-J (lik.)    coverage at rho=0.03 CI lo (%)                             -2.314       -2.3
+ok  VI-J (lik.)    coverage at rho=0.03 CI hi (%)                              1.586        1.6
 ok  VI-J (lik.)    coverage at rho=0.03 interval contains zero                     1          1
 ok  VI-J (lik.)    thompson at rho=0.03 (%)                                   0.2626        0.3
-ok  VI-J (lik.)    thompson at rho=0.03 CI lo (%)                             -1.703       -1.7
-ok  VI-J (lik.)    thompson at rho=0.03 CI hi (%)                              2.412        2.4
+ok  VI-J (lik.)    thompson at rho=0.03 CI lo (%)                             -1.692       -1.7
+ok  VI-J (lik.)    thompson at rho=0.03 CI hi (%)                              2.481        2.5
 ok  VI-J (lik.)    thompson at rho=0.03 interval contains zero                     1          1
 ok  VI-J (lik.)    ucb at rho=0.03 (%)                                         1.514        1.5
-ok  VI-J (lik.)    ucb at rho=0.03 CI lo (%)                                 -0.4782       -0.5
-ok  VI-J (lik.)    ucb at rho=0.03 CI hi (%)                                   3.791        3.8
+ok  VI-J (lik.)    ucb at rho=0.03 CI lo (%)                                 -0.5482       -0.5
+ok  VI-J (lik.)    ucb at rho=0.03 CI hi (%)                                   3.711        3.7
 ok  VI-J (lik.)    ucb at rho=0.03 interval contains zero                          1          1
 ok  VI-J (lik.)    tail_aware at rho=0.03 (%)                                 -1.237       -1.2
-ok  VI-J (lik.)    tail_aware at rho=0.03 CI lo (%)                           -3.171       -3.2
-ok  VI-J (lik.)    tail_aware at rho=0.03 CI hi (%)                           0.6357        0.6
+ok  VI-J (lik.)    tail_aware at rho=0.03 CI lo (%)                           -3.206       -3.2
+ok  VI-J (lik.)    tail_aware at rho=0.03 CI hi (%)                           0.6573        0.7
 ok  VI-J (lik.)    tail_aware at rho=0.03 interval contains zero                   1          1
 ok  VI-J (lik.)    pivotal at rho=0.03 (%)                                     12.22       12.2
 ok  VI-J (lik.)    pivotal at rho=0.03 still costlier                              1          1
@@ -113,10 +113,52 @@ ok  VI-K           common_cause coverage vs round-robin (%)                    4
 ok  VI-K           common_cause coverage+dropout vs round-robin (%)           -33.62      -33.6
 ok  VI-K           geometry min coverage penalty (%)                           1.145        1.1
 ok  VI-K           geometry max coverage penalty (%)                           93.51       93.5
-ok  VI-L           min adaptive container switches                             37.71         38
-ok  VI-L           max adaptive container switches                             61.26         61
-ok  VI-L           round-robin container switches                               62.6         63
-ok  VI-L           max static container switches                                68.6         69
+ok  VI-M           cost table round-robin reads equal Table V (k)               3.49       3.49
+ok  VI-M           cost table static alpha=1 reads equal Table V (k)           3.343       3.34
+ok  VI-M           round-robin switches on the 300 retrievals                   62.8         63
+ok  VI-M           dropout-model switches min                                  38.44         38
+ok  VI-M           dropout-model switches max                                  58.93         59
+ok  VI-M           extension: min primary-model switches                       37.71         38
+ok  VI-M           extension: max primary-model switches                       61.26         61
+ok  VI-M           extension: round-robin switches                              62.6         63
+ok  VI-M           extension: static alpha=1 switches                           65.2         65
+ok  VI-M           extension: uniform static switches                           68.6         69
+ok  VI-B           reservation 1.2 x median budget (k)                          4.08       4.08
+ok  VI-B           reservation 1.2 x median success                           0.8533       0.85
+ok  VI-B           reservation 1.2 x median reads per completed (k)            4.781       4.78
+ok  VI-B           reservation 1.2 x mean budget (k)                           4.188       4.19
+ok  VI-B           reservation 1.2 x mean success                             0.8933       0.89
+ok  VI-B           reservation 1.2 x mean reads per completed (k)              4.688       4.69
+ok  VI-C           baseline regenerated: no wrong output                           0          0
+ok  VI-C           homog regenerated: no wrong output                              0          0
+ok  VI-C           fail1 regenerated: no wrong output                              0          0
+ok  VI-C           regenerated round-robin mean (k)                            3.525       3.52
+ok  VI-B           per-read stop vs batched (%)                              -0.6819       -0.7
+ok  VI-B           per-read stop CI lo (%)                                   -0.7405       -0.7
+ok  VI-B           per-read stop CI hi (%)                                   -0.6239       -0.6
+ok  VI-C           successive elimination identical to round-robin (baseline)            1          1
+ok  VI-C           baseline yield_threshold vs round-robin (%)                -1.012         -1
+ok  VI-C           fail1 succ_elim vs round-robin (%)                        -0.4607       -0.5
+ok  VI-C           fail1 yield_threshold vs round-robin (%)                   -3.777       -3.8
+ok  VI-C           regenerated fail1 success                                     0.5        0.5
+ok  VI-F           static alpha=1, 30x10 paired q99 difference (reads)          -350       -350
+ok  VI-F           static alpha=1, 30x10 paired q99 CI lo                       -450       -450
+ok  VI-F           static alpha=1, 30x10 paired q99 CI hi                       -3.5         -3
+ok  VI-F           static alpha=1, 100x3 paired q99 difference (reads)        -449.5       -450
+ok  VI-F           static alpha=1, 100x3 paired q99 CI lo                       -550       -550
+ok  VI-F           static alpha=1, 100x3 paired q99 CI hi                       -202       -202
+ok  VI-F           UCB+dropout, 30x10 paired q99 difference (reads)           -449.5       -450
+ok  VI-F           UCB+dropout, 30x10 paired q99 CI lo                         -1001      -1001
+ok  VI-F           UCB+dropout, 30x10 paired q99 CI hi                         243.5        244
+ok  VI-G           fail1 info-greedy CI identical in Table VI and the likelihood table (lo)       0.5058     0.5058
+ok  VI-G           fail1 info-greedy CI identical in Table VI and the likelihood table (hi)        1.275      1.275
+ok  VII-A          between-synthesis share of variance (%)                     30.57         31
+ok  VII-A          coefficient of variation                                   0.1626       0.16
+ok  VII-A          q99 above mean (%)                                          47.64         48
+ok  VII-A          fluid allocation bound (%)                                   11.4         11
+ok  VII-B          big stopping saving (%)                                     23.89         24
+ok  VII-B          n64 stopping saving (%)                                     17.94         18
+ok  VII-B          m12 stopping saving (%)                                     40.71         41
 ok  PDF text       abstract 3.49k                                                  1          1
 ok  PDF text       abstract 27--32%                                                1          1
 ok  PDF text       no bit-for-bit overclaim                                        1          1

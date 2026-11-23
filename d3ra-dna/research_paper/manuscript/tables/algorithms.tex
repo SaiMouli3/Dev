@@ -1,5 +1,5 @@
-% algorithms.tex -- operational specification of every policy (revision 4), so that no reader has to
-% consult the code. Parameter values are the frozen defaults used in every run unless stated otherwise.
+% algorithms.tex -- operational specification of every policy so that no reader has to
+% consult the code. Parameter values are the primary defaults used in every run unless stated otherwise.
 \begin{table*}[!t]
 \centering
 \caption{Operational specification of the retrieval loop and of every allocation rule.  All rules share
@@ -26,7 +26,7 @@ batch; $\mathcal O$: fragments of stripes that still need fragments.}
   SHA-256, \textbf{return} the file.  If a stripe fails its CRC-32, raise that stripe's requirement by
   one fragment (leave-one-out localisation) and continue; after 20 such rounds, stop and report failure.
   \item If every stream is exhausted, \textbf{return} failure (never an unverified file).
-  \item Compute the posterior \eqref{eq:posterior} from $(R_j,U_j)$ for every container, take
+  \item Compute the posterior \eqref{M-eq:posterior} from $(R_j,U_j)$ for every container, take
   $\tilde\theta_j$ as the rule prescribes, score the available containers and read $b$ reads from
   $\arg\max_j\sigma_j$; ties break to the lowest index.
   \item Cluster the new reads against expected address prefixes, form a consensus from at most 24 reads
@@ -50,7 +50,7 @@ with $w_s$ a normal-approximation sensitivity of stripe $s$'s completion probabi
 coverage score.
 \item \emph{UCB}: $\tilde\theta_j=$ posterior 0.9-quantile; coverage score.
 \item \emph{Learn-then-commit}: round-robin for $5$ batches per container, then freeze the posterior
-and use the coverage score with $\tilde\theta_j=\E[\theta_j]$ from the frozen posterior.
+and use the coverage score with $\tilde\theta_j=\E[\theta_j]$ from that fixed posterior.
 \item \emph{Info-greedy}: $\sigma_j=\mathrm{Var}[\ln\theta_j]$ while any container has
 $\mathrm{Var}[\ln\theta_j]>10^{-3}$, then coverage-greedy.  Containers with no unrecovered fragment score $0$.
 \item \emph{Tail-aware}: $\tilde\theta_j=$ posterior 0.1-quantile; score counts only fragments of the
@@ -63,9 +63,9 @@ when no such fragment can be advanced.
 \end{tabular}
 
 \vspace{2pt}
-\parbox{\textwidth}{\footnotesize \textbf{Container model.}  Frozen: $\theta_j\in\{0\}\cup\{0.01\dots5\}$
+\parbox{\textwidth}{\footnotesize \textbf{Container model.}  Primary configuration: $\theta_j\in\{0\}\cup\{0.01\dots5\}$
 (25 log-spaced points), prior $p_0(0)=10^{-3}$ and log-normal with $s{=}0.5$ otherwise, beta-binomial
-likelihood with $\rho_U{=}0.1$.  Revision~4 adds the two-parameter model: $d_j\in\{0,0.05,0.15,0.3,0.5,0.7,0.9\}$
+likelihood with $\rho_U{=}0.1$.  The secondary analyses add a two-parameter model: $d_j\in\{0,0.05,0.15,0.3,0.5,0.7,0.9\}$
 with $p_0(d_j{=}0)=0.6$ and the rest uniform, a joint posterior over $(\theta_j,d_j)$, verified-fragment
 probability $(1-d_j)Q(\theta_jR_j\bar\pi_j)$, and hazards multiplied by $(1-\hat d_j)$ so that a fragment
 still missing after many reads is increasingly attributed to permanent dropout.}

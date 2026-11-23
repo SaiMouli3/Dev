@@ -1,0 +1,39 @@
+\begin{table}[!t]
+\centering
+\caption{Stopping benchmarks and model-free allocation baselines (digital twin).  \textbf{(a)} On the same 300 retrievals as Table~\ref{tab:actual}: verified stopping against plans that do not stop and commit a fixed budget.  Success is the share of retrievals the budget completes (cluster-bootstrap 95\% CI); reads per completed retrieval assume that a failed attempt is repeated with a fresh budget (budget/success).  \textbf{(b)} Exploratory baselines on \emph{regenerated} read streams (DT4DDS is not seed-deterministic), each paired against round-robin re-run on the same streams; mean reads over successful retrievals, relative difference on jointly successful retrievals.  Per-read stop applies the stopping test after every read instead of every 50.  No retrieval in (b) returned a wrong file.  Thousands of reads.}
+\label{tab:r9base}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}llrrr@{}}
+\toprule
+\multicolumn{5}{@{}l}{\textbf{(a) Committed retrievals, baseline (30 syntheses $\times$ 10 orders)}} \\
+Plan & Budget rule & Reads (budget) & Success [95\% CI] & Reads per completed \\
+\midrule
+Round-robin + verified stop & stops when verified & 3.49 (mean) & 1.00 & 3.49 \\
+Static, fixed depth, no stop & q99 budget & 5.15 & 0.99 [0.98, 1.00] & 5.21 \\
+Static, fixed depth, no stop & $1.2\times$ median & 4.08 & 0.85 [0.80, 0.90] & 4.78 \\
+Static, fixed depth, no stop & $1.2\times$ mean & 4.19 & 0.89 [0.85, 0.93] & 4.69 \\
+Static, $w\propto e$, no stop & q99 budget & 4.80 & 0.99 [0.98, 1.00] & 4.85 \\
+Static, $w\propto e$, no stop & $1.2\times$ median & 3.90 & 0.88 [0.83, 0.92] & 4.45 \\
+Static, $w\propto e$, no stop & $1.2\times$ mean & 4.01 & 0.91 [0.87, 0.95] & 4.41 \\
+\midrule
+\multicolumn{5}{@{}l}{\textbf{(b) Regenerated streams (30 syntheses $\times$ 10 orders per scenario)}} \\
+Scenario & Policy & Success & Mean reads [95\% CI] & vs.\ round-robin, \% [95\% CI] \\
+\midrule
+Baseline & Round-robin + verified stop & 1.00 & 3.52 [3.41, 3.67] &  \\
+ & Round-robin, per-read stop & 1.00 & 3.50 [3.39, 3.64] & $-0.7$ [$-0.7$, $-0.6$] \\
+ & Successive elimination & 1.00 & 3.52 [3.41, 3.67] & $0$ [$0$, $0$] \\
+ & Yield threshold (25\%) & 1.00 & 3.49 [3.38, 3.61] & $-1.0$ [$-1.6$, $-0.6$] \\
+\midrule
+Homogeneous & Round-robin + verified stop & 1.00 & 2.24 [2.21, 2.28] &  \\
+ & Round-robin, per-read stop & 1.00 & 2.22 [2.19, 2.25] & $-1.2$ [$-1.3$, $-1.1$] \\
+ & Successive elimination & 1.00 & 2.24 [2.21, 2.28] & $0$ [$0$, $0$] \\
+ & Yield threshold (25\%) & 1.00 & 2.24 [2.21, 2.28] & $0$ [$0$, $0$] \\
+\midrule
+One failed & Round-robin + verified stop & 0.50 & 17.15 [15.19, 19.32] &  \\
+ & Round-robin, per-read stop & 0.50 & 17.07 [15.11, 19.24] & $-0.3$ [$-0.7$, $-0.1$] \\
+ & Successive elimination & 0.50 & 17.07 [15.07, 19.27] & $-0.5$ [$-0.9$, $-0.2$] \\
+ & Yield threshold (25\%) & 0.50 & 16.50 [14.46, 18.70] & $-3.8$ [$-5.5$, $-2.4$] \\
+\bottomrule
+\end{tabular}
+\end{table}

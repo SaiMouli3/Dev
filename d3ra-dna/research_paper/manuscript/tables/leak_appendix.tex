@@ -1,6 +1,6 @@
 \begin{table*}[!t]
 \centering
-\caption{\textbf{Upper bound with evaluation leakage} (superseded first analysis, kept for transparency).  Replay of real read streams with ``calibrated'' beliefs whose consensus curves were pooled from \emph{evaluation}-split reads (Appendix~\ref{app:leak}); thousands of reads at 0.99.  These numbers are not used for any claim in the main text.  Static plans pay their budget on every retrieval; for adaptive policies the 0.99-quantile q99 is shown separately.  $\Delta$: adaptive (pivotal) minus oracle-tuned static, paired (95\% CI).}
+\caption{\textbf{Upper bound with evaluation leakage} (first analysis, replaced by the analysis of Table~\ref{M-tab:replay}).  Replay of real read streams with ``calibrated'' beliefs whose consensus curves were pooled from \emph{evaluation}-split reads (Section~\ref{app:leak}); thousands of reads at 0.99.  These numbers are not used for any claim in the main text.  Static plans pay their budget on every retrieval; for adaptive policies the 0.99-quantile q99 is shown separately.  $\Delta$: adaptive (pivotal) minus oracle-tuned static, paired (95\% CI).}
 \label{tab:leak}
 \footnotesize
 \begin{tabular}{@{}llrrrrrrr@{}}
@@ -20,6 +20,6 @@ Genscript & single best$^{\dagger}$ & 279.4 & 279.4 & 219.0 & 219.0 & 219.0 & 27
 \vspace{2pt}
 \parbox{\textwidth}{\scriptsize 200 read permutations, except $^{\dagger}$100.  All policies completed in every trial.
 The single-best container is chosen with the calibrated belief, which contains the evaluation-split leak of
-Appendix~\ref{app:leak}.  Superseded first-run Genscript numbers (computed before the per-strand consensus cache was
+Section~\ref{app:leak}.  First-run Genscript numbers (computed before the per-strand consensus cache was
 regenerated) are kept in \texttt{results/realdata\_genscript\_policies\_\{roundrobin,part2\}.csv}.}
 \end{table*}

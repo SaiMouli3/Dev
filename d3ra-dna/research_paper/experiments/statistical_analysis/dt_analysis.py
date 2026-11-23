@@ -20,6 +20,10 @@ import numpy as np
 import pandas as pd
 from scipy.stats import beta
 
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from bootstrap import matrix_boot  # noqa: E402  (shared, order-independent cluster bootstrap)
+
 RES = Path(__file__).resolve().parents[3] / "results"
 B = 2000
 
@@ -45,13 +49,8 @@ def _matrix(df, pol):
     return M
 
 
-def boot(stat, mats, rng):
-    n = mats[0].shape[0]
-    out = []
-    for _ in range(B):
-        ix = rng.integers(0, n, n)
-        out.append(stat(*[m[ix].ravel() for m in mats]))
-    return np.percentile(out, [2.5, 97.5])
+def boot(stat, mats, rng=None):
+    return matrix_boot(stat, mats, B)
 
 
 def analyse(scen):
@@ -110,8 +109,7 @@ def analyse(scen):
                     m = np.isfinite(a) & np.isfinite(r)
                     return float(np.mean(a[m]) / np.mean(r[m]) - 1) if m.any() else np.nan
                 row["rel_vs_rr"] = st_rr(Mx.ravel(), R.ravel())
-                lo, hi = np.nanpercentile([st_rr(*(m[ix].ravel() for m in (Mx, R)))
-                                           for ix in (rng.integers(0, Mx.shape[0], Mx.shape[0]) for _ in range(B))], [2.5, 97.5])
+                lo, hi = matrix_boot(st_rr, [Mx, R], B)
                 row["rel_vs_rr_lo"], row["rel_vs_rr_hi"] = lo, hi
         rows.append(row)
     return rows

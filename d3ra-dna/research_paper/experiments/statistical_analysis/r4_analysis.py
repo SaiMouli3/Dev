@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import glob
 import json
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -32,15 +33,8 @@ def load(name):
     return pd.read_csv(p) if p.exists() else None
 
 
-def cluster_boot(df, stat, by="rep", n=B):
-    """Bootstrap over synthesis replicates (clusters); returns (estimate, lo, hi)."""
-    groups = [g for _, g in df.groupby(by)]
-    est = stat(df)
-    vals = []
-    for _ in range(n):
-        idx = RNG.integers(0, len(groups), len(groups))
-        vals.append(stat(pd.concat([groups[i] for i in idx])))
-    return est, float(np.quantile(vals, 0.025)), float(np.quantile(vals, 0.975))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from bootstrap import cluster_boot  # noqa: E402,F401  (shared, order-independent cluster bootstrap)
 
 
 def q(p):
@@ -83,10 +77,11 @@ def actual_vs_reserved():
 
 # --------------------------------------------------------------------------- R4.3 cluster-aware safety
 def safety():
-    # the clean-reproduction re-runs repeat baseline replicates on regenerated streams; they are a
-    # reproducibility check, not additional independent evidence, so they are excluded from the totals
+    # the clean-reproduction re-runs and the final-revision baselines (r9regen) repeat baseline replicate labels
+    # on regenerated streams; they are not additional independent evidence under those labels, so they are
+    # excluded from the totals (the r9regen safety record is reported separately in r9_extra_baselines.csv)
     files = [f for f in sorted(glob.glob(str(RES / "dt_*.csv")))
-             if not any(k in f for k in ("summary", "forecast", "calibration", "cleanrepro"))]
+             if not any(k in f for k in ("summary", "forecast", "calibration", "cleanrepro", "r9regen"))]
     n = w = fa = att = 0
     units = set()
     per_unit_att = []
@@ -140,14 +135,20 @@ def tails():
         sets["100 syntheses x 3 orders"] = pd.concat([x for x in parts if x is not None])
     rows = []
     for name, d in sets.items():
+        rr = d[d.policy == "round_robin_stop"]
         for pol, g in d.groupby("policy"):
             if g.rep.nunique() < 10:
                 continue
             m = cluster_boot(g, lambda x: x.reads.mean())
             q95 = cluster_boot(g, q(.95)); q99 = cluster_boot(g, q(.99))
+            # paired q99 difference against round-robin on the same syntheses and read orders (all attempts)
+            j = g.merge(rr, on=["rep", "perm"], suffixes=("", "_r"))
+            dq = (cluster_boot(j, lambda x: np.quantile(x.reads, .99) - np.quantile(x.reads_r, .99))
+                  if pol != "round_robin_stop" and len(j) == len(g) else (np.nan,) * 3)
             rows.append({"design": name, "policy": pol, "n": len(g), "syntheses": g.rep.nunique(),
                          "mean": m[0], "mean_lo": m[1], "mean_hi": m[2], "q95": q95[0], "q95_lo": q95[1], "q95_hi": q95[2],
-                         "q99": q99[0], "q99_lo": q99[1], "q99_hi": q99[2]})
+                         "q99": q99[0], "q99_lo": q99[1], "q99_hi": q99[2],
+                         "dq99_vs_rr": dq[0], "dq99_lo": dq[1], "dq99_hi": dq[2]})
     df = pd.DataFrame(rows)
     df.to_csv(RES / "r4_tails.csv", index=False)
     return df
@@ -155,12 +156,19 @@ def tails():
 
 # --------------------------------------------------------------------------- paired comparison helper
 def paired_vs(df_pol, df_ref):
-    """Paired over (rep, perm): ratio of summed reads on jointly successful retrievals, cluster bootstrap."""
-    j = df_pol[df_pol.status == "exact"].merge(df_ref[df_ref.status == "exact"], on=["rep", "perm"], suffixes=("", "_r"))
-    if j.empty:
+    """Paired over (rep, perm): ratio of summed reads on jointly successful retrievals, cluster bootstrap over
+    every synthesis replicate (also those without a joint success, as in dt_analysis.py), so that a scenario
+    with failures gets the same interval here as in Table VI."""
+    j = df_pol.merge(df_ref, on=["rep", "perm"], suffixes=("", "_r"))
+    ok = (j.status == "exact") & (j.status_r == "exact")
+    if not ok.any():
         return (np.nan,) * 3 + (0,)
-    est = cluster_boot(j, lambda x: x.reads.sum() / x.reads_r.sum() - 1)
-    return est + (len(j),)
+
+    def rel(x):
+        m = (x.status == "exact") & (x.status_r == "exact")
+        return x.reads[m].sum() / x.reads_r[m].sum() - 1 if m.any() else np.nan
+    est = cluster_boot(j, rel)
+    return est + (int(ok.sum()),)
 
 
 def rr_ref(sc, tagged=None):
@@ -361,12 +369,16 @@ PRICES = {  # per read, per sequencing round (batch), per container library prep
 
 def cost_model():
     rows = []
-    for f in ("dt_baseline_r4ext.csv", "dt_baseline_static_r4ext.csv", "dt_baseline_r4ext_drop.csv",
-              "dt_baseline.csv", "dt_baseline_static.csv", "dt_baseline_r4drop.csv", "dt_fail1.csv"):
+    # The table uses the same 300 baseline retrievals as Tables V and VI (dt_baseline*.csv, 30 x 10);
+    # the 70-synthesis extension (r4ext) is kept only for the container-switch counts of the frozen rules,
+    # which the original 300 retrievals did not record.  Round-robin never evaluates the posterior, so its
+    # retrievals in the rho_U = 0.03 re-run are bit-identical to the frozen ones and supply its switch count.
+    for f in ("dt_baseline.csv", "dt_baseline_static.csv", "dt_baseline_r4drop.csv", "dt_baseline_rho003.csv",
+              "dt_baseline_r4ext.csv", "dt_baseline_static_r4ext.csv", "dt_baseline_r4ext_drop.csv", "dt_fail1.csv"):
         d = load(f)
         if d is None:
             continue
-        tag = "+dropout" if "r4drop" in f else ""
+        tag = "+dropout" if "r4drop" in f or "ext_drop" in f else ("@rho0.03" if "rho003" in f else "")
         if "cleanrepro" in f:
             tag = " (clean re-run)"
         for pol, g in d.groupby("policy"):

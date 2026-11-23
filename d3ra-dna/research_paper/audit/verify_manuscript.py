@@ -22,7 +22,8 @@ ROOT = Path(__file__).resolve().parents[2]
 RES = ROOT / "results"
 PDF = ROOT / "research_paper" / "manuscript" / "main.pdf"
 OUT = Path(__file__).resolve().parent / "verify_manuscript.txt"
-RNG = np.random.default_rng(20261104)
+sys.path.insert(0, str(ROOT / "research_paper" / "experiments" / "statistical_analysis"))
+from bootstrap import cluster_boot  # noqa: E402  (the same resampling scheme as every table)
 rows: list[tuple] = []
 
 
@@ -32,16 +33,21 @@ def load(n):
 
 
 def cb(df, f, n=2000):
-    gs = [g for _, g in df.groupby("rep")]
-    v = [f(pd.concat([gs[i] for i in RNG.integers(0, len(gs), len(gs))])) for _ in range(n)]
-    return f(df), float(np.quantile(v, 0.025)), float(np.quantile(v, 0.975))
+    return cluster_boot(df, f, n=n)
 
 
-def paired(g, rr, stat=lambda x: x.reads.sum() / x.reads_r.sum() - 1, ok_only=True):
-    a = g[g.status == "exact"] if ok_only else g
-    b = rr[rr.status == "exact"] if ok_only else rr
-    j = a.merge(b, on=["rep", "perm"], suffixes=("", "_r"))
-    return cb(j, stat) if len(j) else (np.nan, np.nan, np.nan)
+def _rel(x):
+    m = (x.status == "exact") & (x.status_r == "exact")
+    return x.reads[m].sum() / x.reads_r[m].sum() - 1 if m.any() else np.nan
+
+
+def paired(g, rr, stat=None, ok_only=True):
+    """Paired over (rep, perm), resampling every synthesis replicate; with ok_only the statistic uses only
+    jointly successful retrievals (the convention of every table)."""
+    j = g.merge(rr, on=["rep", "perm"], suffixes=("", "_r"))
+    if not len(j):
+        return (np.nan, np.nan, np.nan)
+    return cb(j, stat or (_rel if ok_only else (lambda x: x.reads.sum() / x.reads_r.sum() - 1)))
 
 
 def check(section, what, recomputed, claimed, tol, unit=""):
@@ -56,7 +62,7 @@ def cp_upper(k, n, a=0.05):
 
 # ---------------------------------------------------------------- safety (abstract, Sec. VI-A, Table IV)
 files = [f for f in sorted(RES.glob("dt_*.csv"))
-         if not any(k in f.name for k in ("summary", "forecast", "calibration", "cleanrepro"))]
+         if not any(k in f.name for k in ("summary", "forecast", "calibration", "cleanrepro", "r9regen"))]
 n = w = fa = att = 0
 units = set()
 for f in files:
@@ -124,7 +130,7 @@ u1 = f1[f1.policy == "ucb"]
 check("VI-D", "fail1 UCB mean on successes (k)", u1[u1.status == "exact"].reads.mean() / 1e3, 15.49, 0.01)
 check("VI-D", "fail1 UCB vs round-robin, conditional (%)", paired(u1, rr1)[0] * 100, -24, 0.6)
 check("VI-D", "fail1 UCB mean over all attempts (k)", u1.reads.mean() / 1e3, 52.79, 0.01)
-check("VI-D", "fail1 round-robin mean over all attempts (k)", rr1.reads.mean() / 1e3, 54.43, 0.01)
+check("VI-D", "fail1 round-robin mean over all attempts (k)", rr1.reads.mean() / 1e3, 54.42, 0.01)
 check("VI-D", "fail1 UCB vs round-robin, unconditional (%)", (u1.reads.mean() / rr1.reads.mean() - 1) * 100, -3, 0.2)
 
 # ---------------------------------------------------------------- ablation (Sec. VI-E, Table VIII)
@@ -141,8 +147,8 @@ drop = load("dt_baseline_r4drop.csv")
 rrb = b[b.policy == "round_robin_stop"]
 e, l_, h_ = paired(drop[drop.policy == "ucb"], rrb)
 check("VI-F", "UCB+dropout vs round-robin (%)", e * 100, -3.5, 0.1)
-check("VI-F", "UCB+dropout CI lo (%)", l_ * 100, -4.9, 0.3)
-check("VI-F", "UCB+dropout CI hi (%)", h_ * 100, -2.2, 0.3)
+check("VI-F", "UCB+dropout CI lo (%)", l_ * 100, -4.8, 0.05)
+check("VI-F", "UCB+dropout CI hi (%)", h_ * 100, -2.2, 0.05)
 check("VI-F", "coverage+dropout near-dead share", sh(drop[drop.policy == "coverage"]), 0.20, 0.006)
 check("VI-F", "UCB+dropout near-dead share", sh(drop[drop.policy == "ucb"]), 0.17, 0.006)
 f1d = load("dt_fail1_r4drop.csv")
@@ -154,8 +160,8 @@ if f1d is not None:
 lik = load("r6_likelihood_sweep.csv")
 if lik is not None:
     bl = lik[lik.scenario == "baseline"]
-    for pol, claim, cl, ch in (("coverage", -0.4, -2.5, 1.7), ("thompson", 0.3, -1.7, 2.4),
-                               ("ucb", 1.5, -0.5, 3.8), ("tail_aware", -1.2, -3.2, 0.6)):
+    for pol, claim, cl, ch in (("coverage", -0.4, -2.3, 1.6), ("thompson", 0.3, -1.7, 2.5),
+                               ("ucb", 1.5, -0.5, 3.7), ("tail_aware", -1.2, -3.2, 0.7)):
         r_ = bl[(bl.policy == pol) & (bl.rho_U == "0.03 (re-selected)")].iloc[0]
         check("VI-J (lik.)", f"{pol} at rho=0.03 (%)", r_.rel_vs_rr * 100, claim, 0.1)
         check("VI-J (lik.)", f"{pol} at rho=0.03 CI lo (%)", r_.lo * 100, cl, 0.4)
@@ -257,14 +263,89 @@ check("VI-K", "geometry min coverage penalty (%)", cov.rel_vs_rr_success.min() *
 check("VI-K", "geometry max coverage penalty (%)", cov.rel_vs_rr_success.max() * 100, 93.5, 0.3)
 
 # ---------------------------------------------------------------- cost model (Table XVI)
+SW_RR, SW_DROP_LO, SW_DROP_HI = 63, 38, 59      # as printed in Sec. VI-H (reads are not the only cost)
 cm = load("r4_cost_model.csv")
-cmb = cm[(cm.scenario == "baseline") & cm.switches.notna()].drop_duplicates("policy")
-ad = cmb[~cmb.policy.str.startswith("Static") & ~cmb.policy.str.contains("static")
-          & (cmb.policy != "round_robin_stop")]
-check("VI-L", "min adaptive container switches", ad.switches.min(), 38, 1)
-check("VI-L", "max adaptive container switches", ad.switches.max(), 61, 1)
-check("VI-L", "round-robin container switches", cmb[cmb.policy == "round_robin_stop"].switches.iloc[0], 63, 1)
-check("VI-L", "max static container switches", cmb[cmb.policy.str.contains("static")].switches.max(), 69, 1)
+cmb = cm[cm.scenario == "baseline"]
+# the cost table uses the same 300 retrievals as Tables V and VI
+main300 = cmb[cmb.source.isin(["dt_baseline.csv", "dt_baseline_static.csv"])]
+check("VI-M", "cost table round-robin reads equal Table V (k)",
+      main300[main300.policy == "round_robin_stop"].reads.iloc[0] / 1e3, 3.49, 0.005)
+check("VI-M", "cost table static alpha=1 reads equal Table V (k)",
+      main300[main300.policy == "static_a1.0"].reads.iloc[0] / 1e3, 3.34, 0.005)
+rr03 = cmb[(cmb.source == "dt_baseline_rho003.csv") & (cmb.policy == "round_robin_stop@rho0.03")]
+check("VI-M", "round-robin switches on the 300 retrievals", rr03.switches.iloc[0], SW_RR, 0.5)
+dsw = cmb[(cmb.source == "dt_baseline_r4drop.csv") & ~cmb.policy.str.startswith("info_greedy")].switches
+check("VI-M", "dropout-model switches min", dsw.min(), SW_DROP_LO, 0.5)
+check("VI-M", "dropout-model switches max", dsw.max(), SW_DROP_HI, 0.5)
+ext_ = cmb[cmb.source == "dt_baseline_r4ext.csv"]
+ad = ext_[ext_.policy != "round_robin_stop"]
+check("VI-M", "extension: min primary-model switches", ad.switches.min(), 38, 0.5)
+check("VI-M", "extension: max primary-model switches", ad.switches.max(), 61, 0.5)
+check("VI-M", "extension: round-robin switches", ext_[ext_.policy == "round_robin_stop"].switches.iloc[0], 63, 0.5)
+sx = cmb[cmb.source == "dt_baseline_static_r4ext.csv"].set_index("policy").switches
+check("VI-M", "extension: static alpha=1 switches", sx["static_a1.0"], 65, 0.5)
+check("VI-M", "extension: uniform static switches", sx["static_a0.0"], 69, 0.5)
+
+# ---------------------------------------------------------------- final revision: new baselines and analyses
+# reservation baselines on the committed retrievals (Table r9base a)
+st0 = stb[stb.policy == "static_a0.0"].reads.values
+for rule, bud, claim_b, claim_s, claim_r in (("1.2 x median", 1.2 * np.median(st0), 4.08, 0.85, 4.78),
+                                            ("1.2 x mean", 1.2 * st0.mean(), 4.19, 0.89, 4.69)):
+    succ = (st0 <= bud).mean()
+    check("VI-B", f"reservation {rule} budget (k)", bud / 1e3, claim_b, 0.005)
+    check("VI-B", f"reservation {rule} success", succ, claim_s, 0.005)
+    check("VI-B", f"reservation {rule} reads per completed (k)", bud / succ / 1e3, claim_r, 0.005)
+# regenerated-stream baselines (Table r9base b)
+for sc in ("baseline", "homog", "fail1"):
+    rg = load(f"dt_{sc}_r9regen.csv")
+    check("VI-C", f"{sc} regenerated: no wrong output", int(rg.wrong_output.sum()), 0, 0)
+    globals()[f"rg_{sc}"] = rg
+rgb = rg_baseline
+rrg = rgb[rgb.policy == "round_robin_stop"]
+check("VI-C", "regenerated round-robin mean (k)", rrg.reads.mean() / 1e3, 3.52, 0.005)
+e, l_, h_ = paired(rgb[rgb.policy == "per_read_stop"], rrg)
+check("VI-B", "per-read stop vs batched (%)", e * 100, -0.7, 0.05)
+check("VI-B", "per-read stop CI lo (%)", l_ * 100, -0.7, 0.05)
+check("VI-B", "per-read stop CI hi (%)", h_ * 100, -0.6, 0.05)
+se_ = rgb[rgb.policy == "succ_elim"].sort_values(["rep", "perm"]).reads.values
+check("VI-C", "successive elimination identical to round-robin (baseline)",
+      float(np.array_equal(se_, rrg.sort_values(["rep", "perm"]).reads.values)), 1.0, 0)
+for sc, pol, claim in (("baseline", "yield_threshold", -1.0), ("fail1", "succ_elim", -0.5),
+                       ("fail1", "yield_threshold", -3.8)):
+    d_ = globals()[f"rg_{sc}"]
+    e, _, _ = paired(d_[d_.policy == pol], d_[d_.policy == "round_robin_stop"])
+    check("VI-C", f"{sc} {pol} vs round-robin (%)", e * 100, claim, 0.05)
+check("VI-C", "regenerated fail1 success", (rg_fail1[rg_fail1.policy == "round_robin_stop"].status == "exact").mean(),
+      0.50, 0.005)
+# paired q99 differences quoted in Sec. VI (one interval per comparison)
+q99d = lambda x: np.quantile(x.reads, .99) - np.quantile(x.reads_r, .99)
+sa1_30 = stb[stb.policy == "static_a1.0"]
+for nm, g_, ref, claim, lo_c, hi_c in (
+        ("static alpha=1, 30x10", sa1_30, rrb, -350, -450, -3),
+        ("static alpha=1, 100x3", sa1, rrx, -450, -550, -202),
+        ("UCB+dropout, 30x10", ud, rrb, -450, -1001, 244)):
+    e, l_, h_ = paired(g_, ref, stat=q99d, ok_only=False)
+    check("VI-F", f"{nm} paired q99 difference (reads)", e, claim, 2)
+    check("VI-F", f"{nm} paired q99 CI lo", l_, lo_c, 2)
+    check("VI-F", f"{nm} paired q99 CI hi", h_, hi_c, 2)
+# information-greedy after a failure: one interval everywhere (shared bootstrap)
+dsum = load("dt_summary.csv")
+igs = dsum[(dsum.scenario == "fail1") & (dsum.policy == "info_greedy")].iloc[0]
+igl = lik[(lik.scenario == "fail1") & (lik.policy == "info_greedy") & lik.rho_U.str.startswith("0.1")].iloc[0]
+check("VI-G", "fail1 info-greedy CI identical in Table VI and the likelihood table (lo)", igs.rel_vs_rr_lo, igl.lo, 1e-9)
+check("VI-G", "fail1 info-greedy CI identical in Table VI and the likelihood table (hi)", igs.rel_vs_rr_hi, igl.hi, 1e-9)
+# Discussion VII-A/B
+gq = rrb.groupby("rep").reads
+bv, wv = gq.mean().var(ddof=1), gq.var(ddof=1).mean()
+check("VII-A", "between-synthesis share of variance (%)", bv / (bv + wv) * 100, 31, 0.5)
+check("VII-A", "coefficient of variation", rrb.reads.std() / rrb.reads.mean(), 0.16, 0.005)
+check("VII-A", "q99 above mean (%)", (np.quantile(rrb.reads, .99) / rrb.reads.mean() - 1) * 100, 48, 0.5)
+eff = np.array(json.load(open(RES / "dt_baseline_hindsight_eff.json")))
+check("VII-A", "fluid allocation bound (%)", (1 - eff.mean() / eff.max()) * 100, 11, 0.5)
+for geom, claim in (("big", 24), ("n64", 18), ("m12", 41)):
+    gd, gs_ = load(f"dt_baseline_geom_{geom}_r4.csv"), load(f"dt_baseline_geom_{geom}_static_r4.csv")
+    sav = 1 - gd[gd.policy == "round_robin_stop"].reads.mean() / np.quantile(gs_[gs_.policy == "static_a0.0"].reads, .99)
+    check("VII-B", f"{geom} stopping saving (%)", sav * 100, claim, 0.5)
 
 # ---------------------------------------------------------------- what the PDF actually prints
 txt = subprocess.run(["pdftotext", str(PDF), "-"], capture_output=True, text=True).stdout

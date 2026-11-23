@@ -46,11 +46,11 @@ def dt_main(S):
         if d.empty:
             continue
         if (d.success == 0).all():
-            lines.append(f"{sname} & all {len(d)} policies and static plans & 0.00 & -- (stream exhausted, 72k reads) & -- & \\\\")
+            lines.append(f"{sname} & every policy and static plan & 0.00 & -- (stream exhausted, 72k reads) & -- & \\\\")
             lines.append(r"\midrule")
             continue
         first = True
-        order = [p for p in NAMES if p in set(d.policy)]
+        order = [p for p in NAMES if p in set(d.policy) and p != "info_greedy"]   # info-greedy: supplement
         for p in order:
             r = d[d.policy == p].iloc[0]
             mean = (f"{k(r.mean_reads)} [{k(r.mean_lo)}, {k(r.mean_hi)}]" if np.isfinite(r.mean_reads)
@@ -129,9 +129,11 @@ def replay():
         d = pd.read_csv(RES / f)
         first = True
         for _, r in d.iterrows():
+            if r.policy == "info":            # information-greedy: supplementary table
+                continue
             name = pn.get(r.policy, r.policy)
             if r.belief == "calibrated_leakfree":
-                name = "Coverage-greedy, leak-free calibrated"
+                name = "Coverage-greedy, calibrated belief"
             if r.policy.startswith("static"):
                 m, q, dl = r["cap@0.99"], r["cap@0.99"], ""
             else:
@@ -141,8 +143,6 @@ def replay():
             dig = 1 if pool == "Twist" else 0
             out.append(f"{pool if first else ''} & {name} & {m / 1e3:.{dig}f} & {q / 1e3:.{dig}f} & {dl} \\\\")
             first = False
-            if pool == "Genscript" and r.policy == "ltc" and "info" not in set(d.policy):
-                out.append(r" & Info-greedy & \multicolumn{3}{l}{not completed (Appendix~\ref{app:dev})} \\")
         out.append(r"\midrule")
     out[-1] = r"\bottomrule"
     out += [r"\end{tabular}", r"\end{table}"]

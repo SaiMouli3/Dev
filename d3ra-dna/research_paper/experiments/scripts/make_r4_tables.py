@@ -62,8 +62,8 @@ def actual_vs_reserved():
         return
     order = ["static_a0.0", "static_a0.25", "static_a0.5", "static_a0.75", "static_a1.0", "static_a1.25",
              "static_a1.5", "static_a2.0", "static_a3.0", "static_cal_a0.5", "static_cal_a1.0", "static_cal_a2.0",
-             "round_robin_stop", "coverage", "pivotal", "thompson", "ucb", "learn_then_commit", "info_greedy",
-             "tail_aware"]
+             "round_robin_stop", "coverage", "pivotal", "thompson", "ucb", "learn_then_commit",
+             "tail_aware"]          # information-greedy: supplementary table
     out = [r"\begin{table*}[!t]", r"\centering",
            r"\caption{Reads \emph{consumed} with verified stopping versus capacity that must be \emph{reserved} "
            r"without it (digital twin, 300 retrievals per row).  All rows stop on verification, so the comparison "
@@ -167,15 +167,21 @@ def tails():
     out = [r"\begin{table*}[!t]", r"\centering",
            r"\caption{Tail metrics with cluster-bootstrap 95\% intervals over synthesis replicates (baseline).  "
            r"Extreme quantiles estimated from a few hundred retrievals are imprecise, and the intervals of most "
-           r"policies overlap; the ordering of the means does not carry over to q99.  Thousands of reads.}",
+           r"policies overlap; the ordering of the means does not carry over to q99.  $\Delta$q99: paired difference "
+           r"in q99 against round-robin on the same syntheses and read orders, in reads, with its cluster-bootstrap "
+           r"95\% interval; this is the interval quoted in the text.  Thousands of reads unless stated.}",
            r"\label{tab:r4tails}", r"\scriptsize", r"\setlength{\tabcolsep}{3pt}",
-           r"\begin{tabular}{@{}llrrr@{}}", r"\toprule",
-           r"Design & Allocation & $\bar r_{\text{all}}$ & q95 [95\% CI] & q99 [95\% CI] \\", r"\midrule"]
+           r"\begin{tabular}{@{}llrrrr@{}}", r"\toprule",
+           r"Design & Allocation & $\bar r_{\text{all}}$ & q95 [95\% CI] & q99 [95\% CI] & $\Delta$q99 (reads) [95\% CI] \\",
+           r"\midrule"]
     for des, g in d.groupby("design", sort=False):
         first = True
+        g = g[~g.policy.str.startswith("info_greedy")]          # information-greedy: supplementary table
         for r in g.sort_values("mean").itertuples():
+            dq = ("" if not np.isfinite(r.dq99_vs_rr) else
+                  f"${r.dq99_vs_rr:+,.0f}$ [${r.dq99_lo:+,.0f}$, ${r.dq99_hi:+,.0f}$]".replace(",", "{,}"))
             out.append(f"{des.replace('x', '$\\times$') if first else ''} & {name(r.policy)} & {k(r.mean)} & "
-                       f"{k(r.q95)} [{k(r.q95_lo)}, {k(r.q95_hi)}] & {k(r.q99)} [{k(r.q99_lo)}, {k(r.q99_hi)}] \\\\")
+                       f"{k(r.q95)} [{k(r.q95_lo)}, {k(r.q95_hi)}] & {k(r.q99)} [{k(r.q99_lo)}, {k(r.q99_hi)}] & {dq} \\\\")
             first = False
         out.append(r"\midrule")
     out[-1] = r"\bottomrule"
@@ -195,14 +201,16 @@ def ablation():
              ("theta+d", "0.1", "0.5"), ("theta+d", "0.0", "0.5"), ("theta+d", "0.1", "1.0"),
              ("theta+d", "0.0", "1.0")]
     d["key"] = list(zip(d.model, d.rho_U.astype(str), d.prior_sd.astype(str)))
-    pols = ["coverage", "thompson", "tail_aware", "pivotal", "ucb", "learn_then_commit", "info_greedy"]
+    pols = ["coverage", "thompson", "tail_aware", "pivotal", "ucb", "learn_then_commit"]   # info-greedy: supplement
     out = [r"\begin{table*}[!t]", r"\centering",
            r"\caption{Ablation of the three modelling choices (digital twin; paired mean reads against "
            r"round-robin on jointly successful retrievals, per cent, negative is cheaper than round-robin).  "
-           r"$\theta$: one efficiency multiplier per container (the frozen model); $\theta{+}d$: efficiency and "
-           r"a dropout fraction.  $\rho_U$ is the beta-binomial correlation and $s$ the prior width; the frozen "
-           r"configuration is the first column.  The penalty is large only in that column: relaxing any one of "
-           r"the three choices moves every rule into a band a few per cent below round-robin.  Blank: not run.  "
+           r"$\theta$: one efficiency multiplier per container (the primary model); $\theta{+}d$: efficiency and "
+           r"a dropout fraction.  $\rho_U$ is the beta-binomial correlation and $s$ the prior width; the primary "
+           r"configuration is the first column.  On the baseline, relaxing any one of the three choices removes "
+           r"most of the penalty, but not all of it for every rule: single relaxations leave the rules between "
+           r"4\% below and 13\% above round-robin (tail-aware keeps $+$10\% with the dropout model alone).  "
+           r"Blank: not run.  "
            r"Cluster-bootstrap intervals for every cell are in \texttt{results/r4\_ablation.csv}; those the text "
            r"relies on are quoted there.}",
            r"\label{tab:r4abl}", r"\scriptsize", r"\setlength{\tabcolsep}{3pt}",
@@ -262,7 +270,7 @@ def cap_table():
         return
     out = [r"\begin{table}[!t]", r"\centering",
            r"\caption{Sensitivity to the consensus cap, the number of reads per cluster used to form a "
-           r"consensus (frozen value 24).  On the baseline the cap is not binding: clusters rarely reach a "
+           r"consensus (primary value 24).  On the baseline the cap is not binding: clusters rarely reach a "
            r"dozen reads before the fragment decodes.  Thousands of reads.}",
            r"\label{tab:r4cap}", r"\scriptsize", r"\setlength{\tabcolsep}{3pt}",
            r"\begin{tabular}{@{}llrrrr@{}}", r"\toprule",
@@ -285,12 +293,12 @@ def likelihood_table():
     if d is None:
         return
     order = ["0.1 (frozen)", "0.03 (re-selected)", "0 (binomial)"]
-    pols = ["coverage", "thompson", "ucb", "tail_aware", "pivotal", "learn_then_commit", "info_greedy"]
+    pols = ["coverage", "thompson", "ucb", "tail_aware", "pivotal", "learn_then_commit"]   # info-greedy: supplement
     out = [r"\begin{table*}[!t]", r"\centering",
-           r"\caption{The complete primary comparison repeated under each likelihood setting: the frozen "
+           r"\caption{The complete primary comparison repeated under each likelihood setting: the primary "
            r"$\rho_U{=}0.1$, the value the corrected selection picks ($\rho_U{=}0.03$, Section~\ref{sec:res-calib}) "
            r"and the binomial ($\rho_U{=}0$).  All three use the full design (30 syntheses $\times$ 10 read "
-           r"orders per policy) and the frozen prior width $s{=}0.5$.  Entries are the paired difference in mean "
+           r"orders per policy) and the primary prior width $s{=}0.5$.  Entries are the paired difference in mean "
            r"reads against round-robin on jointly successful retrievals, per cent, with cluster-bootstrap 95\% "
            r"intervals; negative is cheaper than round-robin.  Round-robin never evaluates the posterior, so it is "
            r"bit-identical across the three settings and is the common reference.  Success probability is "
@@ -298,7 +306,7 @@ def likelihood_table():
            r"\label{tab:r6lik}", r"\scriptsize", r"\setlength{\tabcolsep}{4pt}",
            r"\begin{tabular}{@{}ll" + "r" * len(order) + r"@{}}", r"\toprule",
            r"Scenario & Policy & " + " & ".join(
-               {"0.1 (frozen)": r"$\rho_U{=}0.1$ (frozen)",
+               {"0.1 (frozen)": r"$\rho_U{=}0.1$ (primary)",
                 "0.03 (re-selected)": r"$\rho_U{=}0.03$ (re-selected)",
                 "0 (binomial)": r"$\rho_U{=}0$ (binomial)"}[o] for o in order) + r" \\", r"\midrule"]
     for sc in ["baseline", "homog", "fail1"]:
@@ -378,24 +386,31 @@ def cost_model():
     if d is None:
         return
     d = d[d.scenario == "baseline"].copy()
-    # prefer the runs that record container switches (added in revision 4)
-    if d.switches.notna().any():
-        d = d[d.switches.notna()]
-    d = d.drop_duplicates("policy")
-    cols = [c for c in d.columns if c.startswith("cost[") and "reads only" not in c]
+    main = {"dt_baseline.csv", "dt_baseline_static.csv", "dt_baseline_r4drop.csv"}
+    # same 300 retrievals (30 syntheses x 10 orders) as Tables V and VI; information-greedy is reported
+    # in the supplement
+    t = d[d.source.isin(main) & ~d.policy.str.startswith("info_greedy")].copy()
+    rr03 = d[(d.source == "dt_baseline_rho003.csv") & (d.policy == "round_robin_stop@rho0.03")]
+    if len(rr03):
+        t.loc[t.policy == "round_robin_stop", "switches"] = float(rr03.switches.iloc[0])
+    t = t[t.policy.isin(["round_robin_stop", "static_a0.0", "static_a1.0"]) | t.policy.str.endswith("+dropout")
+          | t.policy.isin(["coverage", "thompson", "ucb", "tail_aware", "pivotal", "learn_then_commit"])]
+    cols = [c for c in t.columns if c.startswith("cost[") and "reads only" not in c]
     out = [r"\begin{table}[!t]", r"\centering",
-           r"\caption{Reads are not the only cost.  Two further charging models applied to the same baseline "
-           r"retrievals; the reads-only model is the Reads column itself.  A multiplexed run charges 50 "
-           r"read-equivalents per batch of 50 reads and 500 per container library preparation; "
-           r"and a separate sequencing run per batch (2{,}000 per batch).  Costs in read-equivalents (thousands).  "
-           r"Switching containers every batch is free in the first model and dominant in the third.}",
+           r"\caption{Reads are not the only cost.  Two further charging models applied to the same 300 baseline "
+           r"retrievals (30 syntheses $\times$ 10 read orders) as Tables~\ref{tab:actual} and~\ref{tab:dt}; the "
+           r"reads-only model is the Reads column itself.  A multiplexed run charges 50 read-equivalents per batch of "
+           r"50 reads and 500 per container library preparation; a separate sequencing run per batch charges 2{,}000 "
+           r"per batch.  Costs in read-equivalents (thousands).  Sw.: mean container switches per retrieval, recorded "
+           r"only by the runs with the dropout model and (for round-robin) by its bit-identical $\rho_U{=}0.03$ re-run; "
+           r"``--'': not recorded on these retrievals.}",
            r"\label{tab:r4cost}", r"\scriptsize", r"\setlength{\tabcolsep}{3pt}",
-           r"\begin{tabular}{@{}p{26mm}rrr" + "r" * len(cols) + r"@{}}", r"\toprule",
+           r"\begin{tabular}{@{}p{30mm}rrr" + "r" * len(cols) + r"@{}}", r"\toprule",
            r"Allocation & Reads & Batch. & Sw. & " +
            " & ".join({"reads only": "reads", "multiplexed run (shared flow cell)": "multiplexed",
                        "separate run per batch": "run/batch"}.get(c[5:-1], c[5:-1]) for c in cols) + r" \\",
            r"\midrule"]
-    for _, r in d.sort_values("reads").iterrows():
+    for _, r in t.sort_values("reads").iterrows():
         sw = "--" if not np.isfinite(r.switches) else f"{r.switches:.0f}"
         vals = " & ".join(k(r[c]) for c in cols)
         out.append(f"{name(r.policy)} & {k(r.reads)} & {r.batches:.0f} & {sw} & {vals} \\\\")

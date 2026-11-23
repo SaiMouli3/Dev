@@ -1,8 +1,8 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.11.5)  7 NOV 2026 17:05
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.11.5)  23 NOV 2026 16:53
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**main
+**main.tex
 (./main.tex
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
@@ -557,6 +557,11 @@ File: pgfmodulematrix.code.tex 2023-01-15 v3.1.10 (3.1.10)
 zlibrarytopaths.code.tex
 File: tikzlibrarytopaths.code.tex 2023-01-15 v3.1.10 (3.1.10)
 )))
+(/usr/share/texlive/texmf-dist/tex/latex/tools/xr.sty
+Package: xr 2023-07-04 v5.06 eXternal References (DPC)
+)
+Package xr Info: IMPORTING LABELS FROM supplement.aux on input line 17.
+
 (/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/pgflibraryarrows.meta.
 code.tex
 File: pgflibraryarrows.meta.code.tex 2023-01-15 v3.1.10 (3.1.10)
@@ -593,20 +598,20 @@ File: l3backend-pdftex.def 2024-01-04 L3 backend support: PDF output (pdfTeX)
 (./main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 23.
-LaTeX Font Info:    ... okay on input line 23.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 23.
-LaTeX Font Info:    ... okay on input line 23.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 23.
-LaTeX Font Info:    ... okay on input line 23.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 23.
-LaTeX Font Info:    ... okay on input line 23.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 23.
-LaTeX Font Info:    ... okay on input line 23.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 23.
-LaTeX Font Info:    ... okay on input line 23.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 23.
-LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 25.
+LaTeX Font Info:    ... okay on input line 25.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 25.
+LaTeX Font Info:    ... okay on input line 25.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 25.
+LaTeX Font Info:    ... okay on input line 25.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 25.
+LaTeX Font Info:    ... okay on input line 25.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 25.
+LaTeX Font Info:    ... okay on input line 25.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 25.
+LaTeX Font Info:    ... okay on input line 25.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 25.
+LaTeX Font Info:    ... okay on input line 25.
 
 -- Lines per column: 50 (exact).
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
@@ -631,36 +636,28 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-LaTeX Font Info:    Trying to load font information for U+msa on input line 53.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 58.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 53.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 58.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-) [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texm
-f-dist/fonts/enc/dvips/base/8r.enc}]
-LaTeX Font Info:    Calculating math sizes for size <11> on input line 106.
- [2] [3] (./tables/literature_comparison.tex)
-(./tables/notation.tex
+)
+LaTeX Font Info:    Calculating math sizes for size <11> on input line 87.
+ [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf
+-dist/fonts/enc/dvips/base/8r.enc}] [2] (./tables/notation.tex
 LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 3
 .
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
-)) [4] [5] [6]
-(./tables/algorithms.tex
-Underfull \hbox (badness 2401) in paragraph at lines 54--56
-[]\OT1/ptm/m/it/9 Info-greedy\OT1/ptm/m/n/9 : $\OML/cmm/m/it/9 ^^[[] \OT1/cmr/m
-/n/9 = [][[] \OML/cmm/m/it/9 ^^R[]\OT1/cmr/m/n/9 ]$ \OT1/ptm/m/n/9 while any co
-n-tainer has
- []
-
-) [7] [8] [9] (./tables/safety.tex) (./tables/r4_actual.tex
+)) [3] [4] [5]
+[6] [7] (./tables/safety.tex) [8] (./tables/r4_actual.tex
 
 LaTeX Font Warning: Font shape `OT1/ptm/m/scit' undefined
 (Font)              using `OT1/ptm/m/it' instead on input line 3.
@@ -669,7 +666,16 @@ LaTeX Font Warning: Font shape `OT1/ptm/m/scit' undefined
 LaTeX Font Warning: Font shape `OT1/ptm/m/scit' undefined
 (Font)              using `OT1/ptm/m/it' instead on input line 3.
 
-) [10] [11] (./tables/dt_main.tex
+) (./tables/r9_baselines.tex
+
+LaTeX Font Warning: Font shape `OT1/ptm/m/scit' undefined
+(Font)              using `OT1/ptm/m/it' instead on input line 3.
+
+) [9] (./tables/r6_likelihood.tex) (./tables/r4_ablation.tex) [10]
+
+LaTeX Warning: Text page 11 contains only floats.
+
+[11] (./tables/dt_main.tex
 
 LaTeX Font Warning: Font shape `OT1/ptm/b/scit' undefined
 (Font)              using `OT1/ptm/b/it' instead on input line 3.
@@ -679,54 +685,29 @@ LaTeX Font Warning: Font shape `OT1/ptm/m/scit' undefined
 (Font)              using `OT1/ptm/m/it' instead on input line 3.
 
 )
-<figures/fig_dt_policies.pdf, id=62, 522.27776pt x 168.16031pt>
+<figures/fig_dt_policies.pdf, id=58, 522.27776pt x 168.16031pt>
 File: figures/fig_dt_policies.pdf Graphic file (type pdf)
 <use figures/fig_dt_policies.pdf>
-Package pdftex.def Info: figures/fig_dt_policies.pdf  used on input line 611.
+Package pdftex.def Info: figures/fig_dt_policies.pdf  used on input line 622.
 (pdftex.def)             Requested size: 516.0pt x 166.14563pt.
- (./tables/r4_uncond.tex [12 <./figures/fig_dt_policies.pdf>]) [13]
-(./tables/r4_ablation.tex) [14] [15]
-<figures/fig_dt_sweep.pdf, id=126, 273.96347pt x 155.72171pt>
-File: figures/fig_dt_sweep.pdf Graphic file (type pdf)
-<use figures/fig_dt_sweep.pdf>
-Package pdftex.def Info: figures/fig_dt_sweep.pdf  used on input line 759.
-(pdftex.def)             Requested size: 309.60315pt x 175.99437pt.
- (./tables/r4_tails.tex [16 <./figures/fig_dt_sweep.pdf>]) [17] (./tables/r4_ca
-lib.tex)
-<figures/fig_dt_calibration.pdf, id=152, 497.41081pt x 150.40694pt>
-File: figures/fig_dt_calibration.pdf Graphic file (type pdf)
-<use figures/fig_dt_calibration.pdf>
-Package pdftex.def Info: figures/fig_dt_calibration.pdf  used on input line 848
-.
-(pdftex.def)             Requested size: 505.6778pt x 152.90582pt.
- [18]
-<figures/fig_forecast.pdf, id=156, 247.72362pt x 150.6221pt>
-File: figures/fig_forecast.pdf Graphic file (type pdf)
-<use figures/fig_forecast.pdf>
-Package pdftex.def Info: figures/fig_forecast.pdf  used on input line 862.
-(pdftex.def)             Requested size: 309.60315pt x 188.24956pt.
- (./tables/r6_likelihood.tex)
-[19 <./figures/fig_dt_calibration.pdf> <./figures/fig_forecast.pdf>]
+ [12] [13] [14 <./figures/fig_dt_policies.pdf>] (./tables/r4_tails.tex)
 (./tables/replay.tex
 
 LaTeX Font Warning: Font shape `OT1/ptm/m/scit' undefined
 (Font)              using `OT1/ptm/m/it' instead on input line 3.
 
-) [20] (./tables/r4_calcost.tex) [21] (./tables/r4_cap.tex) [22]
-(./tables/r4_fail.tex) [23] (./tables/r4_geoms.tex) [24] (./tables/r4_cost.tex
-Underfull \hbox (badness 10000) in paragraph at lines 13--13
-[]|\OT1/ptm/m/n/8 Static $\OML/cmm/m/it/8 []\OT1/cmr/m/n/8 0$ \OT1/ptm/m/n/8 (
-fixed
+[15])
+Overfull \vbox (12.26978pt too high) has occurred while \output is active []
+
+
+[16] (./tables/r4_calcost.tex) [17] (./tables/r4_cost.tex
+Underfull \hbox (badness 7308) in paragraph at lines 13--13
+[]|\OT1/ptm/m/n/8 Round-robin + ver-i-fied
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 15--15
-[]|\OT1/ptm/m/n/8 Thompson
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 15--15
-\OT1/ptm/m/n/8 sam-pling+dropout
+[]|\OT1/ptm/m/n/8 Thompson sam-
  []
 
 
@@ -735,41 +716,16 @@ Underfull \hbox (badness 10000) in paragraph at lines 16--16
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 16--16
-\OT1/ptm/m/n/8 greedy+dropout
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 18--18
-[]|\OT1/ptm/m/n/8 Pivotal+dropout
- []
-
-
 Underfull \hbox (badness 10000) in paragraph at lines 19--19
 []|\OT1/ptm/m/n/8 Tail-aware+dropout
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 21--21
+Underfull \hbox (badness 10000) in paragraph at lines 20--20
 []|\OT1/ptm/m/n/8 Learn-then-
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 21--21
-\OT1/ptm/m/n/8 commit+dropout
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 24--24
-[]|\OT1/ptm/m/n/8 Info-greedy+dropout
- []
-
-) [25] [26] (./tables/limitations.tex
-Underfull \hbox (badness 1400) in paragraph at lines 13--14
-\OT1/ptm/m/n/8 and the near-dead con-tainer is never
- []
-
-
+) [18] [19] [20] (./tables/limitations.tex
 Underfull \hbox (badness 10000) in paragraph at lines 14--14
 []|\OT1/ptm/m/n/8 Calibration-optimal vs.
  []
@@ -794,82 +750,16 @@ Underfull \hbox (badness 1609) in paragraph at lines 24--25
 []|\OT1/ptm/m/n/8 preliminary sup-port-ing ev-i-dence only;
  []
 
-) [27]
-Underfull \hbox (badness 2608) in paragraph at lines 1181--1191
-\OT1/ptm/m/n/11 re-play by \OT1/pcr/m/n/11 experiments/paper_experiments.py \OT
-1/ptm/m/n/11 (\OT1/pcr/m/n/11 replay_v3\OT1/ptm/m/n/11 , \OT1/pcr/m/n/11 replay
-_calcost\OT1/ptm/m/n/11 ); statis-tics by
- []
 
-(./tables/evidence.tex
-LaTeX Font Info:    Trying to load font information for OMS+pcr on input line 1
-5.
+LaTeX Warning: Float too large for page by 19.91435pt on input line 30.
 
-(/usr/share/texlive/texmf-dist/tex/latex/psnfss/omspcr.fd
-File: omspcr.fd 
 )
-LaTeX Font Info:    Font shape `OMS/pcr/m/n' in size <8> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 15.
-
-Underfull \hbox (badness 10000) in paragraph at lines 16--16
-[]|\OT1/pcr/m/n/8 dt_baseline_static
+Underfull \hbox (badness 1565) in paragraph at lines 976--989
+\OT1/ptm/m/n/11 1.18.1, pan-das 3.0.5 and DT4DDS 1.1.0 (pinned in \OT1/pcr/m/n/
+11 requirements.txt\OT1/ptm/m/n/11 ); the pub-lic data are ENA
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 18--18
-[]|\OT1/pcr/m/n/8 dt_*_rho003.csv $\OMS/cmsy/m/n/8 !$
- []
-
-
-Underfull \hbox (badness 3746) in paragraph at lines 18--19
-[]|\OT1/ptm/m/n/8 DT, qual-i-fies the
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 19--19
-[]|\OT1/pcr/m/n/8 dt_*_r4drop.csv $\OMS/cmsy/m/n/8 !$
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 27--27
-[]|\OT1/pcr/m/n/8 runx \OMS/cmsy/m/n/8 f\OT1/pcr/m/n/8 partial,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 28--28
-[]|\OT1/pcr/m/n/8 D3RA_GEOM=... runx
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 30--30
-[]|\OT1/pcr/m/n/8 dt_\OMS/cmsy/m/n/8 f\OT1/pcr/m/n/8 homog,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 32--32
-[]|\OT1/pcr/m/n/8 paper_experiments.py
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 33--33
-[]|\OT1/pcr/m/n/8 paper_experiments.py
- []
-
-
-Overfull \hbox (2.76848pt too wide) in paragraph at lines 10--39
- [][] 
- []
-
-) [28]
-
-LaTeX Warning: Text page 29 contains only floats.
-
-[29] [30] (./tables/leak_appendix.tex
-
-LaTeX Font Warning: Font shape `OT1/ptm/m/scit' undefined
-(Font)              using `OT1/ptm/m/it' instead on input line 3.
-
-) [31] (./main.bbl [32] [33])
+[21] (./main.bbl [22] [23])
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -881,45 +771,41 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-[34] (./main.aux)
+[24] [25] (./main.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 16092 strings out of 476106
- 326483 string characters out of 5793933
- 1957975 words of memory out of 5000000
- 37740 multiletter control sequences out of 15000+600000
- 612376 words of font info for 142 fonts, out of 8000000 for 9000
+ 16047 strings out of 476106
+ 324791 string characters out of 5793933
+ 1978975 words of memory out of 5000000
+ 37717 multiletter control sequences out of 15000+600000
+ 612347 words of font info for 142 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
- 84i,14n,87p,1291b,825s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,14n,87p,1295b,825s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></us
-r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmex9.pfb></usr/
-share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/
-texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive
-/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-
-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fo
-nts/type1/public/amsfonts/cm/cmmi9.pfb></usr/share/texlive/texmf-dist/fonts/typ
-e1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
-ic/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfo
-nts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/c
-mr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb>
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/
-share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/t
-exlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/
-texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-d
-ist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texlive/texmf-dist/fon
-ts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/texlive/texmf-dist/font
-s/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/t
-imes/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmbi8a.pf
-b></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/t
-exlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (34 pages, 530722 bytes).
+r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/shar
+e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texli
+ve/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/share/texlive/texmf-dist/
+fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/t
+ype1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
+lic/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsf
+onts/cm/cmr9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/
+cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.
+pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></u
+sr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/shar
+e/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share
+/texlive/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texm
+f-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/ty
+pe1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/
+utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on main.pdf (25 pages, 375103 bytes).
 PDF statistics:
- 386 PDF objects out of 1000 (max. 8388607)
- 225 compressed objects within 3 object streams
+ 235 PDF objects out of 1000 (max. 8388607)
+ 143 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
- 33 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 18 words of extra memory for PDF output out of 10000 (max. 10000000)
 

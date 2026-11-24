@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.11.5)  24 NOV 2026 04:22
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.11.5)  24 NOV 2026 04:24
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1277,38 +1277,38 @@ Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: float package is loaded.
 Package caption Info: End \AtBeginDocument code.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 14.4pt on input line 78.
+(Font)              scaled to size 14.4pt on input line 79.
 LaTeX Font Info:    Trying to load font information for T1+LinuxBiolinumT-TLF o
-n input line 78.
+n input line 79.
 
 (/usr/share/texlive/texmf-dist/tex/latex/libertine/T1LinuxBiolinumT-TLF.fd
 File: T1LinuxBiolinumT-TLF.fd 2017/03/20 (autoinst) Font definitions for T1/Lin
 uxBiolinumT-TLF.
 )
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 14.4pt on input line 78.
+(Font)              scaled to size 14.4pt on input line 79.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `LinuxBiolinumT-TLF' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/b/n' will be
-(Font)              scaled to size 14.4pt on input line 78.
+(Font)              scaled to size 14.4pt on input line 79.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 10.95pt on input line 78.
+(Font)              scaled to size 10.95pt on input line 79.
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 10.95pt on input line 78.
+(Font)              scaled to size 10.95pt on input line 79.
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 9.0pt on input line 78.
+(Font)              scaled to size 9.0pt on input line 79.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 9.0pt on input line 78.
+(Font)              scaled to size 9.0pt on input line 79.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 9.0pt on input line 78.
+(Font)              scaled to size 9.0pt on input line 79.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `LinuxLibertineT-TLF' (encoding: OT1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 7.3pt on input line 78.
+(Font)              scaled to size 7.3pt on input line 79.
 
 (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
@@ -1317,48 +1317,51 @@ File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
 LaTeX Font Info:    Trying to load font information for TS1+LinuxLibertineT-TLF
- on input line 78.
+ on input line 79.
 
 (/usr/share/texlive/texmf-dist/tex/latex/libertine/TS1LinuxLibertineT-TLF.fd
 File: TS1LinuxLibertineT-TLF.fd 2017/03/20 (autoinst) Font definitions for TS1/
 LinuxLibertineT-TLF.
 )
 LaTeX Font Info:    Font shape `TS1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 9.0pt on input line 78.
+(Font)              scaled to size 9.0pt on input line 79.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `LinuxLibertineT-TLF' (encoding: TS1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
-(Font)              scaled to size 9.0pt on input line 78.
+(Font)              scaled to size 9.0pt on input line 79.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 9.0pt on input line 78.
+(Font)              scaled to size 9.0pt on input line 79.
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 10.0pt on input line 84.
+(Font)              scaled to size 10.0pt on input line 85.
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/b/n' will be
-(Font)              scaled to size 10.0pt on input line 84.
+(Font)              scaled to size 10.0pt on input line 85.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 10.0pt on input line 93.
+(Font)              scaled to size 10.0pt on input line 94.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
-(Font)              scaled to size 10.0pt on input line 105.
+(Font)              scaled to size 10.0pt on input line 106.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 10.0pt on input line 105.
+(Font)              scaled to size 10.0pt on input line 106.
 
 [1.1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texm
 f-dist/fonts/enc/dvips/libertine/lbtn_25tcsq.enc}{/usr/share/texlive/texmf-dist
 /fonts/enc/dvips/libertine/lbtn_76gpa5.enc}{/usr/share/texlive/texmf-dist/fonts
 /enc/dvips/libertine/lbtn_naooyc.enc}{/usr/share/texlive/texmf-dist/fonts/enc/d
 vips/libertine/lbtn_nh77jq.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/l
-ibertine/lbtn_7grukw.enc}] [2.2{/usr/share/texlive/texmf-dist/fonts/enc/dvips/l
-ibertine/lbtn_oexx6f.enc}]
+ibertine/lbtn_7grukw.enc}]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [2.2{/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_oexx6f.enc}]
+
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [3.3]
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
-(Font)              scaled to size 8.0pt on input line 270.
+(Font)              scaled to size 8.0pt on input line 271.
 
 
-Class acmart Warning: A possible image without description on input line 276.
+Class acmart Warning: A possible image without description on input line 277.
 
 (./tables/notation.tex
 LaTeX Font Info:    Trying to load font information for T1+zi4 on input line 3.
@@ -1377,37 +1380,27 @@ LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
 (Font)              scaled to size 7.0pt on input line 5.
 LaTeX Font Info:    Font shape `T1/zi4/m/n' will be
 (Font)              scaled to size 7.0pt on input line 11.
-)
-Underfull \vbox (badness 1147) has occurred while \output is active []
-
- [4.4]
+) [4.4]
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 7.3pt on input line 312.
+(Font)              scaled to size 7.3pt on input line 313.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 5.5pt on input line 312.
-
-[5.5{/usr/share/texlive/texmf-dist/fonts/enc/dvips/inconsolata/i4-t1-4.enc}]
-[6.6] [7.7]
+(Font)              scaled to size 5.5pt on input line 313.
+ [5.5{/usr/share/texlive/texmf-dist/fonts/enc/dvips/inconsolata/i4-t1-4.enc}] [
+6.6]
+[7.7]
 LaTeX Font Info:    Font shape `T1/zi4/m/n' will be
-(Font)              scaled to size 10.0pt on input line 461.
- [8.8] [9.9] (./tables/safety.tex) (./tables/r4_actual.tex
+(Font)              scaled to size 10.0pt on input line 462.
+ [8.8] [9.9] (./tables/safety.tex) [10.10] (./tables/r4_actual.tex
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/it' will be
 (Font)              scaled to size 9.0pt on input line 3.
 )
-Underfull \vbox (badness 6428) has occurred while \output is active []
-
- [10.10]
 (./tables/r9_baselines.tex
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/b/n' will be
 (Font)              scaled to size 9.0pt on input line 3.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
 (Font)              scaled to size 7.0pt on input line 9.
-)
-Underfull \vbox (badness 1629) has occurred while \output is active []
-
- [11.11]
-(./tables/r6_likelihood.tex [12.12]) (./tables/r4_ablation.tex)
-(./tables/dt_main.tex
+) [11.11] [12.12] (./tables/r6_likelihood.tex)
+(./tables/r4_ablation.tex) (./tables/dt_main.tex
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/b/it' in size <9> not ava
 ilable
 (Font)              Font shape `T1/LinuxBiolinumT-TLF/b/sl' tried instead on in
@@ -1418,15 +1411,15 @@ LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/b/sl' will be
 <figures/fig_dt_policies.pdf, id=465, 522.27776pt x 168.16031pt>
 File: figures/fig_dt_policies.pdf Graphic file (type pdf)
 <use figures/fig_dt_policies.pdf>
-Package pdftex.def Info: figures/fig_dt_policies.pdf  used on input line 640.
+Package pdftex.def Info: figures/fig_dt_policies.pdf  used on input line 641.
 (pdftex.def)             Requested size: 395.8225pt x 127.44905pt.
 
 
-Class acmart Warning: A possible image without description on input line 653.
+Class acmart Warning: A possible image without description on input line 654.
 
 [13.13] [14.14] [15.15] [16.16 <./figures/fig_dt_policies.pdf>]
 (./tables/r4_tails.tex)
-Underfull \vbox (badness 4832) has occurred while \output is active []
+Underfull \vbox (badness 6396) has occurred while \output is active []
 
  [17.17]
 (./tables/replay.tex) [18.18] (./tables/r4_calcost.tex) [19.19]
@@ -1440,9 +1433,16 @@ Underfull \hbox (badness 10000) in paragraph at lines 20--20
 []|\T1/LinuxLibertineT-TLF/m/n/7 (+8) Learn-then-commit+dropout
  []
 
-) [20.20] [21.21] [22.22]
 
-Class acmart Warning: A possible image without description on input line 955.
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [20.20])
+[21.21]
+Underfull \vbox (badness 1377) has occurred while \output is active []
+
+ [22.22]
+
+Class acmart Warning: A possible image without description on input line 956.
 
 (./tables/limitations.tex
 Underfull \hbox (badness 7963) in paragraph at lines 11--11
@@ -1474,14 +1474,14 @@ Underfull \hbox (badness 5756) in paragraph at lines 26--26
  []
 
 ) [23.23]
-Underfull \hbox (badness 10000) in paragraph at lines 994--1007
+Underfull \hbox (badness 10000) in paragraph at lines 995--1008
 \T1/zi4/m/n/10 experiments/dt_experiments.py\T1/LinuxLibertineT-TLF/m/n/10 (+20
 ) , the re-play by \T1/zi4/m/n/10 experiments/paper_experiments.py\T1/LinuxLibe
 rtineT-TLF/m/n/10 (+20) ;
  []
 
 
-Underfull \hbox (badness 4726) in paragraph at lines 994--1007
+Underfull \hbox (badness 4726) in paragraph at lines 995--1008
 \T1/LinuxLibertineT-TLF/m/n/10 (+20) sta-tis-tics by \T1/zi4/m/n/10 dt_analysis
 .py\T1/LinuxLibertineT-TLF/m/n/10 (+20) , \T1/zi4/m/n/10 r4_analysis.py \T1/Lin
 uxLibertineT-TLF/m/n/10 (+20) and \T1/zi4/m/n/10 r9_analysis.py\T1/LinuxLiberti
@@ -1489,14 +1489,14 @@ neT-TLF/m/n/10 (+20) , which share one
  []
 
 
-Underfull \hbox (badness 7558) in paragraph at lines 994--1007
+Underfull \hbox (badness 7558) in paragraph at lines 995--1008
 \T1/LinuxLibertineT-TLF/m/n/10 (+20) cluster-bootstrap mod-ule; ta-bles and fig
 -ures by \T1/zi4/m/n/10 make_tables.py\T1/LinuxLibertineT-TLF/m/n/10 (+20) , \T
 1/zi4/m/n/10 make_r4_tables.py\T1/LinuxLibertineT-TLF/m/n/10 (+20) ,
  []
 
 
-Underfull \hbox (badness 4254) in paragraph at lines 994--1007
+Underfull \hbox (badness 4254) in paragraph at lines 995--1008
 \T1/zi4/m/n/10 make_r9_tables.py \T1/LinuxLibertineT-TLF/m/n/10 (+20) and \T1/z
 i4/m/n/10 make_dt_figures.py\T1/LinuxLibertineT-TLF/m/n/10 (+20) , which read o
 nly com-mit-ted re-sult files.
@@ -1514,77 +1514,69 @@ bertineT-TLF/m/n/8 (+20) : $\OML/nxlmi/m/it/8 ^^[[]$ \T1/LinuxLibertineT-TLF/m/
 n/8 (+20) un-used; con-tainer
  []
 
-) (./tables/supp_infogreedy.tex)
-Underfull \vbox (badness 1603) has occurred while \output is active []
+)
+Underfull \vbox (badness 2653) has occurred while \output is active []
 
  [26.26]
-(./tables/r4_uncond.tex)
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [27.27]
+(./tables/supp_infogreedy.tex) [27.27] (./tables/r4_uncond.tex)
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 1096.
+(hyperref)                removing `math shift' on input line 1097.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\rho' on input line 1096.
+(hyperref)                removing `\rho' on input line 1097.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `subscript' on input line 1096.
+(hyperref)                removing `subscript' on input line 1097.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 1096.
+(hyperref)                removing `math shift' on input line 1097.
 
 (./tables/r4_calib.tex)
 <figures/fig_dt_calibration.pdf, id=703, 497.41081pt x 150.40694pt>
 File: figures/fig_dt_calibration.pdf Graphic file (type pdf)
 <use figures/fig_dt_calibration.pdf>
 Package pdftex.def Info: figures/fig_dt_calibration.pdf  used on input line 111
-8.
+9.
 (pdftex.def)             Requested size: 387.90434pt x 117.29398pt.
 
 
-Class acmart Warning: A possible image without description on input line 1128.
+Class acmart Warning: A possible image without description on input line 1129.
 
 [28.28]
-Underfull \vbox (badness 3029) has occurred while \output is active []
-
- [29.29 <./figures/fig_dt_calibration.pdf>]
-<figures/fig_forecast.pdf, id=766, 247.72362pt x 150.6221pt>
+<figures/fig_forecast.pdf, id=712, 247.72362pt x 150.6221pt>
 File: figures/fig_forecast.pdf Graphic file (type pdf)
 <use figures/fig_forecast.pdf>
-Package pdftex.def Info: figures/fig_forecast.pdf  used on input line 1153.
+Package pdftex.def Info: figures/fig_forecast.pdf  used on input line 1154.
 (pdftex.def)             Requested size: 237.49591pt x 144.4048pt.
 
 
-Class acmart Warning: A possible image without description on input line 1160.
+Class acmart Warning: A possible image without description on input line 1161.
 
-<figures/fig_dt_sweep.pdf, id=768, 273.96347pt x 155.72171pt>
+[29.29]
+<figures/fig_dt_sweep.pdf, id=720, 273.96347pt x 155.72171pt>
 File: figures/fig_dt_sweep.pdf Graphic file (type pdf)
 <use figures/fig_dt_sweep.pdf>
-Package pdftex.def Info: figures/fig_dt_sweep.pdf  used on input line 1174.
+Package pdftex.def Info: figures/fig_dt_sweep.pdf  used on input line 1175.
 (pdftex.def)             Requested size: 237.49591pt x 134.99681pt.
 
-Class acmart Warning: A possible image without description on input line 1180.
 
+Class acmart Warning: A possible image without description on input line 1181.
 
-Underfull \vbox (badness 3108) has occurred while \output is active []
-
- [30.30 <./figures/fig_forecast.pdf>] (./tables/r4_cap.tex) (./tables/r4_fail.t
-ex)
-(./tables/r4_geoms.tex) [31.31 <./figures/fig_dt_sweep.pdf>]
-(./tables/leak_appendix.tex) [32.32]
-Underfull \hbox (badness 2875) in paragraph at lines 1232--1263
+[30.30 <./figures/fig_dt_calibration.pdf> <./figures/fig_forecast.pdf>]
+(./tables/r4_cap.tex) (./tables/r4_fail.tex) (./tables/r4_geoms.tex) [31.31 <./
+figures/fig_dt_sweep.pdf>] (./tables/leak_appendix.tex) [32.32]
+Underfull \hbox (badness 2875) in paragraph at lines 1233--1264
 \T1/LinuxLibertineT-TLF/b/n/10 (+20) Deviations. \T1/LinuxLibertineT-TLF/m/n/10
  (+20) The pro-to-col and ev-ery change made af-ter it was fixed are recorded i
 n
  []
 
 
-Underfull \hbox (badness 1127) in paragraph at lines 1232--1263
+Underfull \hbox (badness 1127) in paragraph at lines 1233--1264
 \T1/zi4/m/n/10 dt_protocol.yaml\T1/LinuxLibertineT-TLF/m/n/10 (+20) . (i) The p
 lanned Cus-tom-Ar-ray sce-nario was re-placed, be-fore any pol-
  []
@@ -1721,7 +1713,7 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 Here is how much of TeX's memory you used:
  34763 strings out of 476106
  637736 string characters out of 5793933
- 1985975 words of memory out of 5000000
+ 1986975 words of memory out of 5000000
  54683 multiletter control sequences out of 15000+600000
  829637 words of font info for 807 fonts, out of 8000000 for 9000
  220 hyphenation exceptions out of 8191
@@ -1743,7 +1735,7 @@ re/texlive/texmf-dist/fonts/type1/public/newtx/NewTXMI7.pfb></usr/share/texlive
 onts/type1/public/newtx/txmiaX.pfb></usr/share/texlive/texmf-dist/fonts/type1/p
 ublic/newtx/txsym.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/newtx/t
 xsys.pfb>
-Output written on main.pdf (38 pages, 879252 bytes).
+Output written on main.pdf (38 pages, 879456 bytes).
 PDF statistics:
  1088 PDF objects out of 1200 (max. 8388607)
  912 compressed objects within 10 object streams

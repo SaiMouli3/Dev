@@ -20,8 +20,6 @@
 \citation{heckel2019characterization,chen2020quantifying,gimpel2023digital}
 \citation{gimpel2023digital}
 \citation{shomorony2021dna,weinberger2022dna,lenz2020coding}
-\@writefile{toc}{\contentsline {section}{\numberline {2}Background and Related Work}{2}{section.2}\protected@file@percent }
-\newlabel{sec:related}{{2}{2}{Background and Related Work}{section.2}{}}
 \citation{barlev2025cover}
 \citation{gruica2024combinatorial}
 \citation{cao2025optimizing}
@@ -31,6 +29,8 @@
 \citation{kong2026coverage}
 \citation{bertuzzo2025coverage}
 \citation{levy2026expected}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Background and Related Work}{3}{section.2}\protected@file@percent }
+\newlabel{sec:related}{{2}{3}{Background and Related Work}{section.2}{}}
 \citation{loose2016real,payne2021readfish,weilguny2023dynamic}
 \citation{lopez2019dna}
 \citation{thompson1933likelihood,russo2018tutorial}
@@ -126,10 +126,10 @@
 \newlabel{sec:res-robust}{{6.7}{20}{Robustness}{subsection.6.7}{}}
 \newlabel{sec:res-fail}{{6.7}{20}{Robustness}{subsection.6.7}{}}
 \newlabel{sec:res-uncond}{{6.7}{20}{Robustness}{subsection.6.7}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.8}Reads are not the only cost}{20}{subsection.6.8}\protected@file@percent }
-\newlabel{sec:res-cost}{{6.8}{20}{Reads are not the only cost}{subsection.6.8}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {11}{\ignorespaces Reads are not the only cost. Two further charging models applied to the same 300 baseline retrievals (30 syntheses $\times $ 10 read orders) as Tables\nonbreakingspace \ref {tab:actual} and\nonbreakingspace \ref {tab:dt}; the reads-only model is the Reads column itself. A multiplexed run charges 50 read-equivalents per batch of 50 reads and 500 per container library preparation; a separate sequencing run per batch charges 2{,}000 per batch. Costs in read-equivalents (thousands). Sw.: mean container switches per retrieval, recorded only by the runs with the dropout model and (for round-robin) by its bit-identical $\rho _U{=}0.03$ re-run; ``--'': not recorded on these retrievals.}}{21}{table.caption.14}\protected@file@percent }
 \newlabel{tab:r4cost}{{11}{21}{Reads are not the only cost. Two further charging models applied to the same 300 baseline retrievals (30 syntheses $\times $ 10 read orders) as Tables~\ref {tab:actual} and~\ref {tab:dt}; the reads-only model is the Reads column itself. A multiplexed run charges 50 read-equivalents per batch of 50 reads and 500 per container library preparation; a separate sequencing run per batch charges 2{,}000 per batch. Costs in read-equivalents (thousands). Sw.: mean container switches per retrieval, recorded only by the runs with the dropout model and (for round-robin) by its bit-identical $\rho _U{=}0.03$ re-run; ``--'': not recorded on these retrievals}{table.caption.14}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.8}Reads are not the only cost}{21}{subsection.6.8}\protected@file@percent }
+\newlabel{sec:res-cost}{{6.8}{21}{Reads are not the only cost}{subsection.6.8}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {7}Discussion}{21}{section.7}\protected@file@percent }
 \newlabel{sec:disc}{{7}{21}{Discussion}{section.7}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Why stopping gains more than allocation}{21}{subsection.7.1}\protected@file@percent }
@@ -140,10 +140,10 @@
 \@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Practical recommendation derived from Section\nonbreakingspace \ref {sec:results}.}}{23}{figure.caption.15}\protected@file@percent }
 \newlabel{fig:recommend}{{3}{23}{Practical recommendation derived from Section~\ref {sec:results}}{figure.caption.15}{}}
 \newlabel{sec:wetlab}{{7.3}{23}{What helps, and whom}{figure.caption.15}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {8}Limitations and Threats to Validity}{23}{section.8}\protected@file@percent }
-\newlabel{sec:limits}{{8}{23}{Limitations and Threats to Validity}{section.8}{}}
 \citation{gimpel2023prjeb65931}
 \citation{technion2025dnaformerreads,barlev2024binned}
+\@writefile{toc}{\contentsline {section}{\numberline {8}Limitations and Threats to Validity}{24}{section.8}\protected@file@percent }
+\newlabel{sec:limits}{{8}{24}{Limitations and Threats to Validity}{section.8}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {9}Reproducibility and Availability}{24}{section.9}\protected@file@percent }
 \newlabel{sec:repro}{{9}{24}{Reproducibility and Availability}{section.9}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {10}Conclusion}{24}{section.10}\protected@file@percent }
@@ -178,29 +178,29 @@
 \newlabel{tab:literature_comparison}{{13}{26}{Positioning against the closest prior work. Y: yes; N: no; P: partial; I: implicit (expected reads until decodability analysed, no operational stopping rule); --: not stated. ``Containers'' are storage nodes in \cite {leong2012distributed} and sampling sources in \cite {bubeck2013optimal}}{table.caption.17}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {A}Positioning against prior work}{26}{appendix.A}\protected@file@percent }
 \newlabel{supp:lit}{{A}{26}{Positioning against prior work}{appendix.A}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {B}Operational specification of the retrieval loop}{26}{appendix.B}\protected@file@percent }
-\newlabel{supp:alg}{{B}{26}{Operational specification of the retrieval loop}{appendix.B}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {14}{\ignorespaces Operational specification of the retrieval loop and of every allocation rule. All rules share the loop, the batch size, the probe, the tie-breaking and the stopping test; they differ only in the score $\sigma _j$ and in which point value $\tilde  \theta _j$ of the posterior they use. $R_j$: reads spent on container $j$; $U_j$: fragments of container $j$ verified from its own reads; $n_j$: fragments stored in $j$; $h_{ij}$: hazard that unrecovered fragment $i$ in $j$ becomes decodable within the next batch; $\mathcal  O$: fragments of stripes that still need fragments.}}{27}{table.caption.18}\protected@file@percent }
 \newlabel{tab:algorithms}{{14}{27}{Operational specification of the retrieval loop and of every allocation rule. All rules share the loop, the batch size, the probe, the tie-breaking and the stopping test; they differ only in the score $\sigma _j$ and in which point value $\tilde \theta _j$ of the posterior they use. $R_j$: reads spent on container $j$; $U_j$: fragments of container $j$ verified from its own reads; $n_j$: fragments stored in $j$; $h_{ij}$: hazard that unrecovered fragment $i$ in $j$ becomes decodable within the next batch; $\mathcal O$: fragments of stripes that still need fragments}{table.caption.18}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {B}Operational specification of the retrieval loop}{27}{appendix.B}\protected@file@percent }
+\newlabel{supp:alg}{{B}{27}{Operational specification of the retrieval loop}{appendix.B}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {C}Information-greedy allocation}{27}{appendix.C}\protected@file@percent }
 \newlabel{supp:info}{{C}{27}{Information-greedy allocation}{appendix.C}{}}
+\citation{gneiting2007strictly}
 \@writefile{lot}{\contentsline {table}{\numberline {15}{\ignorespaces Information-greedy (Bayesian experimental design) results, removed from the main tables. Paired relative difference in mean reads against round-robin with verified stopping on jointly successful retrievals (cluster-bootstrap 95\% CI). $^{s}$: mean over successful retrievals. Thousands of reads.}}{28}{table.caption.19}\protected@file@percent }
 \newlabel{tab:suppinfo}{{15}{28}{Information-greedy (Bayesian experimental design) results, removed from the main tables. Paired relative difference in mean reads against round-robin with verified stopping on jointly successful retrievals (cluster-bootstrap 95\% CI). $^{s}$: mean over successful retrievals. Thousands of reads}{table.caption.19}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {16}{\ignorespaces One failed container: cost conditional on success and over all attempts (300 retrievals per row, 72k-read stream). Every policy has the same success probability, so the conditional saving does not buy a better chance of recovery, and failures dominate the unconditional mean. Thousands of reads.}}{28}{table.caption.20}\protected@file@percent }
-\newlabel{tab:uncond}{{16}{28}{One failed container: cost conditional on success and over all attempts (300 retrievals per row, 72k-read stream). Every policy has the same success probability, so the conditional saving does not buy a better chance of recovery, and failures dominate the unconditional mean. Thousands of reads}{table.caption.20}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {D}One failed container: conditional and unconditional cost}{28}{appendix.D}\protected@file@percent }
 \newlabel{supp:uncond}{{D}{28}{One failed container: conditional and unconditional cost}{appendix.D}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {E}Calibration of the posterior and re-selection of $\rho _U$}{28}{appendix.E}\protected@file@percent }
 \newlabel{supp:calib}{{E}{28}{Calibration of the posterior and re-selection of $\rho _U$}{appendix.E}{}}
-\citation{gneiting2007strictly}
+\@writefile{lot}{\contentsline {table}{\numberline {16}{\ignorespaces One failed container: cost conditional on success and over all attempts (300 retrievals per row, 72k-read stream). Every policy has the same success probability, so the conditional saving does not buy a better chance of recovery, and failures dominate the unconditional mean. Thousands of reads.}}{29}{table.caption.20}\protected@file@percent }
+\newlabel{tab:uncond}{{16}{29}{One failed container: cost conditional on success and over all attempts (300 retrievals per row, 72k-read stream). Every policy has the same success probability, so the conditional saving does not buy a better chance of recovery, and failures dominate the unconditional mean. Thousands of reads}{table.caption.20}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {17}{\ignorespaces Re-run of the $\rho _U$ selection with the prior actually used in the policy runs ($s{=}0.5$) and an extended grid: coverage of the 90\% credible interval of $\theta ^\ast _j$, overall and per container. No value in the grid reaches 0.90 overall, and no value covers the near-dead container.}}{29}{table.caption.21}\protected@file@percent }
 \newlabel{tab:r4calib}{{17}{29}{Re-run of the $\rho _U$ selection with the prior actually used in the policy runs ($s{=}0.5$) and an extended grid: coverage of the 90\% credible interval of $\theta ^\ast _j$, overall and per container. No value in the grid reaches 0.90 overall, and no value covers the near-dead container}{table.caption.21}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Is the posterior over container efficiency calibrated? Each point or bar is the fraction of cases in which the 90\% credible interval for $\theta _j$ contained the target $\theta ^\ast _j$; a calibrated posterior would sit on the dotted line at 0.90. \textbf  {(a)} Selection replicates 1000--1009, one curve per container, against the beta-binomial correlation $\rho _U$; the thick black curve is the mean over containers, which is what the selection rule maximised. \textbf  {(b)} Held-out replicates 0--29 at the selected $\rho _U{=}0.1$, per container. Five containers are covered perfectly and the near-dead one is covered in 0.20 of cases at this $\rho _U$ (0.00--0.03 across the extended grid of Table\nonbreakingspace \ref {tab:r4calib}).}}{29}{figure.caption.22}\protected@file@percent }
-\newlabel{fig:calib}{{4}{29}{Is the posterior over container efficiency calibrated? Each point or bar is the fraction of cases in which the 90\% credible interval for $\theta _j$ contained the target $\theta ^\ast _j$; a calibrated posterior would sit on the dotted line at 0.90. \textbf {(a)} Selection replicates 1000--1009, one curve per container, against the beta-binomial correlation $\rho _U$; the thick black curve is the mean over containers, which is what the selection rule maximised. \textbf {(b)} Held-out replicates 0--29 at the selected $\rho _U{=}0.1$, per container. Five containers are covered perfectly and the near-dead one is covered in 0.20 of cases at this $\rho _U$ (0.00--0.03 across the extended grid of Table~\ref {tab:r4calib})}{figure.caption.22}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {F}Completion forecast}{29}{appendix.F}\protected@file@percent }
+\newlabel{supp:forecast}{{F}{29}{Completion forecast}{appendix.F}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Is the posterior over container efficiency calibrated? Each point or bar is the fraction of cases in which the 90\% credible interval for $\theta _j$ contained the target $\theta ^\ast _j$; a calibrated posterior would sit on the dotted line at 0.90. \textbf  {(a)} Selection replicates 1000--1009, one curve per container, against the beta-binomial correlation $\rho _U$; the thick black curve is the mean over containers, which is what the selection rule maximised. \textbf  {(b)} Held-out replicates 0--29 at the selected $\rho _U{=}0.1$, per container. Five containers are covered perfectly and the near-dead one is covered in 0.20 of cases at this $\rho _U$ (0.00--0.03 across the extended grid of Table\nonbreakingspace \ref {tab:r4calib}).}}{30}{figure.caption.22}\protected@file@percent }
+\newlabel{fig:calib}{{4}{30}{Is the posterior over container efficiency calibrated? Each point or bar is the fraction of cases in which the 90\% credible interval for $\theta _j$ contained the target $\theta ^\ast _j$; a calibrated posterior would sit on the dotted line at 0.90. \textbf {(a)} Selection replicates 1000--1009, one curve per container, against the beta-binomial correlation $\rho _U$; the thick black curve is the mean over containers, which is what the selection rule maximised. \textbf {(b)} Held-out replicates 0--29 at the selected $\rho _U{=}0.1$, per container. Five containers are covered perfectly and the near-dead one is covered in 0.20 of cases at this $\rho _U$ (0.00--0.03 across the extended grid of Table~\ref {tab:r4calib})}{figure.caption.22}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Reliability of the completion forecast on the digital twin: forecast probability of finishing within the remaining budget against the observed frequency of finishing, pooled over checkpoints at 30/50/70/85\% of the budget (10 equal-width bins, bins with fewer than five checkpoints dropped). A calibrated forecast would lie on the diagonal; both curves lie below it, so both are over-confident, and both have a worse Brier score than a constant forecast at the base rate.}}{30}{figure.caption.23}\protected@file@percent }
 \newlabel{fig:forecast}{{5}{30}{Reliability of the completion forecast on the digital twin: forecast probability of finishing within the remaining budget against the observed frequency of finishing, pooled over checkpoints at 30/50/70/85\% of the budget (10 equal-width bins, bins with fewer than five checkpoints dropped). A calibrated forecast would lie on the diagonal; both curves lie below it, so both are over-confident, and both have a worse Brier score than a constant forecast at the base rate}{figure.caption.23}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {F}Completion forecast}{30}{appendix.F}\protected@file@percent }
-\newlabel{supp:forecast}{{F}{30}{Completion forecast}{appendix.F}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {G}Severity sweep}{30}{appendix.G}\protected@file@percent }
 \newlabel{supp:sweep}{{G}{30}{Severity sweep}{appendix.G}{}}
 \citation{barlev2025deep,technion2025dnaformerreads}

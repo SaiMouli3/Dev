@@ -188,7 +188,7 @@ def extra_text(ex):
 
 if __name__ == "__main__":
     T = tok()
-    files = [MAN / "main.tex", MAN / "supplement.tex"] + sorted((MAN / "tables").glob("*.tex"))
+    files = [f for f in (MAN / "main.tex", MAN / "supplement.tex") if f.exists()] + sorted((MAN / "tables").glob("*.tex"))
     missing = set()
     for f in files:
         s = f.read_text()

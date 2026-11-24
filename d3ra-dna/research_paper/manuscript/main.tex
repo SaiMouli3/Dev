@@ -1,21 +1,23 @@
-% D3RA-DNA manuscript.  Build: pdflatex main, bibtex main, pdflatex supplement, bibtex supplement,
-% pdflatex main (twice); tables and figures in supplement.tex are referenced through xr.  Official IEEEtran class (v1.8b, CTAN), following bare_conf.tex.
-\documentclass[conference,onecolumn,11pt]{IEEEtran}
-\IEEEoverridecommandlockouts
-\usepackage{cite}
-\usepackage{amsmath,amssymb,amsfonts}
+% D3RA-DNA manuscript in the ACM journal format (acmart, acmsmall: single column, 6.75 x 10 in pages).
+% Build: pdflatex main, bibtex main, pdflatex main (twice).  The IEEE version is kept in ieee_version/.
+\documentclass[acmsmall,screen]{acmart}
+% Venue metadata (journal, volume, DOI, rights) is assigned by ACM after acceptance; until then the ACM
+% reference block and the running headers that would show placeholder volume numbers are switched off.
+\setcopyright{none}
+\settopmatter{printacmref=false}
+\renewcommand\footnotetextcopyrightpermission[1]{}
 \usepackage{graphicx}
 \usepackage{textcomp}
-\usepackage{url}
-\usepackage{xcolor}
-\usepackage{booktabs}
 \usepackage{multirow}
 \usepackage{array}
 \usepackage{enumitem}
 \usepackage{tikz}
-\usepackage{xr}
-\externaldocument[S-]{supplement}
 \usetikzlibrary{arrows.meta,positioning,fit,shapes.geometric,calc}
+\usepackage{adjustbox}
+\usepackage{etoolbox}
+% the tables were laid out for a wider text block; scale any table wider than the ACM text block to fit
+\BeforeBeginEnvironment{tabular}{\begin{adjustbox}{max width=\linewidth}}
+\AfterEndEnvironment{tabular}{\end{adjustbox}}
 \newcommand{\E}{\mathbb{E}}
 \newcommand{\Prob}{\mathbb{P}}
 \graphicspath{{figures/}}
@@ -24,22 +26,28 @@
 
 \begin{document}
 
-\title{Verified Stopping Dominates Adaptive Allocation in Multi-Container DNA Storage: A Computational Study on a Digital Twin and Real Read Streams}
+\title[Verified Stopping Dominates Adaptive Allocation in Multi-Container DNA Storage]{Verified Stopping Dominates Adaptive Allocation in Multi-Container DNA Storage: A Computational Study on a Digital Twin and Real Read Streams}
 
-\author{\IEEEauthorblockN{Sai Mouli}
-\IEEEauthorblockA{saimouli12345678@gmail.com}
-% Institutional affiliation: to be confirmed by the author.
-\and
-\IEEEauthorblockN{J Geetha}
-\IEEEauthorblockA{geetha@msrit.edu}
-% Institutional affiliation: to be confirmed by the author.
-\and
-\IEEEauthorblockN{Pruthviraj M. Savanur}
-\IEEEauthorblockA{rajsavanur2003@gmail.com}
-% Institutional affiliation: to be confirmed by the author.
-}
+% ACM requires an affiliation for every author; the institutions are to be confirmed by the authors.
+\author{Sai Mouli}
+\email{saimouli12345678@gmail.com}
+\affiliation{%
+  \institution{[Affiliation to be confirmed]}
+  \country{[Country to be confirmed]}}
 
-\maketitle
+\author{J Geetha}
+\email{geetha@msrit.edu}
+\affiliation{%
+  \institution{[Affiliation to be confirmed]}
+  \country{[Country to be confirmed]}}
+
+\author{Pruthviraj M. Savanur}
+\email{rajsavanur2003@gmail.com}
+\affiliation{%
+  \institution{[Affiliation to be confirmed]}
+  \country{[Country to be confirmed]}}
+
+\renewcommand{\shortauthors}{Mouli, Geetha and Savanur}
 
 \begin{abstract}
 Retrieving an erasure-coded DNA archive spread over several separately handled containers involves two
@@ -58,9 +66,17 @@ beat round-robin by more than a few per cent; larger gains required dropout-domi
 prior calibrated on held-out reads ($-$16\% per retrieval, repaid after about 17 retrievals).
 \end{abstract}
 
-\begin{IEEEkeywords}
-DNA data storage, adaptive sequencing, verified stopping, erasure coding, coverage depth, digital twin, Bayesian calibration, multi-armed bandits, reproducibility
-\end{IEEEkeywords}
+% ACM Computing Classification System; to be checked with the ACM CCS tool (https://dl.acm.org/ccs)
+\ccsdesc[500]{Information systems~Information storage systems}
+\ccsdesc[300]{Hardware~Emerging technologies}
+\ccsdesc[300]{Mathematics of computing~Probability and statistics}
+
+\keywords{DNA data storage, adaptive sequencing, verified stopping, erasure coding, coverage depth, digital twin, Bayesian calibration, multi-armed bandits, reproducibility}
+
+\maketitle
+% plain page numbers until ACM assigns the journal, volume and article number
+\fancypagestyle{acmplain}{\fancyhf{}\fancyfoot[C]{\thepage}\renewcommand{\headrulewidth}{0pt}}
+\pagestyle{acmplain}\thispagestyle{acmplain}
 
 %=====================================================================
 \section{Introduction}
@@ -212,7 +228,7 @@ Strands are reconstructed from noisy reads by trace
 reconstruction~\cite{batu2004reconstructing,srinivasavaradhan2021trellis,sabary2024reconstruction}
 after clustering~\cite{rashtchian2017clustering} or learned models~\cite{barlev2025deep};
 systematic nanopore errors are documented~\cite{delahaye2021sequencing,wick2019performance}.
-Supplementary Table~\ref{S-tab:literature_comparison} positions this work.
+Table~\ref{tab:literature_comparison} positions this work.
 
 \textbf{Relation to prior work.}  Prior DNA-storage work already stops sequencing when the decoder has
 enough information~\cite{lopez2019dna} and verifies decoded data with
@@ -341,7 +357,7 @@ where $\tilde\theta_j$ is chosen by the rule:
 \item \emph{Coverage-greedy}: $\tilde\theta_j$ = posterior mean; reads $\arg\max_j\sum_i h_{ij}$
 over fragments of unfinished stripes.
 \item \emph{Pivotal}: weights each fragment by a normal-approximation sensitivity of its
-stripe's completion probability (details in the supplement).
+stripe's completion probability (details in Appendix~\ref{supp:alg}).
 \item \emph{Thompson sampling}~\cite{thompson1933likelihood,russo2018tutorial}: $\tilde\theta_j$
 drawn from the posterior; coverage score.
 \item \emph{UCB}~\cite{auer2002finite}: $\tilde\theta_j$ = posterior 0.9-quantile.
@@ -354,7 +370,7 @@ then coverage-greedy.
 counts only the 10\% of stripes with the largest remaining need (the bottleneck stripes that
 set the retrieval's length); a heuristic aimed at the q99.
 \end{itemize}
-All rules probe each container with one batch first.  Supplementary Table~\ref{S-tab:algorithms} gives the
+All rules probe each container with one batch first.  Table~\ref{tab:algorithms} gives the
 operational specification of the loop and of every rule --- initialisation, batch size, tie-breaking,
 when the posterior is updated, the stopping test and how an exhausted stream is handled.  The
 \emph{static} family reads fixed
@@ -396,7 +412,7 @@ early-abandonment (futility) rule is disabled in all runs.
 \subsection{Completion forecast}
 The controller also forecasts the probability of finishing within a remaining budget, analytically and by
 posterior simulation.  No policy uses the forecast; it was pre-specified, it is worse than a constant
-forecast at the base rate, and it is reported in Supplementary Section~\ref{S-supp:forecast}.
+forecast at the base rate, and it is reported in Appendix~\ref{supp:forecast}.
 
 %=====================================================================
 \section{Evaluation Methodology}\label{sec:eval}
@@ -474,11 +490,11 @@ replicates (seeds 1000--1009) as the value whose 90\% credible interval covers t
 $\theta^\ast_j$ closest to 90\% of the time.  $\theta^\ast_j$ is the multiplier that best fits the
 container's full recovery curve under the generic model, and the selection used prior sd $s{=}1$
 whereas the policy runs use $s{=}0.5$ (a mismatch identified after the protocol was fixed; see
-Supplementary Section~\ref{S-supp:calib}); intervals are evaluated at the read
+Appendix~\ref{supp:calib}); intervals are evaluated at the read
 count where the prior predicts 40\% recovery and at twice that.  The selected value is then fixed
 as the default for every policy run, evaluated on the held-out replicates 0--29, and used on
 the real-read replay.  The completion forecast is evaluated with a budget equal to the median
-coverage-greedy cost (Supplementary Section~\ref{S-supp:forecast}).
+coverage-greedy cost (Appendix~\ref{supp:forecast}).
 
 \subsection{Real read streams (secondary evidence)}
 We replay public Illumina iSeq runs of two pools from ENA PRJEB65931~\cite{gimpel2023digital,gimpel2023prjeb65931}:
@@ -524,7 +540,7 @@ data is used deliberately in one place only: the hindsight-tuned static plan, wh
 oracle baseline wherever it appears and serves as an upper bound on what a static allocation could
 achieve.  Our first analysis of these pools did not keep the splits separate (per-strand consensus
 curves were estimated on the evaluation reads and static weights tuned on them); it is replaced, kept
-only as an upper bound in Supplementary Section~\ref{S-app:leak}, and no claim in this paper rests on it.
+only as an upper bound in Appendix~\ref{app:leak}, and no claim in this paper rests on it.
 
 %=====================================================================
 \section{Results}\label{sec:results}
@@ -599,14 +615,14 @@ pre-specified hindsight plan.  The static advantage is therefore not an artefact
 \input{tables/r6_likelihood}
 \input{tables/r4_ablation}
 The primary allocation comparison runs at $\rho_U{=}0.1$, a value chosen by a procedure that used the
-wrong prior width (Supplementary Section~\ref{S-supp:calib}); the corrected procedure picks
+wrong prior width (Appendix~\ref{supp:calib}); the corrected procedure picks
 $\rho_U{=}0.03$.  We therefore re-ran the complete comparison at $\rho_U{=}0.03$, with all policies, all
 three primary scenarios and the full 30 syntheses $\times$ 10 read orders (Table~\ref{tab:r6lik}).
 Round-robin never evaluates the posterior, so its retrievals are bit-identical across likelihood
 settings and serve as a common reference.  At $\rho_U{=}0.03$, four of the seven model-based rules are
 statistically indistinguishable from round-robin on the baseline: coverage-greedy $-$0.4\% ($-$2.3 to $+$1.6\%),
 Thompson sampling $+$0.3\% ($-$1.7 to $+$2.5\%), UCB $+$1.5\% ($-$0.5 to $+$3.7\%) and tail-aware $-$1.2\% ($-$3.2 to $+$0.7\%).  Pivotal ($+$12.2\%),
-learn-then-commit ($+$34.9\%) and information-greedy (Supplementary Table~\ref{S-tab:suppinfo})
+learn-then-commit ($+$34.9\%) and information-greedy (Table~\ref{tab:suppinfo})
 remain clearly worse.  The $2\times2\times2$ ablation (Table~\ref{tab:r4abl}) shows the same pattern from
 another angle: the large penalty appears only in the primary corner (single-efficiency model,
 $\rho_U{=}0.1$, prior width $s{=}0.5$).  Relaxing any one of the three removes most of it, leaving the
@@ -641,7 +657,7 @@ tail-aware by 13\% (9--18\%), coverage-greedy by 15\% (10--21\%), UCB by 15\% (1
 container: 16\% for round-robin, 23\% for Thompson sampling, 25--27\% for tail-aware, UCB and
 coverage-greedy, and 40--41\% for pivotal and learn-then-commit.  Information-greedy, which reads the
 container with the largest posterior variance and spends 66\% of its reads on the near-dead container,
-is 441\% costlier; its results are in Supplementary Section~\ref{S-supp:info}.  With DT4DDS's
+is 441\% costlier; its results are in Appendix~\ref{supp:info}.  With DT4DDS's
 photolithographic synthesis model, no policy and none of the four static plans recovered the file in any
 of 660 retrievals (eight policies at 10 syntheses $\times$ 3 read orders, four static plans, and
 round-robin re-run at the full 30 $\times$ 10 design): every retrieval read the whole 72k-read stream and
@@ -670,7 +686,7 @@ the missing fragments, so coverage-based scores keep predicting gains there.  Th
 this misspecification: at $\rho_U{=}0.1$ its 90\% credible interval covered the target efficiency of the
 five healthy containers in every held-out replicate but that of the near-dead container in only 0.20 of
 cases, and no value of $\rho_U$ in the extended grid covers the near-dead container
-(Supplementary Section~\ref{S-supp:calib}).  The controller is therefore not calibrated where it matters,
+(Appendix~\ref{supp:calib}).  The controller is therefore not calibrated where it matters,
 and we describe it as online-adaptive rather than self-calibrating.
 
 The ablation (Table~\ref{tab:r4abl}) separates three candidate causes: the container model, the
@@ -757,7 +773,7 @@ evaluation reads: coverage-greedy with it gave the near-dead container 3.4\% of 
 Allocation therefore pays when the weak container is identified \emph{before} retrieval, not when the
 controller must learn it online.  q99 was 820--853k for the generic-prior rules and 676k with the
 calibrated belief, against the 631k static budget.  Information-greedy did not complete on this pool and
-is treated as censored (Supplementary Section~\ref{S-app:devfull}).
+is treated as censored (Appendix~\ref{app:devfull}).
 
 \input{tables/r4_calcost}
 \emph{What the calibrated prior costs.}  That 16\% is the largest allocation effect in this paper, and
@@ -780,7 +796,7 @@ where all policies succeeded, adaptive allocation helped, because the failed con
 identify and stops being read: UCB used 24\% (17--28\%) fewer reads than round-robin, coverage-greedy
 17\% (9--23\%), pivotal 15\% (6--21\%) and Thompson sampling 9\% (1--15\%); tail-aware was even ($+$2\%, $-$7 to $+$14\%) and
 learn-then-commit 8\% (3--14\%) costlier (Table~\ref{tab:dt}).  Counting all 300 attempts, including the
-66\% that read the whole stream and failed, UCB's saving is 3\% (Supplementary Table~\ref{S-tab:uncond}).
+66\% that read the whole stream and failed, UCB's saving is 3\% (Table~\ref{tab:uncond}).
 With two failed containers no policy recovered the file.  Both results are limits of the archive design.
 With round-robin placement of $(32,48)$ stripes over six containers, each failed container removes 8 of a
 stripe's 48 fragments, half of its redundancy of 16.  After one failure a stripe tolerates only 8 further
@@ -790,12 +806,12 @@ lost by synthesis, aging or PCR in any stripe makes the file unrecoverable.  Sur
 requires more redundancy or a different placement; no read-allocation policy can compensate.
 
 \emph{Severity, prior and decoder.}  Varying only the near-dead container's copy number
-(Supplementary Fig.~\ref{S-fig:sweep}), adaptive rules are 2--3\% cheaper than round-robin at the mild end
+(Fig.~\ref{fig:sweep}), adaptive rules are 2--3\% cheaper than round-robin at the mild end
 (200 and 30 copies) and costlier at 3 and 1 copies, so adaptive allocation helps only while the model's
 single multiplier is a fair description of the worst container.  Varying the controller's prior
 assumptions one at a time leaves coverage-greedy between $+$10.9\% and $+$20.6\% against round-robin
 under the one-parameter model, except for a tighter prior width ($+$56.4\%), and between $-$0.3\% and
-$+$3.4\% under the two-parameter model (Supplementary Section~\ref{S-supp:robust}).  The consensus cap
+$+$3.4\% under the two-parameter model (Appendix~\ref{supp:robust}).  The consensus cap
 (reads per cluster used to form a consensus, 24) is not binding on the baseline, where caps of 12 and 48
 give the same means to within 10 reads, but it binds where a stream is read to exhaustion: with one
 failed container, round-robin recovers the file in 31.3\% of retrievals at a cap of 12, 34.0\% at 24 and
@@ -803,12 +819,12 @@ failed container, round-robin recovers the file in 31.3\% of retrievals at a cap
 limit of our decoder configuration, and every zero- or partial-success result in this paper holds only
 for this code, placement, consensus cap and stream length.
 
-\emph{Failure modes and geometries.}  Four further failure modes (Supplementary Table~\ref{S-tab:r4fail})
+\emph{Failure modes and geometries.}  Four further failure modes (Table~\ref{tab:r4fail})
 confirm the dropout explanation: under partial physical loss of half of one container's designs, the
 one-parameter model costs $+$76.6\% (coverage-greedy), $+$92.0\% (tail-aware) and $+$59.7\% (UCB), while
 coverage-greedy with dropout reaches $-$6.0\%, and $-$33.6\% under common-cause degradation.  Success
 probability again does not depend on the policy, and no configuration produced a wrong output.  Six
-further geometries (Supplementary Table~\ref{S-tab:r4geom}: 3 and 12 containers, $(32,40)$, $(32,64)$ and
+further geometries (Table~\ref{tab:r4geom}: 3 and 12 containers, $(32,40)$, $(32,64)$ and
 $(16,24)$ codes, and a file four times larger) preserve every qualitative conclusion.  Coverage-greedy
 under the primary model is never cheaper than round-robin ($+$1.1\% to $+$93.5\%); with the dropout model
 it ranges from $-$27.9\% to $+$2.4\%; the hindsight static plan with stopping is cheaper than round-robin
@@ -985,7 +1001,7 @@ statistics by \texttt{dt\_analysis.py}, \texttt{r4\_analysis.py} and \texttt{r9\
 one cluster-bootstrap module; tables and figures by \texttt{make\_tables.py}, \texttt{make\_r4\_tables.py},
 \texttt{make\_r9\_tables.py} and \texttt{make\_dt\_figures.py}, which read only committed result files.
 \texttt{research\_paper/audit/} recomputes every quantitative claim from the result files and checks it
-against the PDF.  Supplementary Table~\ref{S-tab:evidence} maps each claim to its command and result file.
+against the PDF.  Table~\ref{tab:evidence} maps each claim to its command and result file.
 
 \textbf{Determinism.}  Our own layer is deterministic: every random draw in placement, read ordering, the
 controller and the decoder is seeded by CRC-32 of a string naming the scenario, replicate, container, read
@@ -1029,22 +1045,242 @@ is a read count, not a laboratory cost.  The open questions require physically i
 measured failure and dropout statistics, and an end-to-end retrieval of a known file from synthesised DNA
 through this decoder.
 
-\appendices
-\section{Protocol and deviations (summary)}\label{app:dev}
-The protocol, the deviations and the post-hoc analyses are listed in full in Supplementary
-Section~\ref{S-app:devfull}.  In brief: the planned CustomArray scenario was replaced, before any policy
-run, by DT4DDS's photolithographic model; the photolithographic scenario was first run at a reduced
-design and round-robin re-run at the full design with the same outcome; the static allocator was fixed
-to read out failed containers, which can only affect failed retrievals; and information-greedy did not
-complete on the Genscript replay and is treated as censored.  The $\rho_U$ selection was applied as
-specified although its value lies at the grid edge and it used a different prior width from the policy
-runs (Supplementary Section~\ref{S-supp:calib}).
+\appendix
 
-\section*{Acknowledgment}
+%=====================================================================
+\section{Positioning against prior work}\label{supp:lit}
+%=====================================================================
+Table~\ref{tab:literature_comparison} compares this work with the closest prior work discussed in
+Section~\ref{sec:related}.
+\input{tables/literature_comparison}
+
+%=====================================================================
+\section{Operational specification of the retrieval loop}\label{supp:alg}
+%=====================================================================
+Table~\ref{tab:algorithms} specifies the loop and every allocation rule: initialisation, batch size,
+tie-breaking, when the posterior is updated, the stopping test and how an exhausted stream is handled.
+The two model-free baselines of Table~\ref{tab:r9base}(b) are specified in Section~\ref{sec:res-extra}.
+\input{tables/algorithms}
+
+%=====================================================================
+\section{Information-greedy allocation}\label{supp:info}
+%=====================================================================
+Information-greedy reads the container with the largest posterior variance of $\ln\theta_j$ until every
+variance falls below $10^{-3}$, then switches to coverage-greedy.  Under the primary container model the
+near-dead container's variance never falls below the threshold, so the rule spends 66\% of its reads
+there, against 16\% for round-robin, and costs 441\% more than round-robin on the baseline.  A richer
+model gives it more uncertainty to chase: with the dropout model the penalty grows to 612\%.  In the
+homogeneous control it is indistinguishable from round-robin, and after an outright failure it is 81\%
+costlier on the retrievals that succeed.  Table~\ref{tab:suppinfo} collects every result for this rule.
+It is a pure information-gathering rule with no cost term, and we report it for completeness rather than
+as a competitive baseline.
+\input{tables/supp_infogreedy}
+
+%=====================================================================
+\section{One failed container: conditional and unconditional cost}\label{supp:uncond}
+%=====================================================================
+\input{tables/r4_uncond}
+With one failed container 34\% of retrievals succeeded, and the success probability was identical for
+every policy and every static plan (Table~\ref{tab:uncond}): whether the file can be recovered is decided
+by which fragments survive in the five remaining containers, not by the reading order.  Among the 102
+retrievals that succeeded, UCB used 15.49k reads against round-robin's 20.31k, 24\% fewer.  Counting all
+300 attempts, including the 66\% that read the whole 72k-read stream and failed, UCB used 52.79k against
+round-robin's 54.42k, a 3\% reduction.  The two numbers answer different questions: a user who retries
+until success pays the conditional number, and a user who pays per attempt pays the unconditional one.
+After an outright failure, posterior rules therefore cut the cost of the retrievals that succeed by up to
+24\% without improving the probability of success, and change the cost per attempt by 3\%.
+
+%=====================================================================
+\section{Calibration of the posterior and re-selection of $\rho_U$}\label{supp:calib}
+%=====================================================================
+\input{tables/r4_calib}
+On the ten selection replicates, the 90\% credible-interval coverage of $\theta^\ast$ rose with $\rho_U$
+from 0.45 (binomial) through 0.63, 0.73 and 0.80 to 0.87 at $\rho_U{=}0.1$, the edge of the pre-specified
+grid, which was selected.  On the 30 held-out replicates it gave 0.87 overall (0.84 at the earlier and
+0.89 at the later read count), 1.00 for five containers and 0.20 for the near-dead one
+(Fig.~\ref{fig:calib}).  That selection has two defects: it used prior width $s{=}1$ while every policy
+run uses $s{=}0.5$, and the selected value lies at the grid boundary.
+
+A secondary analysis repeats the selection with $s{=}0.5$ and the extended grid
+$\{0,0.003,\allowbreak0.01,\allowbreak0.03,\allowbreak0.1,\allowbreak0.2,\allowbreak0.3,\allowbreak0.5\}$ (Table~\ref{tab:r4calib}).  It re-runs the selection procedure
+only.  Under the prior actually used, the best value is $\rho_U{=}0.03$ (selection coverage 0.81, held
+out 0.83) rather than 0.1 (0.81 and 0.82), a difference within noise.  Extending the grid does not
+rescue calibration: coverage flattens near 0.80 for $\rho_U\in[0.03,0.3]$ and falls to 0.60 at 0.5, so
+no value in this likelihood family reaches the 0.90 target.  At every $\rho_U$ the five healthy
+containers are covered 0.92--1.00 of the time and the near-dead container 0.00--0.03 of the time.
+Widening a likelihood cannot fix a container whose behaviour the model cannot express.  The complete
+policy comparison at the re-selected value is reported in Section~\ref{sec:res-alloc} 
+(Table~\ref{tab:r6lik}).
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.98\textwidth]{fig_dt_calibration.pdf}
+\caption{Is the posterior over container efficiency calibrated?  Each point or bar is the fraction of
+cases in which the 90\% credible interval for $\theta_j$ contained the target $\theta^\ast_j$; a
+calibrated posterior would sit on the dotted line at 0.90.  \textbf{(a)} Selection replicates
+1000--1009, one curve per container, against the beta-binomial correlation $\rho_U$; the thick black
+curve is the mean over containers, which is what the selection rule maximised.  \textbf{(b)} Held-out
+replicates 0--29 at the selected $\rho_U{=}0.1$, per container.  Five containers are covered perfectly
+and the near-dead one is covered in 0.20 of cases at this $\rho_U$ (0.00--0.03 across the extended grid
+of Table~\ref{tab:r4calib}).}
+\label{fig:calib}
+\end{figure*}
+
+%=====================================================================
+\section{Completion forecast}\label{supp:forecast}
+%=====================================================================
+The controller also forecasts the probability of finishing within a remaining budget.  The
+\emph{analytic} forecast multiplies per-stripe normal approximations of
+$\Prob(\sum_{i\in s}X_i\ge\nu_s)$ with the remaining budget spread evenly over containers.  The
+\emph{posterior-simulation} forecast draws 200 values of $\theta$ from the posterior, spreads the
+remaining budget in proportion to the reads spent so far, simulates per-fragment recoveries and reports
+the fraction of draws in which every stripe completes.  It was evaluated with a budget equal to the
+median coverage-greedy cost, at 30/50/70/85\% of it, by expected calibration error (ECE, 10 bins), Brier
+score against a constant (climatology) forecast~\cite{gneiting2007strictly} and AUC.
+
+No policy depends on the forecast; we report it because it was pre-specified.  On 1{,}127 checkpoints
+from 300 baseline retrievals with a budget of 3.75k reads, of which 52\% finished within the budget, both
+forecasts were over-confident (mean forecast 0.86 against 0.52 observed at 30\% of the budget).  The
+posterior-simulation forecast beat the analytic one on every metric (ECE 0.29 vs.\ 0.34; Brier 0.30, 95\%
+CI 0.27--0.34, vs.\ 0.34, 0.29--0.38; AUC 0.73, 0.69--0.78, vs.\ 0.69, 0.65--0.73), yet both Brier scores
+are worse than the 0.25 of a constant forecast at the observed base rate, so neither beats climatology.
+They rank retrievals usefully only late in a retrieval (AUC 0.82 at 85\% of the budget).  Futility
+stopping, which would rely on them, is disabled in every run, and the forecasts should not be used as
+probabilities.
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.6\columnwidth]{fig_forecast.pdf}
+\caption{Reliability of the completion forecast on the digital twin: forecast probability of finishing
+within the remaining budget against the observed frequency of finishing, pooled over checkpoints at
+30/50/70/85\% of the budget (10 equal-width bins, bins with fewer than five checkpoints dropped).  A
+calibrated forecast would lie on the diagonal; both curves lie below it, so both are over-confident, and
+both have a worse Brier score than a constant forecast at the base rate.}
+\label{fig:forecast}
+\end{figure}
+
+%=====================================================================
+\section{Severity sweep}\label{supp:sweep}
+%=====================================================================
+The severity sweep (Fig.~\ref{fig:sweep}) varies only the near-dead container's copies per strand.  At
+200 and 30 copies, coverage-greedy and Thompson sampling are 2--3\% cheaper than round-robin (2.65k vs.\
+2.72k at 200 copies) and tail-aware is even; at 10 copies the policies are within $\pm$1\% except
+tail-aware ($+$5\%); at 3 and 1 copies all adaptive rules are costlier (at one copy: coverage-greedy
+4.69k, Thompson 4.51k, tail-aware 4.47k vs.\ 4.16k).  Success was 1.00 throughout.  The point at 3 copies
+reproduces the baseline design with other seeds (round-robin 3.46k vs.\ 3.49k).  Adaptive allocation
+therefore helps only while the model's single multiplier is a fair description of the worst container.
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.6\columnwidth]{fig_dt_sweep.pdf}
+\caption{Severity sweep: mean reads consumed as the degraded container's copy number falls from 200 to 1
+(300 retrievals per point and policy, 95\% cluster-bootstrap intervals; the axis runs from mild to severe
+degradation).  Every retrieval at every level returned the correct file, so the success probability is
+1.00 throughout and is not plotted.  Adaptive rules are cheaper than round-robin only at the mild end.}
+\label{fig:sweep}
+\end{figure}
+
+%=====================================================================
+\section{Robustness details}\label{supp:robust}
+%=====================================================================
+\textbf{Prior assumptions.}  The controller's generic assumptions were varied one at a time on the
+baseline (30 syntheses $\times$ 3 read orders each): the prior probability of outright failure
+($10^{-2}$, $10^{-1}$ against the primary $10^{-3}$), the prior dropout (0, 5\% against 0.5\%), the
+negative-binomial shape (3, 30 against 10), the $\theta$ grid (40 points over $[0.001,10]$ and 10 points
+over $[0.01,5]$ against 25 over $[0.01,5]$), the prior width ($s{=}0.25$, $1.0$ against $0.5$) and the
+consensus-success curve (scaled by 0.5 and 2.0).  Under the one-parameter model, coverage-greedy stays
+between $+$10.9\% and $+$20.6\% against round-robin in every setting except the tighter prior
+$s{=}0.25$, where it rises to $+$56.4\%.  Changing the failure prior by two orders of magnitude has no
+effect ($+$17.2\% either way), because the failure atom is not what is mismodelled.  Under the
+two-parameter model the same sweep stays between $-$0.3\% and $+$3.4\%.
+
+\textbf{Decoder configuration.}  Table~\ref{tab:r4cap} varies the consensus cap.
+\input{tables/r4_cap}
+
+\textbf{Failure modes beyond total loss.}  Table~\ref{tab:r4fail} gives the four additional failure
+modes summarised in Section~\ref{sec:res-robust}.
+\input{tables/r4_fail}
+
+\textbf{Other archive geometries.}  Table~\ref{tab:r4geom} gives the six additional geometries.
+\input{tables/r4_geoms}
+
+%=====================================================================
+\section{Supporting channel result (real nanopore reads)}\label{supp:nanopore}
+%=====================================================================
+On two independent nanopore flowcells of DNAformer reads~\cite{barlev2025deep,technion2025dnaformerreads},
+a strand-specific error propensity persists across flowcells ($r{=}0.57$; null with matched contexts
+$0.002$), and a hierarchical beta-binomial error model fitted on one flowcell predicts consensus success
+on held-out strands of the other with mean absolute error 0.083, against 0.181 for an i.i.d.\ model.  This
+motivates over-dispersed models but does not enter the controller.
+
+%=====================================================================
+\section{Upper bound with evaluation leakage}\label{app:leak}
+%=====================================================================
+Our first analysis of the real read streams (Table~\ref{tab:leak}) used a ``calibrated'' belief whose
+per-strand consensus curves were pooled over reads that included the evaluation split.  The controller
+therefore had information about the reads it was evaluated on, and the static plans were tuned on them
+too.  We keep the table only as an upper bound with evaluation leakage; no claim in the main text uses
+it.  In the analysis of Table~\ref{tab:replay} the primary belief is the generic prior, and the optional
+calibrated belief uses only the first 300k reads of each run while evaluation uses the next 900k.  On
+Twist, the leaky analysis put coverage-greedy at 55.7k reads and the oracle-tuned static plan at 63.1k;
+the analysis without leakage gives 56.7k and 65.7k.  The leak therefore flattered the adaptive policy by
+about 1k reads and the static baseline by about 2.6k, and the gap without leakage is larger, not smaller.
+\input{tables/leak_appendix}
+
+%=====================================================================
+\section{Protocol deviations and post-hoc analyses}\label{app:devfull}\label{app:dev}
+%=====================================================================
+\textbf{Deviations.}  The protocol and every change made after it was fixed are recorded in
+\texttt{dt\_protocol.yaml}.  (i) The planned CustomArray scenario was replaced, before any policy run, by
+DT4DDS's photolithographic synthesis model, because the CustomArray settings carry a 117-nt
+position-bias table that cannot be applied to 136-nt strands.  (ii) We suspected from commit timestamps
+that the first Twist replay had run with $\rho_U{=}0$ and re-ran it; a direct test showed that it had
+used $\rho_U{=}0.1$, and the re-run reproduced it exactly.  (iii) One cached homogeneous replicate was
+truncated by an interrupted job; it was regenerated from its seed and the scenario re-run in full.
+(iv) The photolithographic scenario was first run with 10 syntheses $\times$ 3 read orders for compute
+reasons; the first 50 retrievals of the full run were discarded unseen.  Round-robin was later re-run on
+it at the full 30 $\times$ 10 design, with the same outcome (0 of 300 recovered).  (v) The static
+allocator crashed when only zero-weight (failed) containers remained; it now reads them out, which can
+only affect failed retrievals of the failure scenarios.  The $\rho_U$ rule was applied as specified even
+though the selected value lies at the edge of the grid.  (vi) The sequential Genscript replay finished
+information-greedy after about six hours but then crashed while computing its paired difference, because
+some trials never completed (infinite cost); nothing was saved.  We fixed the bug, ran the other Genscript
+conditions in parallel processes with the same per-condition seeds (they reproduced every value logged by
+the sequential run), and re-started information-greedy; it had not finished when this version was built.
+In the sequential run its 200 trials finished and more than 1\% of them never recovered the file within
+the available reads, which is why the 0.99 budget was infinite.  We treat the condition as
+\emph{censored}: it is excluded from every average and comparison.  (vii) The secondary analyses of
+\texttt{dt\_protocol\_rev4.yaml} were specified before they were run: the dropout-aware container model,
+the $2\times2\times2$ ablation, the $\rho_U$ re-selection at $s{=}0.5$ on an extended grid, prior
+sensitivity, four further failure modes, six further archive geometries, consensus caps of 12 and 48,
+finer and calibration-estimated static families, an extended baseline replicate set, the full-design
+photolithographic run, the replay calibration-cost experiment and the cost model.  (viii) The following analyses
+are exploratory: the complete comparison at $\rho_U{=}0.03$, the reservation
+baselines, and the per-read stop, successive-elimination and yield-threshold baselines on regenerated
+streams (Section~\ref{sec:res-extra}).  (ix) Every cluster-bootstrap interval was
+recomputed with one shared, order-independent resampling scheme (Section~\ref{sec:eval-stats}); point
+estimates are unchanged, and interval limits moved by at most 0.8 percentage points on the baseline,
+1.3 in the failure scenarios and 3.6 for information-greedy.
+
+\textbf{Post-hoc analyses} (not pre-specified).  With the binomial likelihood ($\rho_U{=}0$), on the same
+300 baseline retrievals, coverage-greedy used 3.34k reads ($-$4.4\% vs.\ round-robin, against $+$15.1\%
+at $\rho_U{=}0.1$), Thompson sampling 3.37k ($-$3.5\%, against $+$7.4\%), tail-aware 3.37k ($-$3.5\%,
+against $+$12.9\%) and pivotal 3.64k ($+$4.4\%, against $+$49.3\%); q99 was 4.95--5.70k, still not below
+round-robin's 5.15k.  With one failed container the binomial likelihood helped tail-aware ($-$25\% vs.\
+$+$2\%) and Thompson sampling ($-$20\% vs.\ $-$9\%) and hurt coverage-greedy and pivotal slightly
+($-$15\% vs.\ $-$17\%; $-$8\% vs.\ $-$15\%).  Success and safety were unchanged (no wrong output).  On the
+Twist replay, the binomial likelihood made coverage-greedy and Thompson sampling costlier (57.6k each,
+against 56.7k and 56.9k at $\rho_U{=}0.1$), the opposite of the digital-twin result: the two settings
+disagree on which likelihood allocates better.
+
+%=====================================================================
+\section{Claim-to-evidence map}\label{supp:evidence}
+%=====================================================================
+\input{tables/evidence}
+
+\begin{acks}
 We thank the authors of the public datasets and of DT4DDS (ENA PRJEB65931; DNAformer;
 Srinivasavaradhan \emph{et al.}) for releasing reads, designs and software.
+\end{acks}
 
-\bibliographystyle{IEEEtran}
+\bibliographystyle{ACM-Reference-Format}
 \bibliography{references}
 
 \end{document}

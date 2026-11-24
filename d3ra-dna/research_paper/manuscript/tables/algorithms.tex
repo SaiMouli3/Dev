@@ -26,7 +26,7 @@ batch; $\mathcal O$: fragments of stripes that still need fragments.}
   SHA-256, \textbf{return} the file.  If a stripe fails its CRC-32, raise that stripe's requirement by
   one fragment (leave-one-out localisation) and continue; after 20 such rounds, stop and report failure.
   \item If every stream is exhausted, \textbf{return} failure (never an unverified file).
-  \item Compute the posterior \eqref{M-eq:posterior} from $(R_j,U_j)$ for every container, take
+  \item Compute the posterior \eqref{eq:posterior} from $(R_j,U_j)$ for every container, take
   $\tilde\theta_j$ as the rule prescribes, score the available containers and read $b$ reads from
   $\arg\max_j\sigma_j$; ties break to the lowest index.
   \item Cluster the new reads against expected address prefixes, form a consensus from at most 24 reads

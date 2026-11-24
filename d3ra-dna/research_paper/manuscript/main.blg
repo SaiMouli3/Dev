@@ -1,56 +1,75 @@
 This is BibTeX, Version 0.99d (TeX Live 2023/Debian)
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: main.aux
-The style file: IEEEtran.bst
-Reallocated singl_function (elt_size=4) to 100 items from 50.
+The style file: ACM-Reference-Format.bst
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
-Reallocated singl_function (elt_size=4) to 100 items from 50.
 Database file #1: references.bib
--- IEEEtran.bst version 1.14 (2015/08/26) by Michael Shell.
--- http://www.michaelshell.org/tex/ieeetran/bibtex/
--- See the "IEEEtran_bst_HOWTO.pdf" manual for usage information.
-
-Done.
-You've used 50 entries,
-            4087 wiz_defined-function locations,
-            1109 strings with 17934 characters,
-and the built_in function-call counts, 41006 in all, are:
-= -- 3344
-> -- 1133
-< -- 322
-+ -- 605
-- -- 222
-* -- 2011
-:= -- 6059
-add.period$ -- 108
-call.type$ -- 50
-change.case$ -- 52
-chr.to.int$ -- 669
-cite$ -- 50
-duplicate$ -- 2968
-empty$ -- 3150
-format.name$ -- 262
-if$ -- 9579
-int.to.chr$ -- 0
-int.to.str$ -- 50
-missing$ -- 562
-newline$ -- 187
-num.names$ -- 50
-pop$ -- 1277
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
+Reallocated global_strs (elt_size=200001) to 20 items from 10.
+Reallocated glb_str_end (elt_size=4) to 20 items from 10.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Warning--empty publisher in batu2004reconstructing
+Warning--empty address in bornholt2016dna
+Warning--empty address in cao2025optimizing
+Warning--page numbers missing in both pages and numpages fields in cao2025optimizing
+Warning--page numbers missing in both pages and numpages fields in cao2026modeling
+Warning--empty address in efron1993introduction
+Warning--page numbers missing in both pages and numpages fields in ford2010availability
+Warning--empty publisher in garivier2016explore
+Warning--empty address in garivier2016explore
+Warning--page numbers missing in both pages and numpages fields in garivier2016explore
+Warning--empty address in gruica2024combinatorial
+Warning--empty address in lattimore2020bandit
+Warning--empty publisher in levy2026expected
+Warning--empty address in levy2026expected
+Warning--page numbers missing in both pages and numpages fields in nath2006subtleties
+Warning--empty publisher in rashtchian2017clustering
+Warning--empty address in rashtchian2017clustering
+Warning--page numbers missing in both pages and numpages fields in rashtchian2017clustering
+Warning--empty address in srinivasavaradhan2021trellis
+Warning--empty address in weil2006crush
+You've used 52 entries,
+            5981 wiz_defined-function locations,
+            1820 strings with 29889 characters,
+and the built_in function-call counts, 63075 in all, are:
+= -- 8797
+> -- 2227
+< -- 0
++ -- 780
+- -- 767
+* -- 4654
+:= -- 6016
+add.period$ -- 264
+call.type$ -- 52
+change.case$ -- 431
+chr.to.int$ -- 51
+cite$ -- 72
+duplicate$ -- 5184
+empty$ -- 3625
+format.name$ -- 958
+if$ -- 15707
+int.to.chr$ -- 3
+int.to.str$ -- 1
+missing$ -- 196
+newline$ -- 605
+num.names$ -- 363
+pop$ -- 1929
 preamble$ -- 1
-purify$ -- 0
-quote$ -- 2
-skip$ -- 3179
+purify$ -- 843
+quote$ -- 0
+skip$ -- 1877
 stack$ -- 0
-substring$ -- 1714
-swap$ -- 2482
-text.length$ -- 99
+substring$ -- 4535
+swap$ -- 556
+text.length$ -- 0
 text.prefix$ -- 0
-top$ -- 5
-type$ -- 50
-warning$ -- 0
-while$ -- 168
-width$ -- 52
-write$ -- 544
+top$ -- 0
+type$ -- 1065
+warning$ -- 20
+while$ -- 313
+width$ -- 0
+write$ -- 1183
+(There were 20 warnings)

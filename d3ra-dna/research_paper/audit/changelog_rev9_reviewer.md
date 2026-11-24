@@ -112,3 +112,24 @@ information-greedy (e.g. after a failure, [+50, +130] → [+51, +127]).
   - limitations;
   - the new benchmark table.
 - No real-data or wet-lab experiment was added; the paper remains computational.
+
+## 8. Addendum: ACM journal format, one document
+
+At the authors' request the paper was converted from IEEEtran to ACM's `acmart` class.
+- **Format:** `acmsmall`, ACM's single-column journal format (e.g. ACM Transactions on Storage), with a page
+  size of 6.75 x 10 in (486 x 720 pt). ACM's two-column conference format (`sigconf`, US Letter) can be
+  selected by changing one class option.
+- **One document:** the former supplement is now a set of appendices in the same PDF. Cross-references that
+  used to point into the supplement now point to the appendices.
+- **ACM front matter:** CCS concepts (to be checked with the ACM CCS tool), keywords, the ACM reference
+  bibliography style, and numbered citations.
+- **Placeholders, not inventions:**
+  - Author affiliations and countries are visible placeholders, because ACM requires them and none was
+    provided.
+  - Journal, volume, article number and rights are not set. The placeholder running footer and the ACM
+    reference block are switched off until ACM assigns them.
+- **Tables** wider than the ACM text block are scaled down to fit. No table content changed.
+- **Build and checks:** 38 pages, no LaTeX errors, no unresolved references. All 167 verifier checks pass on
+  the ACM PDF. The BibTeX warnings are fields ACM's style expects but some entries lack (publisher address,
+  page numbers); these were not invented.
+- **IEEE version:** the IEEE sources are kept in `manuscript/ieee_version/` for reference.

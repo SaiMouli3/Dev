@@ -10,19 +10,19 @@ Limitation & Consequence \\
 \midrule
 Computational only (digital twin + replay) & no wet-lab confirmation; DT4DDS fidelity bounds external validity; future experiments are outlined in Section~\ref{sec:wetlab} \\
 Single efficiency multiplier $\theta_j$ in the primary model & cannot represent dropout; adaptive allocators over-read near-dead containers.  $\dagger$~A two-parameter model (efficiency and dropout) removes most of the penalty (Section~\ref{sec:res-dropout}) \\
-$\rho_U$ at the edge of its grid; selected with $s{=}1$ while runs use $s{=}0.5$ & $\dagger$~re-selected with $s{=}0.5$ on an extended grid: no value reaches 0.90 coverage and the near-dead container is never covered (Table~\ref{S-tab:r4calib}); $\dagger$~the complete primary comparison re-run at the re-selected $\rho_U{=}0.03$ weakens the allocation penalty from harmful to merely no better for four of seven rules (Table~\ref{tab:r6lik}) \\
+$\rho_U$ at the edge of its grid; selected with $s{=}1$ while runs use $s{=}0.5$ & $\dagger$~re-selected with $s{=}0.5$ on an extended grid: no value reaches 0.90 coverage and the near-dead container is never covered (Table~\ref{tab:r4calib}); $\dagger$~the complete primary comparison re-run at the re-selected $\rho_U{=}0.03$ weakens the allocation penalty from harmful to merely no better for four of seven rules (Table~\ref{tab:r6lik}) \\
 Calibration-optimal vs.\ cost-optimal $\rho_U$ differ & a better-calibrated posterior allocated worse; the ablation separates likelihood, prior and model (Table~\ref{tab:r4abl}) \\
 Gains are in the mean, not the tail & $\dagger$~no \emph{adaptive} rule lowered q99 reliably; fixed proportions did ($-$6.8\% in the 30 $\times$ 10 design, $-$8.7\% in the 100 $\times$ 3 design); tail intervals are wide and reported (Table~\ref{tab:r4tails}) \\
-Failures simulated & real failure modes and rates unknown; $\dagger$~partial loss, low yield, contamination and common-cause degradation are now tested (Table~\ref{S-tab:r4fail}), but their rates are still assumed \\
-One archive geometry in the primary design & $\dagger$~six further geometries tested (Table~\ref{S-tab:r4geom}); conclusions outside those remain untested \\
-Consensus cap of 24 reads per cluster & $\dagger$~caps of 12 and 48 tested (Table~\ref{S-tab:r4cap}); decoder configuration does affect the recovery boundaries \\
+Failures simulated & real failure modes and rates unknown; $\dagger$~partial loss, low yield, contamination and common-cause degradation are now tested (Table~\ref{tab:r4fail}), but their rates are still assumed \\
+One archive geometry in the primary design & $\dagger$~six further geometries tested (Table~\ref{tab:r4geom}); conclusions outside those remain untested \\
+Consensus cap of 24 reads per cluster & $\dagger$~caps of 12 and 48 tested (Table~\ref{tab:r4cap}); decoder configuration does affect the recovery boundaries \\
 Replay is semi-empirical & oracle decodability, so it is \emph{not} end-to-end exact retrieval; containers are runs of one synthesis batch, not independent syntheses \\
 Genscript pool: 472 of 12{,}472 designs excluded & 4.23\% of mapped evaluation reads discarded; identical material in every condition \\
 Read count is not money & $\dagger$~per-batch and per-container charges leave the ranking unchanged but shrink the margin allocation competes for (Table~\ref{tab:r4cost}); instrument time, library preparation and minimum run sizes are not modelled \\
 Container choice every 50 reads & an allocation policy over independent read streams, not a demonstrated physical sequencing controller (Section~\ref{sec:ops}) \\
 Safety bounds assume independence per retrieval & $\dagger$~retrievals share syntheses; the conservative per-synthesis bound is two orders of magnitude weaker (Table~\ref{tab:safety}) \\
 Nanopore correlation evidence: two flowcells & preliminary supporting evidence only; does not validate the container model \\
-Information-greedy on the Genscript replay did not complete & reported as censored, not as a result (Supplementary Section~\ref{S-app:devfull}) \\
+Information-greedy on the Genscript replay did not complete & reported as censored, not as a result (Appendix~\ref{app:devfull}) \\
 DT4DDS 1.1.0 is not seed-deterministic & regenerated read streams differ, so the committed streams are part of the artifact; $\dagger$~a clean re-simulation reproduces every mean, paired comparison and the policy ordering, not the individual retrievals (Section~\ref{sec:repro}) \\
 No regret or optimality theory & $\dagger$~a fluid approximation bounds the allocation gain (Section~\ref{sec:disc-theory}); all other claims are empirical, about the configurations tested \\
 \bottomrule

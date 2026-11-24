@@ -152,3 +152,20 @@ At the authors' request the paper was converted from IEEEtran to ACM's `acmart` 
   `review,anonymous`. It hides authors, affiliations, acknowledgements and the repository link, and adds line
   numbers. finalize.sh fails if the anonymous PDF still contains any author name, institution or repository
   name.
+
+## 10. Addendum: reference details checked by the authors
+
+Applied from the authors' check of the publisher and conference pages:
+- cao2025optimizing: pages 1–6.
+- cao2026modeling: article number bbag303; publication month June 2026 (was May).
+- garivier2016explore: pages 784–792.
+- nath2006subtleties: pages 225–238. The author list was already correct (Nath, Yu, Gibbons, Seshan).
+- rashtchian2017clustering: pages 3361–3372.
+- efron1993introduction: publisher Chapman & Hall, New York.
+- kong2026coverage: kept as an arXiv preprint (no journal reference on arXiv).
+- CCS concepts: confirmed as valid ACM CCS concepts. The CCS XML block is optional for submission and can be
+  generated with the ACM tool for the final version.
+
+Not applied: ford2010availability "pages 1–7". Its only source is a mail-archive page, and the OSDI paper is
+full length, so a 7-page range cannot be right. Page numbers stay empty until confirmed from the USENIX
+proceedings or the ACM Digital Library.

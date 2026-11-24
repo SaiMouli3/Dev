@@ -187,7 +187,7 @@
   Storage: Insights from {DNA} Storage Data}. In
   \bibinfo{booktitle}{\emph{Proc. IEEE International Symposium on Information
   Theory (ISIT)}}. \bibinfo{publisher}{IEEE}, \bibinfo{address}{Piscataway, NJ,
-  USA}.
+  USA}, \bibinfo{pages}{1--6}.
 \newblock
 \urldef\tempurl%
 \url{https://doi.org/10.1109/isit63088.2025.11195510}
@@ -201,8 +201,8 @@
 \newblock \showarticletitle{Modeling {DNA} Storage Retrieval Reliability via
   Sequencing Coverage Depth}.
 \newblock \bibinfo{journal}{\emph{Briefings in Bioinformatics}}
-  \bibinfo{volume}{27}, \bibinfo{number}{3} (\bibinfo{date}{May}
-  \bibinfo{year}{2026}).
+  \bibinfo{volume}{27}, \bibinfo{number}{3}, Article
+  \bibinfo{articleno}{bbag303} (\bibinfo{date}{May} \bibinfo{year}{2026}).
 \newblock
 \urldef\tempurl%
 \url{https://doi.org/10.1093/bib/bbag303}
@@ -304,7 +304,8 @@
 \bibfield{author}{\bibinfo{person}{Bradley Efron} {and}
   \bibinfo{person}{Robert~J. Tibshirani}.} \bibinfo{year}{1993}\natexlab{}.
 \newblock \bibinfo{booktitle}{\emph{An Introduction to the Bootstrap}}.
-\newblock \bibinfo{publisher}{Springer US}.
+\newblock \bibinfo{publisher}{Chapman \& Hall}, \bibinfo{address}{New York, NY,
+  USA}.
 \newblock
 \showISBNx{9781489945419}
 \urldef\tempurl%
@@ -370,7 +371,8 @@
 \newblock \showarticletitle{On explore-then-commit strategies}. In
   \bibinfo{booktitle}{\emph{Advances in Neural Information Processing Systems
   (NeurIPS)}}, Vol.~\bibinfo{volume}{29}. \bibinfo{publisher}{Curran
-  Associates, Inc.}, \bibinfo{address}{Red Hook, NY, USA}.
+  Associates, Inc.}, \bibinfo{address}{Red Hook, NY, USA},
+  \bibinfo{pages}{784--792}.
 \newblock
 
 
@@ -595,7 +597,7 @@
   Wide-area Storage Systems}. In \bibinfo{booktitle}{\emph{3rd USENIX Symposium
   on Networked Systems Design and Implementation (NSDI '06)}}.
   \bibinfo{publisher}{USENIX Association}, \bibinfo{address}{San Jose, CA,
-  USA}.
+  USA}, \bibinfo{pages}{225--238}.
 \newblock
 \urldef\tempurl%
 \url{https://www.usenix.org/conference/nsdi-06/subtleties-tolerating-correlated-failures-wide-area-storage-systems}
@@ -669,7 +671,7 @@
 \newblock \showarticletitle{Clustering Billions of Reads for {DNA} Data
   Storage}. In \bibinfo{booktitle}{\emph{Advances in Neural Information
   Processing Systems 30 (NIPS 2017)}}. \bibinfo{publisher}{Curran Associates,
-  Inc.}, \bibinfo{address}{Red Hook, NY, USA}.
+  Inc.}, \bibinfo{address}{Red Hook, NY, USA}, \bibinfo{pages}{3361--3372}.
 \newblock
 \urldef\tempurl%
 \url{https://papers.nips.cc/paper_files/paper/2017/hash/ab7314887865c4265e896c6e209d1cd6-Abstract.html}

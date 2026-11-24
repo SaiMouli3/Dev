@@ -11,52 +11,49 @@ Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
 Reallocated global_strs (elt_size=200001) to 20 items from 10.
 Reallocated glb_str_end (elt_size=4) to 20 items from 10.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
-Warning--page numbers missing in both pages and numpages fields in cao2025optimizing
+Warning--articleno or eid field, but no numpages field, in cao2026modeling
 Warning--page numbers missing in both pages and numpages fields in cao2026modeling
-Warning--empty address in efron1993introduction
+Warning--articleno or eid, but no pages or numpages field in cao2026modeling
 Warning--page numbers missing in both pages and numpages fields in ford2010availability
-Warning--page numbers missing in both pages and numpages fields in garivier2016explore
-Warning--page numbers missing in both pages and numpages fields in nath2006subtleties
-Warning--page numbers missing in both pages and numpages fields in rashtchian2017clustering
 You've used 52 entries,
             5981 wiz_defined-function locations,
-            1826 strings with 30024 characters,
-and the built_in function-call counts, 63152 in all, are:
-= -- 8827
+            1830 strings with 30061 characters,
+and the built_in function-call counts, 64082 in all, are:
+= -- 8985
 > -- 2227
 < -- 0
 + -- 780
 - -- 767
-* -- 4680
-:= -- 6031
+* -- 4725
+:= -- 6095
 add.period$ -- 266
 call.type$ -- 52
 change.case$ -- 431
 chr.to.int$ -- 51
-cite$ -- 59
-duplicate$ -- 5184
-empty$ -- 3625
+cite$ -- 56
+duplicate$ -- 5271
+empty$ -- 3682
 format.name$ -- 958
-if$ -- 15724
+if$ -- 15972
 int.to.chr$ -- 3
 int.to.str$ -- 1
-missing$ -- 196
+missing$ -- 195
 newline$ -- 605
 num.names$ -- 363
-pop$ -- 1903
+pop$ -- 1901
 preamble$ -- 1
 purify$ -- 843
 quote$ -- 0
-skip$ -- 1877
+skip$ -- 1924
 stack$ -- 0
-substring$ -- 4548
-swap$ -- 569
+substring$ -- 4733
+swap$ -- 600
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 1065
-warning$ -- 7
-while$ -- 313
+warning$ -- 4
+while$ -- 325
 width$ -- 0
-write$ -- 1196
-(There were 7 warnings)
+write$ -- 1201
+(There were 4 warnings)

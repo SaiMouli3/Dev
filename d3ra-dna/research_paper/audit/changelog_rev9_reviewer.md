@@ -133,3 +133,22 @@ At the authors' request the paper was converted from IEEEtran to ACM's `acmart` 
   the ACM PDF. The BibTeX warnings are fields ACM's style expects but some entries lack (publisher address,
   page numbers); these were not invented.
 - **IEEE version:** the IEEE sources are kept in `manuscript/ieee_version/` for reference.
+
+## 9. Addendum: submission fixes
+
+- **References:** publisher locations were added for standard publishers (ACM, IEEE, Cambridge University
+  Press, Curran Associates for NeurIPS, SIAM for SODA). BibTeX warnings fell from 20 to 7. The remaining
+  seven cannot be checked from this environment, because the network policy blocks arxiv.org, doi.org,
+  papers.nips.cc, usenix.org and api.crossref.org:
+  - page numbers for cao2025optimizing, cao2026modeling, ford2010availability, garivier2016explore,
+    nath2006subtleties and rashtchian2017clustering;
+  - the publisher city for efron1993introduction.
+  They were left empty rather than filled from memory.
+- **Preprint status:** kong2026coverage (arXiv:2610.02931) is still cited as a preprint, and its publication
+  status could not be checked. levy2026expected already cites its ISIT 2026 version.
+- **CCS concepts:** the three concepts could not be checked against the ACM CCS site (blocked). They should be
+  confirmed at https://dl.acm.org/ccs.
+- **Anonymous version:** `final/ACM_Research_Paper_Anonymous.pdf` is built by finalize.sh with
+  `review,anonymous`. It hides authors, affiliations, acknowledgements and the repository link, and adds line
+  numbers. finalize.sh fails if the anonymous PDF still contains any author name, institution or repository
+  name.

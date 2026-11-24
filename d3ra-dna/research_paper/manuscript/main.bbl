@@ -125,7 +125,8 @@
   McGregor}.} \bibinfo{year}{2004}\natexlab{}.
 \newblock \showarticletitle{Reconstructing Strings from Random Traces}. In
   \bibinfo{booktitle}{\emph{Proceedings of the 15th Annual ACM-SIAM Symposium
-  on Discrete Algorithms (SODA)}}. \bibinfo{address}{New Orleans, LA, USA},
+  on Discrete Algorithms (SODA)}}. \bibinfo{publisher}{Society for Industrial
+  and Applied Mathematics}, \bibinfo{address}{New Orleans, LA, USA},
   \bibinfo{pages}{910--918}.
 \newblock
 
@@ -153,7 +154,8 @@
 \newblock \showarticletitle{A {DNA}-Based Archival Storage System}. In
   \bibinfo{booktitle}{\emph{Proceedings of the 21st International Conference on
   Architectural Support for Programming Languages and Operating Systems
-  (ASPLOS)}}. \bibinfo{publisher}{ACM}, \bibinfo{pages}{637--649}.
+  (ASPLOS)}}. \bibinfo{publisher}{ACM}, \bibinfo{address}{New York, NY, USA},
+  \bibinfo{pages}{637--649}.
 \newblock
 \urldef\tempurl%
 \url{https://doi.org/10.1145/2872362.2872397}
@@ -184,7 +186,8 @@
 \newblock \showarticletitle{Optimizing Sequencing Coverage Depth in {DNA}
   Storage: Insights from {DNA} Storage Data}. In
   \bibinfo{booktitle}{\emph{Proc. IEEE International Symposium on Information
-  Theory (ISIT)}}. \bibinfo{publisher}{IEEE}.
+  Theory (ISIT)}}. \bibinfo{publisher}{IEEE}, \bibinfo{address}{Piscataway, NJ,
+  USA}.
 \newblock
 \urldef\tempurl%
 \url{https://doi.org/10.1109/isit63088.2025.11195510}
@@ -366,7 +369,8 @@
   \bibinfo{year}{2016}\natexlab{}.
 \newblock \showarticletitle{On explore-then-commit strategies}. In
   \bibinfo{booktitle}{\emph{Advances in Neural Information Processing Systems
-  (NeurIPS)}}, Vol.~\bibinfo{volume}{29}.
+  (NeurIPS)}}, Vol.~\bibinfo{volume}{29}. \bibinfo{publisher}{Curran
+  Associates, Inc.}, \bibinfo{address}{Red Hook, NY, USA}.
 \newblock
 
 
@@ -441,7 +445,8 @@
 \newblock \showarticletitle{A Combinatorial Perspective on Random Access
   Efficiency for {DNA} Storage}. In \bibinfo{booktitle}{\emph{Proc. IEEE
   International Symposium on Information Theory (ISIT)}}.
-  \bibinfo{publisher}{IEEE}, \bibinfo{pages}{675--680}.
+  \bibinfo{publisher}{IEEE}, \bibinfo{address}{Piscataway, NJ, USA},
+  \bibinfo{pages}{675--680}.
 \newblock
 \urldef\tempurl%
 \url{https://doi.org/10.1109/isit57864.2024.10619151}
@@ -497,7 +502,8 @@
 \bibfield{author}{\bibinfo{person}{Tor Lattimore} {and} \bibinfo{person}{Csaba
   Szepesv{\'a}ri}.} \bibinfo{year}{2020}\natexlab{}.
 \newblock \bibinfo{booktitle}{\emph{Bandit Algorithms}}.
-\newblock \bibinfo{publisher}{Cambridge University Press}.
+\newblock \bibinfo{publisher}{Cambridge University Press},
+  \bibinfo{address}{Cambridge, UK}.
 \newblock
 \urldef\tempurl%
 \url{https://doi.org/10.1017/9781108571401}
@@ -541,7 +547,8 @@
   \bibinfo{year}{2026}\natexlab{}.
 \newblock \showarticletitle{Expected Recovery Time in {DNA}-based Distributed
   Storage Systems}. In \bibinfo{booktitle}{\emph{Proc. IEEE International
-  Symposium on Information Theory (ISIT)}}. \bibinfo{pages}{1--6}.
+  Symposium on Information Theory (ISIT)}}. \bibinfo{publisher}{IEEE},
+  \bibinfo{address}{Piscataway, NJ, USA}, \bibinfo{pages}{1--6}.
 \newblock
 \urldef\tempurl%
 \url{https://doi.org/10.1109/ISIT62367.2026.11653846}
@@ -661,7 +668,8 @@
   \bibinfo{person}{Karin Strauss}.} \bibinfo{year}{2017}\natexlab{}.
 \newblock \showarticletitle{Clustering Billions of Reads for {DNA} Data
   Storage}. In \bibinfo{booktitle}{\emph{Advances in Neural Information
-  Processing Systems 30 (NIPS 2017)}}.
+  Processing Systems 30 (NIPS 2017)}}. \bibinfo{publisher}{Curran Associates,
+  Inc.}, \bibinfo{address}{Red Hook, NY, USA}.
 \newblock
 \urldef\tempurl%
 \url{https://papers.nips.cc/paper_files/paper/2017/hash/ab7314887865c4265e896c6e209d1cd6-Abstract.html}
@@ -736,7 +744,8 @@
 \newblock \showarticletitle{Trellis {BMA}: Coded Trace Reconstruction on {IDS}
   Channels for {DNA} Storage}. In \bibinfo{booktitle}{\emph{Proc. IEEE
   International Symposium on Information Theory (ISIT)}}.
-  \bibinfo{publisher}{IEEE}, \bibinfo{pages}{2453--2458}.
+  \bibinfo{publisher}{IEEE}, \bibinfo{address}{Piscataway, NJ, USA},
+  \bibinfo{pages}{2453--2458}.
 \newblock
 \urldef\tempurl%
 \url{https://doi.org/10.1109/isit45174.2021.9517821}
@@ -778,7 +787,8 @@
 \newblock \showarticletitle{{CRUSH}: Controlled, Scalable, Decentralized
   Placement of Replicated Data}. In \bibinfo{booktitle}{\emph{Proceedings of
   the 2006 ACM/IEEE Conference on Supercomputing (SC'06)}}.
-  \bibinfo{publisher}{IEEE}, \bibinfo{pages}{31}.
+  \bibinfo{publisher}{IEEE}, \bibinfo{address}{Piscataway, NJ, USA},
+  \bibinfo{pages}{31}.
 \newblock
 \urldef\tempurl%
 \url{https://doi.org/10.1109/sc.2006.19}

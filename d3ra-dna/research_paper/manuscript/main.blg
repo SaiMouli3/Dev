@@ -11,65 +11,52 @@ Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
 Reallocated global_strs (elt_size=200001) to 20 items from 10.
 Reallocated glb_str_end (elt_size=4) to 20 items from 10.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
-Warning--empty publisher in batu2004reconstructing
-Warning--empty address in bornholt2016dna
-Warning--empty address in cao2025optimizing
 Warning--page numbers missing in both pages and numpages fields in cao2025optimizing
 Warning--page numbers missing in both pages and numpages fields in cao2026modeling
 Warning--empty address in efron1993introduction
 Warning--page numbers missing in both pages and numpages fields in ford2010availability
-Warning--empty publisher in garivier2016explore
-Warning--empty address in garivier2016explore
 Warning--page numbers missing in both pages and numpages fields in garivier2016explore
-Warning--empty address in gruica2024combinatorial
-Warning--empty address in lattimore2020bandit
-Warning--empty publisher in levy2026expected
-Warning--empty address in levy2026expected
 Warning--page numbers missing in both pages and numpages fields in nath2006subtleties
-Warning--empty publisher in rashtchian2017clustering
-Warning--empty address in rashtchian2017clustering
 Warning--page numbers missing in both pages and numpages fields in rashtchian2017clustering
-Warning--empty address in srinivasavaradhan2021trellis
-Warning--empty address in weil2006crush
 You've used 52 entries,
             5981 wiz_defined-function locations,
-            1820 strings with 29889 characters,
-and the built_in function-call counts, 63075 in all, are:
-= -- 8797
+            1826 strings with 30024 characters,
+and the built_in function-call counts, 63152 in all, are:
+= -- 8827
 > -- 2227
 < -- 0
 + -- 780
 - -- 767
-* -- 4654
-:= -- 6016
-add.period$ -- 264
+* -- 4680
+:= -- 6031
+add.period$ -- 266
 call.type$ -- 52
 change.case$ -- 431
 chr.to.int$ -- 51
-cite$ -- 72
+cite$ -- 59
 duplicate$ -- 5184
 empty$ -- 3625
 format.name$ -- 958
-if$ -- 15707
+if$ -- 15724
 int.to.chr$ -- 3
 int.to.str$ -- 1
 missing$ -- 196
 newline$ -- 605
 num.names$ -- 363
-pop$ -- 1929
+pop$ -- 1903
 preamble$ -- 1
 purify$ -- 843
 quote$ -- 0
 skip$ -- 1877
 stack$ -- 0
-substring$ -- 4535
-swap$ -- 556
+substring$ -- 4548
+swap$ -- 569
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 1065
-warning$ -- 20
+warning$ -- 7
 while$ -- 313
 width$ -- 0
-write$ -- 1183
-(There were 20 warnings)
+write$ -- 1196
+(There were 7 warnings)

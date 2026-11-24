@@ -14,9 +14,17 @@ pdflatex -interaction=nonstopmode main.tex >/dev/null
 bibtex main >/dev/null 2>&1 || true
 pdflatex -interaction=nonstopmode main.tex >/dev/null
 pdflatex -interaction=nonstopmode main.tex >/dev/null
+# anonymous version for double-blind review: authors, affiliations, acknowledgements and the repository
+# link are hidden by acmart's anonymous option; review adds line numbers
+sed 's/\\documentclass\[acmsmall,screen\]{acmart}/\\documentclass[acmsmall,screen,review,anonymous]{acmart}/' main.tex > main_anon.tex
+grep -q "review,anonymous" main_anon.tex || { echo "finalize: anonymous class option not set"; exit 1; }
+pdflatex -interaction=nonstopmode main_anon.tex >/dev/null
+bibtex main_anon >/dev/null 2>&1 || true
+pdflatex -interaction=nonstopmode main_anon.tex >/dev/null
+pdflatex -interaction=nonstopmode main_anon.tex >/dev/null
 
 fail=0
-for d in main; do
+for d in main main_anon; do
   if grep -qE '^! ' $d.log; then echo "LaTeX errors in $d:"; grep -E '^! ' $d.log | head; fail=1; fi
   if grep -q "undefined on input" $d.log; then
     echo "Unresolved references/citations in $d:"
@@ -30,6 +38,8 @@ done
 mkdir -p "$F"
 cp main.pdf "$F/ACM_Research_Paper.pdf"
 cp main.tex "$F/ACM_Research_Paper.tex"
+cp main_anon.pdf "$F/ACM_Research_Paper_Anonymous.pdf"
+if pdftotext main_anon.pdf - | grep -qiE "Mouli|Geetha|Savanur|SaiMouli3|msrit|Ramaiah"; then echo "finalize: anonymous PDF still identifies the authors"; exit 1; fi
 # The paper's content commit. finalize.sh runs before the bundle is committed, so record the commit
 # that the build came from and note that the bundle itself is committed on top of it.
 git -C "$ROOT" rev-parse HEAD > "$F/COMMIT.txt"

@@ -18,3 +18,4 @@ results/baselines_part*.csv
 data/processed/realdata_v3/
 data/processed/realdata_genscript_v3/
 data/processed/dt/
+research_paper/manuscript/main_anon.*

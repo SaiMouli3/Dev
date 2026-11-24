@@ -1,8 +1,8 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.11.5)  24 NOV 2026 04:39
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.11.5)  24 NOV 2026 04:44
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**main.tex
+**main
 (./main.tex
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
@@ -1357,11 +1357,36 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [3.3]
-LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
-(Font)              scaled to size 8.0pt on input line 271.
+(./figures/arch_dna.tex
+LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
+(Font)              scaled to size 8.0pt on input line 36.
+LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/b/n' will be
+(Font)              scaled to size 9.0pt on input line 37.
+LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
+(Font)              scaled to size 7.0pt on input line 43.
+LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
+(Font)              scaled to size 6.0pt on input line 53.
+LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/b/n' will be
+(Font)              scaled to size 7.0pt on input line 87.
+LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/b/n' will be
+(Font)              scaled to size 8.0pt on input line 94.
+
+Underfull \hbox (badness 1803) in paragraph at lines 95--95
+ [][][]\T1/LinuxBiolinumT-TLF/b/n/7 (+20) verified stop-ping\T1/LinuxBiolinumT-
+TLF/m/n/7 (+20) : ev-ery stripe de-coded,
+ []
 
 
-Class acmart Warning: A possible image without description on input line 277.
+Underfull \hbox (badness 3623) in paragraph at lines 95--95
+ []\T1/LinuxBiolinumT-TLF/m/n/7 (+20) CRC-32 and the file's SHA-256 match[]
+ []
+
+)
+LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/it' will be
+(Font)              scaled to size 9.0pt on input line 263.
+
+
+Class acmart Warning: A possible image without description on input line 265.
 
 (./tables/notation.tex
 LaTeX Font Info:    Trying to load font information for T1+zi4 on input line 3.
@@ -1380,27 +1405,33 @@ LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
 (Font)              scaled to size 7.0pt on input line 5.
 LaTeX Font Info:    Font shape `T1/zi4/m/n' will be
 (Font)              scaled to size 7.0pt on input line 11.
-) [4.4]
-LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 7.3pt on input line 313.
-LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 5.5pt on input line 313.
- [5.5{/usr/share/texlive/texmf-dist/fonts/enc/dvips/inconsolata/i4-t1-4.enc}] [
-6.6]
-[7.7]
-LaTeX Font Info:    Font shape `T1/zi4/m/n' will be
-(Font)              scaled to size 10.0pt on input line 462.
- [8.8] [9.9] (./tables/safety.tex) [10.10] (./tables/r4_actual.tex
-LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/it' will be
-(Font)              scaled to size 9.0pt on input line 3.
 )
-(./tables/r9_baselines.tex
-LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/b/n' will be
-(Font)              scaled to size 9.0pt on input line 3.
+Underfull \vbox (badness 2894) has occurred while \output is active []
+
+ [4.4{/usr/share/texlive/texmf-dist/fonts/enc/dvips/inconsolata/i4-t1-4.enc}] [
+5.5]
+LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
+(Font)              scaled to size 7.3pt on input line 301.
+LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
+(Font)              scaled to size 5.5pt on input line 301.
+
+[6.6] [7.7]
+LaTeX Font Info:    Font shape `T1/zi4/m/n' will be
+(Font)              scaled to size 10.0pt on input line 450.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [8.8]
+[9.9] (./tables/safety.tex)
+Underfull \vbox (badness 2698) has occurred while \output is active []
+
+ [10.10]
+(./tables/r4_actual.tex) (./tables/r9_baselines.tex
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
 (Font)              scaled to size 7.0pt on input line 9.
-) [11.11] [12.12] (./tables/r6_likelihood.tex)
-(./tables/r4_ablation.tex) (./tables/dt_main.tex
+) [11.11]
+(./tables/r6_likelihood.tex) (./tables/r4_ablation.tex) [12.12]
+(./tables/dt_main.tex
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/b/it' in size <9> not ava
 ilable
 (Font)              Font shape `T1/LinuxBiolinumT-TLF/b/sl' tried instead on in
@@ -1408,21 +1439,21 @@ put line 3.
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/b/sl' will be
 (Font)              scaled to size 9.0pt on input line 3.
 )
-<figures/fig_dt_policies.pdf, id=465, 522.27776pt x 168.16031pt>
+<figures/fig_dt_policies.pdf, id=466, 522.27776pt x 168.16031pt>
 File: figures/fig_dt_policies.pdf Graphic file (type pdf)
 <use figures/fig_dt_policies.pdf>
-Package pdftex.def Info: figures/fig_dt_policies.pdf  used on input line 641.
+Package pdftex.def Info: figures/fig_dt_policies.pdf  used on input line 629.
 (pdftex.def)             Requested size: 395.8225pt x 127.44905pt.
 
 
-Class acmart Warning: A possible image without description on input line 654.
+Class acmart Warning: A possible image without description on input line 642.
 
-[13.13] [14.14] [15.15] [16.16 <./figures/fig_dt_policies.pdf>]
-(./tables/r4_tails.tex)
-Underfull \vbox (badness 6396) has occurred while \output is active []
+[13.13] [14.14 <./figures/fig_dt_policies.pdf>] [15.15] [16.16]
+(./tables/r4_tails.tex
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [17.17]
-(./tables/replay.tex) [18.18] (./tables/r4_calcost.tex) [19.19]
+ [17.17])
+[18.18] (./tables/replay.tex) [19.19] (./tables/r4_calcost.tex) [20.20]
 (./tables/r4_cost.tex
 Underfull \hbox (badness 10000) in paragraph at lines 16--16
 []|\T1/LinuxLibertineT-TLF/m/n/7 (+20) Coverage-greedy+dropout
@@ -1433,16 +1464,9 @@ Underfull \hbox (badness 10000) in paragraph at lines 20--20
 []|\T1/LinuxLibertineT-TLF/m/n/7 (+8) Learn-then-commit+dropout
  []
 
+) [21.21] [22.22]
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [20.20])
-[21.21]
-Underfull \vbox (badness 1377) has occurred while \output is active []
-
- [22.22]
-
-Class acmart Warning: A possible image without description on input line 956.
+Class acmart Warning: A possible image without description on input line 944.
 
 (./tables/limitations.tex
 Underfull \hbox (badness 7963) in paragraph at lines 11--11
@@ -1474,14 +1498,14 @@ Underfull \hbox (badness 5756) in paragraph at lines 26--26
  []
 
 ) [23.23]
-Underfull \hbox (badness 10000) in paragraph at lines 995--1008
+Underfull \hbox (badness 10000) in paragraph at lines 983--996
 \T1/zi4/m/n/10 experiments/dt_experiments.py\T1/LinuxLibertineT-TLF/m/n/10 (+20
 ) , the re-play by \T1/zi4/m/n/10 experiments/paper_experiments.py\T1/LinuxLibe
 rtineT-TLF/m/n/10 (+20) ;
  []
 
 
-Underfull \hbox (badness 4726) in paragraph at lines 995--1008
+Underfull \hbox (badness 4726) in paragraph at lines 983--996
 \T1/LinuxLibertineT-TLF/m/n/10 (+20) sta-tis-tics by \T1/zi4/m/n/10 dt_analysis
 .py\T1/LinuxLibertineT-TLF/m/n/10 (+20) , \T1/zi4/m/n/10 r4_analysis.py \T1/Lin
 uxLibertineT-TLF/m/n/10 (+20) and \T1/zi4/m/n/10 r9_analysis.py\T1/LinuxLiberti
@@ -1489,20 +1513,22 @@ neT-TLF/m/n/10 (+20) , which share one
  []
 
 
-Underfull \hbox (badness 7558) in paragraph at lines 995--1008
+Underfull \hbox (badness 7558) in paragraph at lines 983--996
 \T1/LinuxLibertineT-TLF/m/n/10 (+20) cluster-bootstrap mod-ule; ta-bles and fig
 -ures by \T1/zi4/m/n/10 make_tables.py\T1/LinuxLibertineT-TLF/m/n/10 (+20) , \T
 1/zi4/m/n/10 make_r4_tables.py\T1/LinuxLibertineT-TLF/m/n/10 (+20) ,
  []
 
 
-Underfull \hbox (badness 4254) in paragraph at lines 995--1008
+Underfull \hbox (badness 4254) in paragraph at lines 983--996
 \T1/zi4/m/n/10 make_r9_tables.py \T1/LinuxLibertineT-TLF/m/n/10 (+20) and \T1/z
 i4/m/n/10 make_dt_figures.py\T1/LinuxLibertineT-TLF/m/n/10 (+20) , which read o
 nly com-mit-ted re-sult files.
  []
 
 [24.24] [25.25] (./tables/literature_comparison.tex) (./tables/algorithms.tex
+LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
+(Font)              scaled to size 8.0pt on input line 15.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
 (Font)              scaled to size 8.0pt on input line 20.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
@@ -1514,81 +1540,72 @@ bertineT-TLF/m/n/8 (+20) : $\OML/nxlmi/m/it/8 ^^[[]$ \T1/LinuxLibertineT-TLF/m/
 n/8 (+20) un-used; con-tainer
  []
 
-)
-Underfull \vbox (badness 2653) has occurred while \output is active []
+) (./tables/supp_infogreedy.tex)
+Underfull \vbox (badness 4024) has occurred while \output is active []
 
  [26.26]
-(./tables/supp_infogreedy.tex) [27.27] (./tables/r4_uncond.tex)
+(./tables/r4_uncond.tex)
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 1097.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\rho' on input line 1097.
+(hyperref)                removing `math shift' on input line 1085.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `subscript' on input line 1097.
+(hyperref)                removing `\rho' on input line 1085.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 1097.
+(hyperref)                removing `subscript' on input line 1085.
 
-(./tables/r4_calib.tex)
-<figures/fig_dt_calibration.pdf, id=703, 497.41081pt x 150.40694pt>
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1085.
+
+(./tables/r4_calib.tex [27.27])
+<figures/fig_dt_calibration.pdf, id=696, 497.41081pt x 150.40694pt>
 File: figures/fig_dt_calibration.pdf Graphic file (type pdf)
 <use figures/fig_dt_calibration.pdf>
-Package pdftex.def Info: figures/fig_dt_calibration.pdf  used on input line 111
-9.
+Package pdftex.def Info: figures/fig_dt_calibration.pdf  used on input line 110
+7.
 (pdftex.def)             Requested size: 387.90434pt x 117.29398pt.
 
 
-Class acmart Warning: A possible image without description on input line 1129.
+Class acmart Warning: A possible image without description on input line 1117.
 
-[28.28]
-<figures/fig_forecast.pdf, id=712, 247.72362pt x 150.6221pt>
+[28.28] [29.29]
+<figures/fig_forecast.pdf, id=716, 247.72362pt x 150.6221pt>
 File: figures/fig_forecast.pdf Graphic file (type pdf)
 <use figures/fig_forecast.pdf>
-Package pdftex.def Info: figures/fig_forecast.pdf  used on input line 1154.
+Package pdftex.def Info: figures/fig_forecast.pdf  used on input line 1142.
 (pdftex.def)             Requested size: 237.49591pt x 144.4048pt.
 
 
-Class acmart Warning: A possible image without description on input line 1161.
+Class acmart Warning: A possible image without description on input line 1149.
 
-[29.29]
-<figures/fig_dt_sweep.pdf, id=720, 273.96347pt x 155.72171pt>
+<figures/fig_dt_sweep.pdf, id=718, 273.96347pt x 155.72171pt>
 File: figures/fig_dt_sweep.pdf Graphic file (type pdf)
 <use figures/fig_dt_sweep.pdf>
-Package pdftex.def Info: figures/fig_dt_sweep.pdf  used on input line 1175.
+Package pdftex.def Info: figures/fig_dt_sweep.pdf  used on input line 1163.
 (pdftex.def)             Requested size: 237.49591pt x 134.99681pt.
 
+Class acmart Warning: A possible image without description on input line 1169.
 
-Class acmart Warning: A possible image without description on input line 1181.
-
-[30.30 <./figures/fig_dt_calibration.pdf> <./figures/fig_forecast.pdf>]
-(./tables/r4_cap.tex) (./tables/r4_fail.tex) (./tables/r4_geoms.tex) [31.31 <./
-figures/fig_dt_sweep.pdf>] (./tables/leak_appendix.tex) [32.32]
-Underfull \hbox (badness 2875) in paragraph at lines 1233--1264
+[30.30 <./figures/fig_dt_calibration.pdf>] (./tables/r4_cap.tex)
+(./tables/r4_fail.tex) [31.31 <./figures/fig_forecast.pdf> <./figures/fig_dt_sw
+eep.pdf>] (./tables/r4_geoms.tex) (./tables/leak_appendix.tex)
+Underfull \hbox (badness 2875) in paragraph at lines 1221--1252
 \T1/LinuxLibertineT-TLF/b/n/10 (+20) Deviations. \T1/LinuxLibertineT-TLF/m/n/10
  (+20) The pro-to-col and ev-ery change made af-ter it was fixed are recorded i
 n
  []
 
 
-Underfull \hbox (badness 1127) in paragraph at lines 1233--1264
+Underfull \hbox (badness 1127) in paragraph at lines 1221--1252
 \T1/zi4/m/n/10 dt_protocol.yaml\T1/LinuxLibertineT-TLF/m/n/10 (+20) . (i) The p
 lanned Cus-tom-Ar-ray sce-nario was re-placed, be-fore any pol-
  []
 
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [33.33]
-Underfull \vbox (badness 1728) has occurred while \output is active []
-
- [34.34]
-(./tables/evidence.tex
+[32.32] [33.33] [34.34] (./tables/evidence.tex
 Underfull \hbox (badness 3690) in paragraph at lines 12--12
 []|\T1/LinuxLibertineT-TLF/m/n/7 (+20) Command (\T1/zi4/m/n/7 dt_experiments.py
  \T1/LinuxLibertineT-TLF/m/n/7 (+20) un-less
@@ -1633,17 +1650,19 @@ Underfull \hbox (badness 10000) in paragraph at lines 37--37
 \openout3 = `comment.cut'.
 
  Comment 'acks' writing to comment.cut.
-Straight input of comment.cut. (./comment.cut) (./main.bbl [35.35]
+Straight input of comment.cut. (./comment.cut) (./main.bbl
 LaTeX Info: Redefining \tempurl on input line 68.
 LaTeX Info: Redefining \tempurl on input line 82.
 LaTeX Info: Redefining \tempurl on input line 101.
 LaTeX Info: Redefining \tempurl on input line 117.
+ [35.35]
 LaTeX Info: Redefining \tempurl on input line 161.
 LaTeX Info: Redefining \tempurl on input line 177.
 LaTeX Info: Redefining \tempurl on input line 193.
 LaTeX Info: Redefining \tempurl on input line 208.
 LaTeX Info: Redefining \tempurl on input line 221.
 LaTeX Info: Redefining \tempurl on input line 238.
+ [36.36]
 LaTeX Info: Redefining \tempurl on input line 253.
 LaTeX Info: Redefining \tempurl on input line 269.
 LaTeX Info: Redefining \tempurl on input line 284.
@@ -1652,7 +1671,6 @@ LaTeX Info: Redefining \tempurl on input line 312.
 LaTeX Info: Redefining \tempurl on input line 326.
 LaTeX Info: Redefining \tempurl on input line 340.
 LaTeX Info: Redefining \tempurl on input line 361.
- [36.36]
 LaTeX Info: Redefining \tempurl on input line 390.
 LaTeX Info: Redefining \tempurl on input line 405.
 LaTeX Info: Redefining \tempurl on input line 422.
@@ -1665,16 +1683,16 @@ LaTeX Info: Redefining \tempurl on input line 526.
 LaTeX Info: Redefining \tempurl on input line 541.
 LaTeX Info: Redefining \tempurl on input line 556.
 LaTeX Info: Redefining \tempurl on input line 571.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [37.37]
 LaTeX Info: Redefining \tempurl on input line 587.
 LaTeX Info: Redefining \tempurl on input line 603.
 LaTeX Info: Redefining \tempurl on input line 627.
 LaTeX Info: Redefining \tempurl on input line 643.
 LaTeX Info: Redefining \tempurl on input line 660.
 LaTeX Info: Redefining \tempurl on input line 677.
-
-Underfull \vbox (badness 6396) has occurred while \output is active []
-
- [37.37]
 LaTeX Info: Redefining \tempurl on input line 692.
 LaTeX Info: Redefining \tempurl on input line 707.
 LaTeX Info: Redefining \tempurl on input line 722.
@@ -1711,13 +1729,13 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: 874AF2D8BC677BDF9AF7A88A63DC4048;10470.
  ) 
 Here is how much of TeX's memory you used:
- 34773 strings out of 476106
- 637983 string characters out of 5793933
- 1986975 words of memory out of 5000000
- 54684 multiletter control sequences out of 15000+600000
- 830750 words of font info for 813 fonts, out of 8000000 for 9000
+ 35412 strings out of 476106
+ 650450 string characters out of 5793933
+ 1994975 words of memory out of 5000000
+ 55245 multiletter control sequences out of 15000+600000
+ 862305 words of font info for 860 fonts, out of 8000000 for 9000
  220 hyphenation exceptions out of 8191
- 90i,16n,131p,1312b,860s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 90i,16n,131p,1308b,968s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4
 r.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/newtx/LibertineMathMI.p
 fb></usr/share/texlive/texmf-dist/fonts/type1/public/newtx/LibertineMathMI5.pfb
@@ -1735,10 +1753,10 @@ re/texlive/texmf-dist/fonts/type1/public/newtx/NewTXMI7.pfb></usr/share/texlive
 onts/type1/public/newtx/txmiaX.pfb></usr/share/texlive/texmf-dist/fonts/type1/p
 ublic/newtx/txsym.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/newtx/t
 xsys.pfb>
-Output written on main.pdf (38 pages, 879756 bytes).
+Output written on main.pdf (38 pages, 888182 bytes).
 PDF statistics:
- 1086 PDF objects out of 1200 (max. 8388607)
- 910 compressed objects within 10 object streams
+ 1083 PDF objects out of 1200 (max. 8388607)
+ 907 compressed objects within 10 object streams
  194 named destinations out of 1000 (max. 500000)
- 126905 words of extra memory for PDF output out of 128383 (max. 10000000)
+ 147385 words of extra memory for PDF output out of 154059 (max. 10000000)
 

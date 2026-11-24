@@ -1,0 +1,103 @@
+% Architecture of the study: write path, simulated sequencing per container, and the retrieval loop with
+% its two decisions.  Pure TikZ (vector), included by main.tex.
+\begin{tikzpicture}[
+  font=\sffamily\footnotesize, >={Stealth[length=2.2mm]},
+  execute at begin picture={\hyphenpenalty=10000\exhyphenpenalty=10000},
+  panel/.style={draw=black!25, rounded corners=4pt, fill=black!2, inner sep=6pt},
+  ptitle/.style={font=\sffamily\bfseries\small, anchor=north west, text=black!80},
+  blk/.style={draw=#1!70!black, fill=#1!10, rounded corners=3pt, align=center, inner sep=3.5pt, minimum height=11mm},
+  blk/.default=blue,
+  arr/.style={->, thick, draw=black!70},
+  dec/.style={diamond, aspect=2.2, draw=#1!70!black, fill=#1!12, align=center, inner sep=1.5pt, font=\sffamily\scriptsize\bfseries},
+  note/.style={font=\sffamily\scriptsize, text=black!65, align=center},
+]
+% ------------------------------------------------------------------ helpers
+% DNA double helix between (x0,y0) and (x0+len,y0); amplitude a; turns n
+\newcommand{\helix}[5]{% x0, y0, len, amp, turns
+  \foreach \k in {0,...,24}{%
+    \pgfmathsetmacro{\xx}{#1+#3*\k/24}%
+    \pgfmathsetmacro{\ya}{#2+#4*sin(15*#5*\k)}%
+    \pgfmathsetmacro{\yb}{#2-#4*sin(15*#5*\k)}%
+    \pgfmathtruncatemacro{\cc}{mod(\k,4)}%
+    \ifcase\cc \def\col{red!70}\or\def\col{blue!70}\or\def\col{green!55!black}\or\def\col{orange!85}\fi
+    \draw[\col, line width=0.9pt] (\xx,\ya) -- (\xx,\yb);}%
+  \draw[black!75, line width=1.1pt, domain=0:1, samples=61, variable=\u]
+    plot ({#1+#3*\u},{#2+#4*sin(360*#5*\u)});%
+  \draw[black!45, line width=1.1pt, domain=0:1, samples=61, variable=\u]
+    plot ({#1+#3*\u},{#2-#4*sin(360*#5*\u)});}
+% sample vial centred at (x,y); fill level colour #3; label #4
+\newcommand{\vial}[4]{%
+  \fill[#3] (#1-0.32,#2-0.55) rectangle (#1+0.32,#2+0.05);
+  \draw[black!70, line width=0.8pt, rounded corners=3pt] (#1-0.32,#2+0.45) -- (#1-0.32,#2-0.6) -- (#1+0.32,#2-0.6) -- (#1+0.32,#2+0.45);
+  \fill[black!55, rounded corners=1pt] (#1-0.38,#2+0.45) rectangle (#1+0.38,#2+0.62);
+  \node[note, anchor=north, text width=12mm] at (#1,#2-0.68) {#4};}
+
+% ================================================================== PANEL 1: write path
+\node[panel, minimum width=17.6cm, minimum height=4.1cm, anchor=north west] (P1) at (0,0) {};
+\node[ptitle] at (P1.north west) {\,1\; Encode and store (write path)};
+
+% file
+\draw[black!70, fill=white, line width=0.8pt] (0.5,-1.15) -- (1.45,-1.15) -- (1.75,-1.45) -- (1.75,-2.55) -- (0.5,-2.55) -- cycle;
+\draw[black!70] (1.45,-1.15) -- (1.45,-1.45) -- (1.75,-1.45);
+\foreach \y in {-1.75,-1.95,-2.15,-2.35} \draw[black!35, line width=1pt] (0.7,\y) -- (1.55,\y);
+\node[note, anchor=north] at (1.12,-2.65) {file\\18{,}432 B};
+
+% stripes / erasure code
+\node[blk=blue, minimum width=3.0cm] (ec) at (4.05,-1.85) {SHA-256 bundle\\$S{=}25$ stripes, $K{=}32$ data\\Cauchy RS $\to N{=}48$ fragments};
+\draw[arr] (1.85,-1.85) -- (ec.west);
+
+% strand layout + helix
+\node[anchor=west, note] at (6.25,-1.05) {one fragment $\to$ one strand (136\,nt)};
+\foreach \x/\w/\c/\t in {6.3/0.55/gray/addr, 6.85/1.25/blue/payload, 8.1/0.75/purple/RS(4), 8.85/0.8/teal/CRC-16}{
+  \fill[\c!25, draw=\c!70!black] (\x,-1.55) rectangle ++(\w,-0.35);
+  \node[font=\sffamily\tiny] at (\x+\w/2,-1.725) {\t};}
+\helix{6.3}{-2.45}{3.35}{0.22}{3}
+\draw[arr] (ec.east) -- (6.2,-1.85);
+
+% containers
+\node[note, anchor=west] at (10.45,-1.05) {round-robin placement: 8 fragments of every stripe per container};
+\draw[arr] (9.75,-1.85) -- (10.45,-1.85);
+\vial{11.0}{-1.95}{green!45}{fresh}
+\vial{12.15}{-1.95}{green!30}{aged\\1 half-life}
+\vial{13.3}{-1.95}{yellow!45}{aged 2 hl,\\low copy}
+\vial{14.45}{-1.95}{yellow!30}{30 PCR\\cycles}
+\vial{15.6}{-1.95}{orange!40}{45 PCR,\\low copy}
+\vial{16.75}{-1.95}{red!30}{near-dead}
+\node[note, anchor=north] at (13.85,-3.3) {$M{=}6$ separately synthesised and handled containers};
+
+% ================================================================== PANEL 2: sequencing
+\node[panel, minimum width=17.6cm, minimum height=2.35cm, anchor=north west] (P2) at (0,-4.35) {};
+\node[ptitle] at (P2.north west) {\,2\; Sequencing, simulated per container (DT4DDS digital twin)};
+\node[blk=green, minimum width=2.0cm] (syn) at (1.55,-5.8) {independent\\synthesis};
+\node[blk=green, minimum width=1.4cm, right=4mm of syn] (age) {aging};
+\node[blk=green, minimum width=1.4cm, right=4mm of age] (pcr) {PCR};
+\node[blk=green, minimum width=2.5cm, right=4mm of pcr] (seq) {Illumina iSeq100\\reads (FASTQ)};
+\draw[arr] (syn) -- (age); \draw[arr] (age) -- (pcr); \draw[arr] (pcr) -- (seq);
+\node[note, anchor=south west] at (10.9,-5.0) {one read stream per container (60 reads per stored strand)};
+\foreach \i/\c in {0/green!45,1/green!30,2/yellow!45,3/yellow!30,4/orange!40,5/red!30}{
+  \pgfmathsetmacro{\yy}{-5.15-0.23*\i}
+  \fill[\c, draw=black!40] (10.9,\yy) rectangle ++(6.3,-0.17);
+  \foreach \s in {0,...,14} \draw[white, line width=0.5pt] (10.9+0.42*\s,\yy) -- ++(0,-0.17);}
+\draw[arr] (seq.east) -- (10.8,-5.8);
+
+% ================================================================== PANEL 3: retrieval loop
+\node[panel, minimum width=17.6cm, minimum height=4.6cm, anchor=north west] (P3) at (0,-6.9) {};
+\node[ptitle] at (P3.north west) {\,3\; Retrieval: two decisions after every batch of 50 reads};
+
+\node[dec=orange] (which) at (1.95,-8.75) {Which\\container\\next?};
+\node[note, anchor=north, text width=4.1cm] at (2.1,-9.65) {\textbf{allocation}: round-robin,\\model-based (Thompson, UCB, \dots)\\or fixed proportions};
+\node[blk=gray, text width=1.95cm] (batch) at (4.6,-8.75) {read 50 reads from the chosen container's stream};
+\node[blk=blue, text width=2.0cm] (clu) at (7.25,-8.75) {cluster by address; consensus ($\le$24 reads)};
+\node[blk=blue, text width=2.15cm] (inner) at (9.95,-8.75) {inner RS + CRC-16 + address check $\to$ verified fragment};
+\node[blk=blue, text width=2.15cm] (outer) at (12.75,-8.75) {outer RS per stripe + CRC-32 (leave-one-out repair)};
+\node[dec=green] (stop) at (15.6,-8.75) {Stop?};
+\node[blk=green, minimum width=2.1cm, font=\sffamily\footnotesize\bfseries] (file) at (15.6,-10.65) {verified file};
+\node[note, anchor=east, text width=5.6cm, align=right] at (14.3,-10.65) {\textbf{verified stopping}: every stripe decoded,\\CRC-32 and the file's SHA-256 match};
+
+\draw[arr] (which) -- (batch); \draw[arr] (batch) -- (clu); \draw[arr] (clu) -- (inner);
+\draw[arr] (inner) -- (outer); \draw[arr] (outer) -- (stop);
+\draw[arr, green!50!black] (stop.south) -- (file.north) node[midway, right, note] {yes};
+\draw[arr, red!60!black] (stop.north) -- ++(0,0.55) -| (which.north);
+\node[note, anchor=south, text=red!60!black] at (9.6,-7.75) {no: reads $R_j$ and verified fragments $U_j$ update the posterior over each container};
+\node[note, anchor=south west] at (0.25,-11.45) {The stored file is used only after a retrieval ends, to count wrong outputs and false accepts.};
+\end{tikzpicture}

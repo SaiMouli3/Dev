@@ -169,3 +169,14 @@ Applied from the authors' check of the publisher and conference pages:
 Not applied: ford2010availability "pages 1–7". Its only source is a mail-archive page, and the OSDI paper is
 full length, so a 7-page range cannot be right. Page numbers stay empty until confirmed from the USENIX
 proceedings or the ACM Digital Library.
+
+## 11. Addendum: architecture figure
+
+Fig. 1 was redrawn as a three-panel architecture diagram in pure TikZ (`manuscript/figures/arch_dna.tex`):
+- **Encode and store:** a file, the stripes and erasure code, the strand layout with a DNA double helix, and
+  six container vials labelled with their handling histories.
+- **Sequencing:** simulated sequencing per container, with its read streams.
+- **Retrieval loop:** the two decisions (which container next; whether to stop) and the decode chain.
+
+Every parameter shown (S=25, K=32, N=48, 136 nt, M=6, batches of 50, consensus of at most 24 reads,
+60 reads per stored strand) is the one used in the experiments. No data, result or other figure changed.

@@ -251,28 +251,16 @@ regenerated.
 %=====================================================================
 \begin{figure*}[t]
 \centering
-\resizebox{\textwidth}{!}{%
-\begin{tikzpicture}[font=\footnotesize, node distance=4mm and 5mm,
-  box/.style={draw, rounded corners=2pt, align=center, minimum height=8mm, inner sep=3pt, fill=#1!8},
-  box/.default=blue, arr/.style={-{Stealth[length=2mm]}, thick}]
-\node[box=gray] (files) {file\\(bytes)};
-\node[box, right=of files] (stripes) {bundle, SHA-256\\stripes of $K$\\Cauchy-RS $\to N$};
-\node[box, right=of stripes] (strands) {strand: address,\\payload, RS(4)+CRC-16\\$\to$ DNA (136\,nt)};
-\node[box=orange, right=of strands] (place) {placement\\over $M$\\containers};
-\node[box=green, right=of place, minimum width=36mm] (dt) {\textbf{DT4DDS digital twin}, per container:\\independent synthesis $\to$ aging $\to$ PCR\\$\to$ iSeq100 reads (FASTQ)};
-\node[box, below=10mm of dt] (clus) {adapter trim,\\inventory clustering};
-\node[box, left=of clus] (cons) {consensus $\to$\\inner RS + CRC-16\\+ address check};
-\node[box, left=of cons] (outer) {outer RS per stripe\\+ CRC-32 (leave-\\one-out repair)};
-\node[box=gray, left=of outer] (out) {file + SHA-256 $\to$\\byte comparison\\(after the fact)};
-\node[box=red, below=8mm of cons, minimum width=120mm, xshift=-6mm, inner xsep=10pt] (ctl) {online-adaptive controller: posterior over $\theta_j$ $\to$ allocation rule $\to$ next container, or stop};
-\draw[arr] (files)--(stripes); \draw[arr] (stripes)--(strands); \draw[arr] (strands)--(place); \draw[arr] (place)--(dt);
-\draw[arr] (dt)--(clus); \draw[arr] (clus)--(cons); \draw[arr] (cons)--(outer); \draw[arr] (outer)--(out);
-\draw[arr] (cons.south) -- (cons.south |- ctl.north); \draw[arr] (ctl.east) -- ++(4mm,0) |- (clus.south);
-\end{tikzpicture}}
-\caption{Pipeline of the primary experiments (conceptual diagram).  Every container is an
-independent DT4DDS synthesis with its own handling history; its reads are consumed in batches
-by the same streaming decoder that reads FASTQ files.  The true file is used only after a
-retrieval ends, to count wrong outputs and false accepts.}
+\resizebox{\textwidth}{!}{\input{figures/arch_dna.tex}}
+\caption{Architecture of the study.  \textbf{(1)}~A file is bundled with its SHA-256, split into $S{=}25$
+stripes of $K{=}32$ data fragments and extended by a Cauchy Reed--Solomon code to $N{=}48$; each fragment
+becomes one 136-nt strand (address, payload, inner RS parity, CRC-16) and the strands are placed
+round-robin over $M{=}6$ containers with different handling histories.  \textbf{(2)}~Each container is an
+independent DT4DDS synthesis, aging, PCR and sequencing run that yields its own read stream.
+\textbf{(3)}~Retrieval reads the streams in batches of 50 reads and makes two decisions after every batch:
+\emph{which} container to read next (allocation) and \emph{whether to stop} (verified stopping, which
+requires every stripe to decode and the CRC-32 and SHA-256 checks to pass).  The stored file is used only
+after a retrieval ends, to count wrong outputs and false accepts.}
 \label{fig:arch}
 \end{figure*}
 
